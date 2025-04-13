@@ -33,9 +33,10 @@ type Phase = {
 
 interface RoadmapTimelineProps {
   phases: Phase[];
+  onPhaseProgressUpdate?: (updatedPhases: Phase[]) => void;
 }
 
-const RoadmapTimeline = ({ phases }: RoadmapTimelineProps) => {
+const RoadmapTimeline = ({ phases, onPhaseProgressUpdate }: RoadmapTimelineProps) => {
   const [openPhases, setOpenPhases] = useState<Record<number, boolean>>({
     0: true, // Open the first phase by default
   });
@@ -79,6 +80,11 @@ const RoadmapTimeline = ({ phases }: RoadmapTimelineProps) => {
       phase.completionPercentage = totalMilestones > 0 
         ? Math.round((completedCount / totalMilestones) * 100)
         : 0;
+        
+      // Notify parent component about the progress update
+      if (onPhaseProgressUpdate) {
+        onPhaseProgressUpdate(updatedPhases);
+      }
     }
   };
 

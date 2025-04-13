@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,6 @@ import Navbar from "@/components/Navbar";
 import RoadmapTimeline from "@/components/RoadmapTimeline";
 import ResourceCard from "@/components/ResourceCard";
 
-// Type definition for user data
 type UserData = {
   name: string;
   email: string;
@@ -44,7 +42,6 @@ type UserData = {
   timeline: string;
 };
 
-// Placeholder roadmap data
 const PLACEHOLDER_ROADMAP = {
   tech: [
     {
@@ -207,26 +204,38 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   
   useEffect(() => {
-    // Retrieve user data from localStorage
     const storedUserData = localStorage.getItem("userData");
     
     if (storedUserData) {
       const parsedUserData = JSON.parse(storedUserData) as UserData;
       setUserData(parsedUserData);
       
-      // Set roadmap data based on user's field
-      // In a real app, this would come from an API
+      let roadmapData: any[] = [];
       if (parsedUserData.field === "tech") {
-        setRoadmap(PLACEHOLDER_ROADMAP.tech);
+        roadmapData = PLACEHOLDER_ROADMAP.tech;
       } else {
-        // Default to business roadmap for now
-        setRoadmap(PLACEHOLDER_ROADMAP.business);
+        roadmapData = PLACEHOLDER_ROADMAP.business;
+      }
+      
+      setRoadmap(roadmapData);
+      
+      if (roadmapData.length > 0) {
+        const totalPercentage = roadmapData.reduce((sum, phase) => sum + (phase.completionPercentage || 0), 0);
+        const overallPercentage = Math.round(totalPercentage / roadmapData.length);
+        setOverallProgress(overallPercentage);
       }
     } else {
-      // If no user data, redirect to onboarding
       navigate("/onboarding");
     }
   }, [navigate]);
+  
+  useEffect(() => {
+    if (roadmap.length > 0) {
+      const totalPercentage = roadmap.reduce((sum, phase) => sum + (phase.completionPercentage || 0), 0);
+      const overallPercentage = Math.round(totalPercentage / roadmap.length);
+      setOverallProgress(overallPercentage);
+    }
+  }, [roadmap]);
   
   const timelineLabel = (timeline: string) => {
     const map: Record<string, string> = {
@@ -402,7 +411,12 @@ const Dashboard = () => {
                   </CardHeader>
                   <CardContent>
                     {roadmap.length > 0 ? (
-                      <RoadmapTimeline phases={roadmap} />
+                      <RoadmapTimeline 
+                        phases={roadmap}
+                        onPhaseProgressUpdate={(updatedRoadmap) => {
+                          setRoadmap(updatedRoadmap);
+                        }} 
+                      />
                     ) : (
                       <div className="text-center py-12">
                         <Info className="h-12 w-12 mx-auto text-gray-300 mb-4" />
