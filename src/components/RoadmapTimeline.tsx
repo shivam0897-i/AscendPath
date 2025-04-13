@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CheckCircle2, ChevronDown, Clock } from "lucide-react";
+import { toast } from "sonner";
 
 type Resource = {
   title: string;
@@ -50,10 +51,35 @@ const RoadmapTimeline = ({ phases }: RoadmapTimelineProps) => {
 
   const toggleMilestoneCompletion = (phaseIndex: number, milestoneIndex: number) => {
     const key = `${phaseIndex}-${milestoneIndex}`;
-    setCompletedMilestones((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    const newCompletedMilestones = {
+      ...completedMilestones,
+      [key]: !completedMilestones[key],
+    };
+    setCompletedMilestones(newCompletedMilestones);
+    
+    // Show toast notification
+    if (newCompletedMilestones[key]) {
+      toast.success("Milestone marked as completed!");
+    } else {
+      toast.info("Milestone marked as not completed.");
+    }
+    
+    // Update phase completion percentage
+    const updatedPhases = [...phases];
+    const phase = updatedPhases[phaseIndex];
+    
+    if (phase) {
+      const totalMilestones = phase.milestones.length;
+      const completedCount = phase.milestones.reduce((count, _, mIndex) => {
+        const mKey = `${phaseIndex}-${mIndex}`;
+        return count + (newCompletedMilestones[mKey] || false ? 1 : 0);
+      }, 0);
+      
+      // Ensure we're setting a valid percentage (0-100)
+      phase.completionPercentage = totalMilestones > 0 
+        ? Math.round((completedCount / totalMilestones) * 100)
+        : 0;
+    }
   };
 
   return (
