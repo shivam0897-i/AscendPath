@@ -9,7 +9,201 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      milestones: {
+        Row: {
+          completed: boolean | null
+          created_at: string
+          description: string | null
+          estimated_time: string | null
+          id: string
+          phase_id: string
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string
+          description?: string | null
+          estimated_time?: string | null
+          id?: string
+          phase_id: string
+          position: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string
+          description?: string | null
+          estimated_time?: string | null
+          id?: string
+          phase_id?: string
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestones_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "phases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      phases: {
+        Row: {
+          completion_percentage: number | null
+          created_at: string
+          description: string | null
+          id: string
+          position: number
+          roadmap_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          completion_percentage?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          position: number
+          roadmap_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          completion_percentage?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          position?: number
+          roadmap_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "phases_roadmap_id_fkey"
+            columns: ["roadmap_id"]
+            isOneToOne: false
+            referencedRelation: "roadmaps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          background: string | null
+          created_at: string
+          email: string | null
+          first_name: string | null
+          goals: string[] | null
+          id: string
+          last_name: string | null
+          skills: string[] | null
+          time_available: string | null
+          updated_at: string
+        }
+        Insert: {
+          background?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          goals?: string[] | null
+          id: string
+          last_name?: string | null
+          skills?: string[] | null
+          time_available?: string | null
+          updated_at?: string
+        }
+        Update: {
+          background?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          goals?: string[] | null
+          id?: string
+          last_name?: string | null
+          skills?: string[] | null
+          time_available?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          milestone_id: string
+          platform: string
+          title: string
+          type: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          milestone_id: string
+          platform: string
+          title: string
+          type: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          milestone_id?: string
+          platform?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "milestones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roadmaps: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

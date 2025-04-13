@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 interface NavbarProps {
   minimal?: boolean;
@@ -10,6 +12,7 @@ interface NavbarProps {
 
 const Navbar = ({ minimal = false }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -30,7 +33,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
                 <NavLinks />
-                <AuthButtons />
+                {user ? <UserMenu /> : <AuthButtons />}
               </div>
 
               {/* Mobile menu button */}
@@ -59,7 +62,21 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
             <div className="flex flex-col space-y-3">
               <NavLinks mobile />
               <div className="pt-2 flex flex-col space-y-2">
-                <AuthButtons mobile />
+                {user ? (
+                  <Button
+                    onClick={() => {
+                      const { signOut } = require("@/context/AuthContext").useAuth();
+                      signOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full justify-center"
+                    variant="outline"
+                  >
+                    Log out
+                  </Button>
+                ) : (
+                  <AuthButtons mobile />
+                )}
               </div>
             </div>
           </div>
@@ -109,19 +126,27 @@ const AuthButtons = ({ mobile = false }: { mobile?: boolean }) => (
   <>
     {mobile ? (
       <>
-        <Button variant="outline" className="w-full justify-center">
-          Log in
-        </Button>
-        <Button className="w-full justify-center bg-empowerPurple hover:bg-empowerPurple-dark">
-          Sign up
-        </Button>
+        <Link to="/auth">
+          <Button variant="outline" className="w-full justify-center">
+            Log in
+          </Button>
+        </Link>
+        <Link to="/auth?tab=signup">
+          <Button className="w-full justify-center bg-empowerPurple hover:bg-empowerPurple-dark">
+            Sign up
+          </Button>
+        </Link>
       </>
     ) : (
       <>
-        <Button variant="ghost">Log in</Button>
-        <Button className="bg-empowerPurple hover:bg-empowerPurple-dark">
-          Sign up
-        </Button>
+        <Link to="/auth">
+          <Button variant="ghost">Log in</Button>
+        </Link>
+        <Link to="/auth?tab=signup">
+          <Button className="bg-empowerPurple hover:bg-empowerPurple-dark">
+            Sign up
+          </Button>
+        </Link>
       </>
     )}
   </>
