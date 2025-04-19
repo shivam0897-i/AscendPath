@@ -1,14 +1,15 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, GraduationCap, Clock, BookOpen, Users, Star } from "lucide-react";
+import { ArrowRight, GraduationCap, Clock, BookOpen, Users, Star, MessageSquare, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroImage from "@/components/HeroImage";
+import Chatbot from '@/components/Chatbot';
 
 const Home = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const features = [
     {
@@ -56,10 +57,19 @@ const Home = () => {
     }
   ];
 
+  const handlePlayVideo = () => {
+    setIsVideoPlaying(true);
+  };
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -83,7 +93,20 @@ const Home = () => {
             </div>
           </div>
           <div className="relative">
-            <HeroImage />
+            {!isVideoPlaying ? (
+               <HeroImage onClick={handlePlayVideo} />
+              ) : (
+              <div className="aspect-video w-full max-w-xl">
+                   <iframe
+                     className="w-full h-full rounded-lg shadow-lg"
+                     src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                     title="YouTube video player"
+                     frameBorder="0"
+                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                     allowFullScreen>
+                   </iframe>
+                 </div>
+              )}
           </div>
         </div>
       </section>
@@ -97,7 +120,7 @@ const Home = () => {
               Our platform offers a comprehensive set of tools to help you navigate your educational journey with confidence.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -120,27 +143,27 @@ const Home = () => {
             Our simple 3-step process creates your personalized educational roadmap
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="h-16 w-16 bg-empowerPurple text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
             <h3 className="text-xl font-bold mb-2">Share Your Goals</h3>
             <p className="text-gray-600">Tell us about your educational goals, current skills, and available time.</p>
           </div>
-          
+
           <div className="text-center">
             <div className="h-16 w-16 bg-empowerPurple text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
             <h3 className="text-xl font-bold mb-2">Get Your Roadmap</h3>
             <p className="text-gray-600">Receive a custom learning path with timeline, steps, and resources.</p>
           </div>
-          
+
           <div className="text-center">
             <div className="h-16 w-16 bg-empowerPurple text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
             <h3 className="text-xl font-bold mb-2">Track Your Progress</h3>
             <p className="text-gray-600">Follow your roadmap, track milestones, and adjust as needed.</p>
           </div>
         </div>
-        
+
         <div className="text-center mt-12">
           <Button asChild size="lg" className="bg-empowerPurple hover:bg-empowerPurple-dark">
             <Link to="/onboarding">Create Your Roadmap</Link>
@@ -157,16 +180,16 @@ const Home = () => {
               Hear from women who have transformed their educational journey with our platform
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
                 <div className="flex items-center">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.author} 
-                    className="w-12 h-12 rounded-full mr-4" 
+                  <img
+                    src={testimonial.avatar}
+                    alt={testimonial.author}
+                    className="w-12 h-12 rounded-full mr-4"
                   />
                   <p className="font-medium">{testimonial.author}</p>
                 </div>
@@ -190,6 +213,37 @@ const Home = () => {
       </section>
 
       <Footer />
+
+      {/* Chat Popup Trigger Button */}
+      {!isChatOpen && (
+        <Button
+          onClick={toggleChat}
+          // Changed p-4 to p-5 to make the button slightly larger
+          className="fixed bottom-6 right-6 z-50 rounded-full p-5 shadow-lg bg-empowerPurple hover:bg-empowerPurple-dark"
+          aria-label="Open Chat"
+        >
+          <MessageSquare className="h-6 w-6 text-white" />
+        </Button>
+      )}
+
+
+      {/* Chat Popup Window */}
+      {isChatOpen && (
+        <div className="fixed bottom-20 right-6 z-50">
+          <div className="relative shadow-xl rounded-lg">
+            <Chatbot />
+            <Button
+              onClick={toggleChat}
+              variant="ghost"
+              size="sm"
+              className="absolute top-2 right-2 p-1 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600"
+              aria-label="Close Chat"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

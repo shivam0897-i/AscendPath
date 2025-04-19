@@ -1,7 +1,12 @@
 
 import { useEffect, useRef } from "react";
 
-const HeroImage = () => {
+// Define the props type to include onClick
+interface HeroImageProps {
+  onClick?: () => void; // Make onClick optional
+}
+
+const HeroImage: React.FC<HeroImageProps> = ({ onClick }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
@@ -38,7 +43,12 @@ const HeroImage = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[500px]" ref={containerRef}>
+    // Add the onClick handler to this div
+    <div 
+      className="relative w-full h-[400px] md:h-[500px] cursor-pointer" // Added cursor-pointer for visual feedback
+      ref={containerRef} 
+      onClick={onClick} // Attach the onClick handler here
+    >
       {/* Main character */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <img 
@@ -87,7 +97,7 @@ const HeroImage = () => {
       </div>
       
       {/* Connect lines (optional) - these would look better with SVG paths but using divs for simplicity */}
-      <div className="absolute top-0 left-0 w-full h-full">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none"> {/* Added pointer-events-none */} 
         <div className="absolute top-[30%] left-[25%] w-[50%] h-[1px] bg-gray-200 transform rotate-[25deg]" />
         <div className="absolute top-[40%] left-[20%] w-[60%] h-[1px] bg-gray-200 transform -rotate-[15deg]" />
         <div className="absolute top-[60%] left-[30%] w-[40%] h-[1px] bg-gray-200 transform rotate-[5deg]" />

@@ -68,7 +68,7 @@ const Footer = () => {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Company</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-gray-500 hover:text-empowerPurple">About Us</a>
+                <Link to="/aboutus" className="text-gray-500 hover:text-empowerPurple">About Us</Link>
               </li>
               <li>
                 <a href="#" className="text-gray-500 hover:text-empowerPurple">Careers</a>

@@ -13,6 +13,7 @@ import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy"
+import AboutUs from "./pages/AboutUs";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/privacypolicy" element={<PrivacyPolicy />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/aboutus" element={<AboutUs />} />
                 <Route path="/onboarding" element={
                   <ProtectedRoute>
                     <Onboarding />
