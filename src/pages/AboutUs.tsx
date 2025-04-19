@@ -9,8 +9,4 @@ const AboutUs: React.FC = () => {
   );
 };
 
-<<<<<<< Updated upstream
 export default AboutUs;
-=======
-export default AboutUs;
->>>>>>> Stashed changes
