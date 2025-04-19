@@ -1,27 +1,7 @@
 
-<<<<<<< Updated upstream
-//import React from 'react';
-
-//const PrivacyPolicy: React.FC = () => {
-//  return (
-//    <div>
-//      HELLO WORLD
-//    .
-//    </div>
- // );
-//};
-
-//export default PrivacyPolicy;'''
-
-//import React from 'react';
 import { Link } from "react-router-dom";
 import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User } from "lucide-react"
 
-=======
-import { Link } from "react-router-dom";
-import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User } from "lucide-react"
-
->>>>>>> Stashed changes
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-[#f8f8fe]">
