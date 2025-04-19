@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import ReactMarkdown from 'react-markdown'; // Import react-markdown
+import ReactMarkdown from 'react-markdown';
 
-// --- IMPORTANT: Replace with your actual API Key ---
-const API_KEY = 'AIzaSyCmBlJqjv_J39cKoyfNIGmlch-4MhniXdc'; // Replace with your actual key
+// --- IMPORTANT: Use Environment Variable for API Key ---
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 // ----------------------------------------------------
 
 // --- Configuration ---
@@ -26,10 +26,8 @@ const SAFETY_SETTINGS = [
 ];
 
 // --- System Instruction ---
-// Added instruction to use Markdown
 const SYSTEM_INSTRUCTION = `You are the EmpowerLearn AI Helper. Your purpose is to assist users, primarily women, with questions about personalized educational roadmaps, learning resources, time management for studies, goal setting, available courses, community features, and general advice related to education and career development through the EmpowerLearn platform. Be supportive, encouraging, and focus on providing helpful information related to these topics. Format your answers using Markdown where appropriate (e.g., use lists, bold text, paragraphs). If asked about unrelated topics, gently guide the conversation back to education and the EmpowerLearn platform.`;
 // --- End Configuration ---
-
 
 interface Message {
   role: 'user' | 'model';
@@ -45,8 +43,9 @@ const Chatbot: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({
+  // Initialize genAI and model conditionally based on API_KEY availability
+  const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
+  const model = genAI ? genAI.getGenerativeModel({
       model: MODEL_NAME,
       generationConfig: GENERATION_CONFIG,
       safetySettings: SAFETY_SETTINGS,
@@ -54,20 +53,31 @@ const Chatbot: React.FC = () => {
           role: "system",
           parts: [{ text: SYSTEM_INSTRUCTION }],
       }
-  });
+  }) : null;
 
   useEffect(() => {
+    // Display error if API key is missing on component mount
+    if (!API_KEY) {
+        setError("Configuration error: Gemini API Key is missing. Please set the VITE_GEMINI_API_KEY environment variable.");
+    }
+    // Scroll logic
     if (scrollAreaRef.current) {
       const viewport = scrollAreaRef.current.querySelector<HTMLDivElement>('[data-radix-scroll-area-viewport]');
       if (viewport) {
           viewport.scrollTop = viewport.scrollHeight;
       }
     }
-  }, [messages]);
+  }, [messages]); // Rerun scroll logic when messages change
 
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    // Check if model is initialized and input is valid
+    if (!model || !input.trim() || isLoading) {
+        if (!model) {
+            setError("Chatbot is not configured correctly. API Key might be missing.");
+        }
+        return;
+    }
 
     const userMessage: Message = { role: 'user', text: input };
     const currentInput = input;
@@ -77,7 +87,7 @@ const Chatbot: React.FC = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-    setError(null);
+    setError(null); // Clear previous errors on new send
 
     try {
        const historyForAPI: Content[] = messagesForHistory
@@ -102,6 +112,10 @@ const Chatbot: React.FC = () => {
           errorMessage += ` ${err.message}`;
       } else if (typeof err === 'string') {
           errorMessage += ` ${err}`;
+      }
+      // Check for specific API key errors (example)
+      if (err.message?.includes('API key not valid')) {
+          errorMessage = "Error: Invalid Gemini API Key provided.";
       }
       setError(errorMessage);
     } finally {
@@ -128,13 +142,10 @@ const Chatbot: React.FC = () => {
         <ScrollArea className="h-[400px] w-full pr-4 mb-4 border rounded-md p-2 bg-white" ref={scrollAreaRef}>
           {messages.map((msg, index) => (
             <div key={index} className={`mb-2 p-2 rounded-lg flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                 {/* Apply prose classes to the container div when rendering markdown */}
                  <div className={`text-sm max-w-[85%] px-3 py-1.5 rounded-lg ${msg.role === 'user' ? 'bg-empowerPurple text-white' : 'bg-gray-100 text-gray-800'} ${msg.role === 'model' ? 'prose prose-sm max-w-none' : ''}`}>
                     {msg.role === 'model' ? (
                         <ReactMarkdown
-                           // Remove className from here
                            components={{
-                                // Keep these component customizations
                                 p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />, 
                                 ol: ({node, ...props}) => <ol className="list-decimal list-inside ml-4 mb-2" {...props} />,
                                 ul: ({node, ...props}) => <ul className="list-disc list-inside ml-4 mb-2" {...props} />,
@@ -145,7 +156,7 @@ const Chatbot: React.FC = () => {
                             {msg.text}
                         </ReactMarkdown>
                     ) : (
-                        msg.text // User messages as plain text
+                        msg.text
                     )}
                  </div>
             </div>
@@ -156,7 +167,8 @@ const Chatbot: React.FC = () => {
                 <div className="ml-2 h-4 w-4 border-t-2 border-b-2 border-empowerPurple rounded-full animate-spin"></div>
             </div>
            )}
-           {error && (
+           {/* Display configuration or API errors */}
+           {error && !isLoading && (
             <div className="p-2 text-red-600 text-sm bg-red-50 rounded-md">
                 <p>{error}</p>
             </div>
@@ -166,16 +178,16 @@ const Chatbot: React.FC = () => {
       <CardFooter className="flex items-center space-x-2">
         <Input
           type="text"
-          placeholder="Ask about learning paths..."
+          placeholder={!API_KEY ? "Chat unavailable: API Key missing" : "Ask about learning paths..."}
           value={input}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
-          disabled={isLoading}
+          disabled={isLoading || !model} // Disable input if model isn't initialized
           className="flex-1"
         />
         <Button
            onClick={handleSend}
-           disabled={isLoading || !input.trim()}
+           disabled={isLoading || !input.trim() || !model} // Disable button if model isn't initialized
            className="bg-empowerPurple hover:bg-empowerPurple-dark px-4 py-2"
          >
           {isLoading ? (
