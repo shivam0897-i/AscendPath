@@ -86,7 +86,7 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */ /* Removed this line */
   }
 }
 

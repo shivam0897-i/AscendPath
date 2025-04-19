@@ -12,8 +12,9 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import PrivacyPolicy from "./pages/PrivacyPolicy"
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./pages/AboutUs";
+import ScrollToTop from "./components/ScrollToTop"; // Import ScrollToTop
 
 // Create a client
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTop /> {/* Add ScrollToTop here */}
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/privacypolicy" element={<PrivacyPolicy />} />
