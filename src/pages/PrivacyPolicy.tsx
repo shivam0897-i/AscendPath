@@ -1,4 +1,5 @@
 
+<<<<<<< Updated upstream
 //import React from 'react';
 
 //const PrivacyPolicy: React.FC = () => {
@@ -16,6 +17,11 @@
 import { Link } from "react-router-dom";
 import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User } from "lucide-react"
 
+=======
+import { Link } from "react-router-dom";
+import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User } from "lucide-react"
+
+>>>>>>> Stashed changes
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-[#f8f8fe]">
