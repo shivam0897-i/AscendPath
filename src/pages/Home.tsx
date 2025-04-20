@@ -30,7 +30,7 @@ const Home = () => {
     {
       icon: <Users className="h-6 w-6 text-empowerPurple" />,
       title: "Community Support",
-      description: "Connect with like-minded women on similar paths, share experiences and grow together."
+      description: "Connect with like-minded women and students on similar paths, share experiences and grow together."
     },
     {
       icon: <Star className="h-6 w-6 text-empowerPurple" />,
@@ -78,7 +78,7 @@ const Home = () => {
               Chart Your Own <span className="gradient-text">Educational Journey</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              A personalized learning platform designed to empower women with custom educational roadmaps tailored to your goals, skills, and schedule.
+              A personalized learning platform designed to empower women and students with custom educational roadmaps tailored to your goals, skills, and schedule.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button asChild size="lg" className="bg-empowerPurple hover:bg-empowerPurple-dark">
@@ -177,7 +177,7 @@ const Home = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Success Stories</h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Hear from women who have transformed their educational journey with our platform
+              Hear from women and students who have transformed their educational journey with our platform
             </p>
           </div>
 

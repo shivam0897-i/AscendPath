@@ -23,11 +23,11 @@ export default function AboutUs() {
           <Link to="/community" className="text-gray-700 hover:text-[#8B7CFF]">
             Community
           </Link>
-          <Link to="/login" className="text-gray-700 hover:text-[#8B7CFF]">
+          <Link to="/onboarding" className="text-gray-700 hover:text-[#8B7CFF]">
             Log in
           </Link>
           <Link
-            to="/signup"
+            to="/onboarding"
             className="bg-[#8B7CFF] text-white px-4 py-2 rounded-md hover:bg-[#7A6BEE] transition-colors"
           >
             Sign up
@@ -61,7 +61,7 @@ export default function AboutUs() {
             <span className="text-[#8B7CFF]">EmpowerPath</span>
           </h1>
           <p className="text-gray-600 text-lg mb-8">
-            Empowering women through personalized education and community support
+            Empowering women and students through personalized education and community support
           </p>
         </div>
       </section>
@@ -84,16 +84,16 @@ export default function AboutUs() {
           <div>
             <h2 className="text-3xl font-bold mb-6">Our Story</h2>
             <p className="text-gray-600 mb-4">
-              EmpowerPath was founded in 2020 with a clear mission: to bridge the gender gap in education and career
+              EmpowerPath was founded in 2025 with a clear mission: to bridge the gender gap in education and career
               advancement through personalized learning experiences.
             </p>
             <p className="text-gray-600 mb-4">
-              What began as a small initiative to help women navigate their educational journeys has grown into a
+              What began as a small initiative to help women and students navigate their educational journeys has grown into a
               comprehensive platform that serves thousands of learners worldwide.
             </p>
             <p className="text-gray-600">
               Our team of educators, technologists, and mentors work together to create tailored educational roadmaps
-              that consider each individual's goals, skills, and schedule, ensuring that every woman has the opportunity
+              that consider each individual's goals, skills, and schedule, ensuring that every woman or student has the opportunity
               to chart her own path to success.
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function AboutUs() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
             <p className="text-gray-600 text-lg">
-              To empower women through accessible, personalized education that adapts to their unique needs and
+              To empower women and student through accessible, personalized education that adapts to their unique needs and
               circumstances.
             </p>
           </div>
@@ -156,7 +156,7 @@ export default function AboutUs() {
               </div>
               <h3 className="text-xl font-semibold mb-4 text-center">Community</h3>
               <p className="text-gray-600 text-center">
-                We foster a supportive network where women can connect, collaborate, and grow together.
+                We foster a supportive network where women and students can connect, collaborate, and grow together.
               </p>
             </div>
 
@@ -233,7 +233,7 @@ export default function AboutUs() {
               <div>
                 <h3 className="text-xl font-semibold mb-3">Inclusivity</h3>
                 <p className="text-gray-600">
-                  We believe in creating educational opportunities that are accessible to women from all backgrounds,
+                  We believe in creating educational opportunities that are accessible to women and students from all backgrounds,
                   regardless of their circumstances.
                 </p>
               </div>
@@ -246,7 +246,7 @@ export default function AboutUs() {
               <div>
                 <h3 className="text-xl font-semibold mb-3">Empowerment</h3>
                 <p className="text-gray-600">
-                  We empower women to take control of their educational journey and develop the confidence to pursue
+                  We empower women and students to take control of their educational journey and develop the confidence to pursue
                   their goals.
                 </p>
               </div>
@@ -259,7 +259,7 @@ export default function AboutUs() {
               <div>
                 <h3 className="text-xl font-semibold mb-3">Adaptability</h3>
                 <p className="text-gray-600">
-                  We recognize that each woman's journey is unique, and we adapt our approach to meet individual needs
+                  We recognize that each woman or students journey is unique, and we adapt our approach to meet individual needs
                   and circumstances.
                 </p>
               </div>
@@ -286,7 +286,7 @@ export default function AboutUs() {
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-6">Join Our Community</h2>
           <p className="text-gray-600 text-lg mb-8">
-            Ready to chart your own educational journey? Join thousands of women who are transforming their lives
+            Ready to chart your own educational journey? Join thousands of women and students who are transforming their lives
             through personalized learning.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -314,20 +314,17 @@ export default function AboutUs() {
               <Link to="/" className="text-xl font-semibold text-[#8B7CFF]">
                 EmpowerPath
               </Link>
-              <p className="text-gray-600 mt-2">Empowering women through education</p>
+              <p className="text-gray-600 mt-2">Empowering women and student through education</p>
             </div>
             <div className="flex gap-6">
-              <Link to="/about" className="text-gray-600 hover:text-[#8B7CFF]">
+              <Link to="/aboutus" className="text-gray-600 hover:text-[#8B7CFF]">
                 About
               </Link>
               <Link to="/contact" className="text-gray-600 hover:text-[#8B7CFF]">
                 Contact
               </Link>
-              <Link to="/privacy" className="text-gray-600 hover:text-[#8B7CFF]">
+              <Link to="/privacypolicy" className="text-gray-600 hover:text-[#8B7CFF]">
                 Privacy
-              </Link>
-              <Link to="/terms" className="text-gray-600 hover:text-[#8B7CFF]">
-                Terms
               </Link>
             </div>
           </div>

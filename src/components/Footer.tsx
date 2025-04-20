@@ -84,9 +84,9 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-500">© 2023 EmpowerPath. All rights reserved.</p>
+          <p className="text-sm text-gray-500">© 2025 EmpowerPath. All rights reserved.</p>
           <p className="text-sm text-gray-500 mt-2 md:mt-0 flex items-center">
-            Made with <Heart size={14} className="mx-1 text-empowerPurple" /> for women's education
+            Made with <Heart size={14} className="mx-1 text-empowerPurple" /> for women and students education
           </p>
         </div>
       </div>

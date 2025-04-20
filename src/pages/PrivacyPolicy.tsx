@@ -26,13 +26,7 @@ export default function PrivacyPolicy() {
             <Link to="/community" className="text-sm font-medium hover:text-[#8c7bff] transition-colors">
               Community
             </Link>
-            <Link
-              to="/profile"
-              className="ml-4 w-8 h-8 rounded-full bg-[#f0eeff] flex items-center justify-center text-[#8c7bff]"
-            >
-              <span className="sr-only">Profile</span>
-              <User size={18} />
-            </Link>
+            
           </nav>
         </div>
       </header>
