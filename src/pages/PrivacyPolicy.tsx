@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User } from "lucide-react"
+import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User,Heart } from "lucide-react"
 
 export default function PrivacyPolicy() {
   return (
@@ -231,22 +231,13 @@ export default function PrivacyPolicy() {
 
       {/* Footer */}
       <footer className="border-t bg-white py-8 mt-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-[#8c7bff]">EmpowerPath</span>
-            </div>
-            <div className="text-sm text-gray-500">© {new Date().getFullYear()} EmpowerPath. All rights reserved.</div>
-            <div className="flex gap-6">
-              <Link to="#" className="text-sm text-gray-500 hover:text-[#8c7bff] transition-colors">
-                Terms
-              </Link>
-
-              <Link to="/contact" className="text-sm text-gray-500 hover:text-[#8c7bff] transition-colors">
-                Contact
-              </Link>
-            </div>
-          </div>
+        <div className="container mx-auto px-4"> 
+          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-gray-500">© 2025 EmpowerPath. All rights reserved.</p>
+          <p className="text-sm text-gray-500 mt-2 md:mt-0 flex items-center">
+            Made with <Heart size={14} className="mx-1 text-empowerPurple" /> for women and students education
+          </p>
+        </div>
         </div>
       </footer>
     </div>

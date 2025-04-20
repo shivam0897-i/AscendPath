@@ -1,6 +1,7 @@
 
 import React from "react"
 import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
 
 export default function AboutUs() {
   return (
@@ -306,31 +307,15 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#F9F8FF] py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <Link to="/" className="text-xl font-semibold text-[#8B7CFF]">
-                EmpowerPath
-              </Link>
-              <p className="text-gray-600 mt-2">Empowering women and student through education</p>
-            </div>
-            <div className="flex gap-6">
-              <Link to="/aboutus" className="text-gray-600 hover:text-[#8B7CFF]">
-                About
-              </Link>
-              <Link to="/contact" className="text-gray-600 hover:text-[#8B7CFF]">
-                Contact
-              </Link>
-              <Link to="/privacypolicy" className="text-gray-600 hover:text-[#8B7CFF]">
-                Privacy
-              </Link>
-            </div>
-          </div>
-          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500">
-            <p>© {new Date().getFullYear()} EmpowerPath. All rights reserved.</p>
-          </div>
+{/* Footer */}
+<footer className="border-t bg-white py-8 mt-12">
+        <div className="container mx-auto px-4"> 
+          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-gray-500">© 2025 EmpowerPath. All rights reserved.</p>
+          <p className="text-sm text-gray-500 mt-2 md:mt-0 flex items-center">
+            Made with <Heart size={14} className="mx-1 text-empowerPurple" /> for women and students education
+          </p>
+        </div>
         </div>
       </footer>
     </div>
