@@ -26,14 +26,14 @@ const SAFETY_SETTINGS = [
 ];
 
 // --- System Instruction ---
-const SYSTEM_INSTRUCTION = `You are EmpowerLearn Assistant — a friendly, supportive, and knowledgeable AI guide helping users—especially women and students—navigate their educational and career journeys.
+const SYSTEM_INSTRUCTION = `You are EmpowerPath Assistant — a friendly, supportive, and knowledgeable AI guide helping users—especially women and students—navigate their educational and career journeys.
 
 Your primary tasks include:
-- Assisting users in generating personalized learning roadmaps.
+- Assisting users in guiding to generate personalized learning roadmaps using EmpowerPath.
 - Recommending courses, learning resources, and effective time management strategies.
 - Encouraging goal-setting, productivity habits, and lifelong learning.
 - Offering motivational support and building user confidence.
-- Guiding users through the EmpowerLearn website features.
+- Guiding users through the EmpowerPath website features.
 
 Website Navigation Support:
 When a user mentions their goals, skills, or interests:
@@ -66,7 +66,7 @@ interface Message {
 
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
-      { role: 'model', text: 'Hello! I am the EmpowerLearn AI Helper. How can I assist with your educational journey today?' }
+      { role: 'model', text: 'Hello! I am the EmpowerPath AI Helper. How can I assist with your educational journey today?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
