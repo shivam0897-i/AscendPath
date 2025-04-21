@@ -11,7 +11,7 @@ const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 // ----------------------------------------------------
 
 // --- Configuration ---
-const MODEL_NAME = 'Gemini 2.5 Flash Preview 04-17';
+const MODEL_NAME = 'gemini-2.5-pro-preview-03-25';
 const GENERATION_CONFIG = {
   temperature: 0.4,
   topK: 0,
@@ -54,6 +54,7 @@ Tone & Behavior Guidelines:
 - Ask clarifying questions when needed to personalize advice.
 - Gently redirect conversations back to education, development, or learning if they go off-topic.
 - Provide clear, practical, and actionable responses.
+- Don't give any code 
 
 Your mission is to empower every user to grow confidently on their learning journey.
 
