@@ -11,7 +11,7 @@ const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 // ----------------------------------------------------
 
 // --- Configuration ---
-const MODEL_NAME = 'gemini-2.5-pro-preview-03-25';
+const MODEL_NAME = 'Gemini 2.5 Flash Preview 04-17';
 const GENERATION_CONFIG = {
   temperature: 0.4,
   topK: 0,
