@@ -218,11 +218,14 @@ const Home = () => {
       {!isChatOpen && (
         <Button
           onClick={toggleChat}
-          // Changed p-4 to p-5 to make the button slightly larger
-          className="fixed bottom-6 right-6 z-50 rounded-full p-5 shadow-lg bg-empowerPurple hover:bg-empowerPurple-dark"
+          // Changed p-5 to p-6 to make the button slightly larger
+          className="fixed bottom-6 right-6 z-50 rounded-full p-6 shadow-lg bg-empowerPurple hover:bg-empowerPurple-dark"
           aria-label="Open Chat"
         >
-          <MessageSquare className="h-6 w-6 text-white" />
+          <div className="flex items-center">
+            <MessageSquare className="h-6 w-6 text-white" />
+            <span className="text-white ml-2">Edura</span>
+          </div>
         </Button>
       )}
 
