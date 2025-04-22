@@ -198,7 +198,7 @@ export default function AboutUs() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3 ,4].map((i) => (
             <div key={i} className="text-center">
               <div className="relative w-40 h-40 mx-auto mb-6">
                 <div className="absolute inset-0 rounded-full bg-[#F5F3FF]"></div>

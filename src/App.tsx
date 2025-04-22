@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./pages/AboutUs";
 import ScrollToTop from "./components/ScrollToTop"; // Import ScrollToTop
+import Community from "./pages/Community"
 
 // Create a client
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => {
                 <Route path="/privacypolicy" element={<PrivacyPolicy />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/aboutus" element={<AboutUs />} />
+                <Route path="/community" element={<Community />} />
                 <Route path="/onboarding" element={
                   <ProtectedRoute>
                     <Onboarding />

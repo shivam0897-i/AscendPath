@@ -114,7 +114,7 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
         <Link to="#" className="hover:text-empowerPurple">
           Resources
         </Link>
-        <Link to="#" className="hover:text-empowerPurple">
+        <Link to="/community" className="hover:text-empowerPurple">
           Community
         </Link>
       </>
