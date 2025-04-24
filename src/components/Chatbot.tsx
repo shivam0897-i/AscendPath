@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Import Avatar components
+import { Bot, User, SendHorizonal } from 'lucide-react'; // Import icons
 import ReactMarkdown from 'react-markdown';
+import { cn } from '@/lib/utils'; // Assuming you have a utility for class names
 
 // --- IMPORTANT: Use Environment Variable for API Key ---
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -75,6 +78,7 @@ const Chatbot: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null); // Ref for the viewport
 
   // Initialize genAI and model conditionally based on API_KEY availability
   const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
@@ -88,18 +92,20 @@ const Chatbot: React.FC = () => {
       }
   }) : null;
 
+  // Function to scroll to bottom
+  const scrollToBottom = () => {
+      if (viewportRef.current) {
+          viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
+      }
+  };
+
   useEffect(() => {
     // Display error if API key is missing on component mount
     if (!API_KEY) {
         setError("Configuration error: Gemini API Key is missing. Please set the VITE_GEMINI_API_KEY environment variable.");
     }
-    // Scroll logic
-    if (scrollAreaRef.current) {
-      const viewport = scrollAreaRef.current.querySelector<HTMLDivElement>('[data-radix-scroll-area-viewport]');
-      if (viewport) {
-          viewport.scrollTop = viewport.scrollHeight;
-      }
-    }
+    // Scroll to bottom when messages change
+    scrollToBottom();
   }, [messages]); // Rerun scroll logic when messages change
 
 
@@ -115,21 +121,25 @@ const Chatbot: React.FC = () => {
     const userMessage: Message = { role: 'user', text: input };
     const currentInput = input;
 
-    const messagesForHistory = [...messages];
+    // Prepare history excluding the initial greeting for the API call
+    const historyForAPI: Content[] = messages
+        .filter((msg, index) => !(index === 0 && msg.role === 'model')) // Exclude initial greeting
+        .map(msg => ({
+             role: msg.role,
+             parts: [{ text: msg.text }],
+        }));
 
+    // Optimistically update UI
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
     setError(null); // Clear previous errors on new send
 
-    try {
-       const historyForAPI: Content[] = messagesForHistory
-         .filter((msg, index) => !(index === 0 && msg.role === 'model'))
-         .map(msg => ({
-           role: msg.role,
-           parts: [{ text: msg.text }],
-         }));
+    // Ensure scroll happens after state update
+    requestAnimationFrame(scrollToBottom);
 
+
+    try {
       const chat = model.startChat({
          history: historyForAPI,
       });
@@ -151,8 +161,12 @@ const Chatbot: React.FC = () => {
           errorMessage = "Error: Invalid Gemini API Key provided.";
       }
       setError(errorMessage);
+      // If error, remove the optimistic user message (optional)
+      // setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
+      // Ensure scroll happens after state update
+      requestAnimationFrame(scrollToBottom);
     }
   };
 
@@ -161,72 +175,124 @@ const Chatbot: React.FC = () => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !isLoading) {
+    if (e.key === 'Enter' && !isLoading && input.trim()) { // Keep isLoading check here, also check if input is not empty
       handleSend();
     }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white">
-      <CardHeader>
-        <CardTitle>EmpowerPath Helper</CardTitle>
+    <Card className="w-full max-w-md mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between p-4 border-b bg-gray-50">
+        <div className="flex items-center space-x-2">
+            <Bot className="h-6 w-6 text-empowerPurple" />
+            <CardTitle className="text-lg font-semibold text-gray-800">EmpowerPath Helper</CardTitle>
+        </div>
+         {/* Can add status indicators or options here later */}
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[400px] w-full pr-4 mb-4 border rounded-md p-2 bg-white" ref={scrollAreaRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={`mb-2 p-2 rounded-lg flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                 <div className={`text-sm max-w-[85%] px-3 py-1.5 rounded-lg ${msg.role === 'user' ? 'bg-empowerPurple text-white' : 'bg-gray-100 text-gray-800'} ${msg.role === 'model' ? 'prose prose-sm max-w-none' : ''}`}>
-                    {msg.role === 'model' ? (
-                        <ReactMarkdown
-                           components={{
-                                p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />, 
-                                ol: ({node, ...props}) => <ol className="list-decimal list-inside ml-4 mb-2" {...props} />,
-                                ul: ({node, ...props}) => <ul className="list-disc list-inside ml-4 mb-2" {...props} />,
-                                li: ({node, ...props}) => <li className="mb-1" {...props} />, 
-                                strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
-                            }}
-                        >
-                            {msg.text}
-                        </ReactMarkdown>
-                    ) : (
-                        msg.text
+      <CardContent className="p-0">
+        {/* Assign the ref to the viewport div */}
+        <ScrollArea className="h-[450px] w-full" ref={scrollAreaRef}>
+           <div className="p-4 space-y-4 bg-gray-50" ref={viewportRef} data-radix-scroll-area-viewport> {/* Added viewport ref and data attribute */} 
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "flex items-start gap-3",
+                    msg.role === 'user' ? 'justify-end' : 'justify-start'
+                  )}
+                >
+                  {msg.role === 'model' && (
+                    <Avatar className="h-8 w-8 border bg-white">
+                      <AvatarFallback className="bg-empowerPurple text-white">
+                        <Bot size={18} />
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                  <div
+                    className={cn(
+                      "text-sm max-w-[85%] px-3 py-2 rounded-xl shadow-sm", // Increased rounding
+                      msg.role === 'user'
+                        ? 'bg-empowerPurple text-white'
+                        : 'bg-white text-gray-800',
+                      msg.role === 'model' ? 'prose prose-sm max-w-none' : ''
                     )}
+                  >
+                    {msg.role === 'model' ? (
+                      <ReactMarkdown
+                        components={{
+                          p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                          ol: ({ node, ...props }) => <ol className="list-decimal list-inside ml-4 mb-2" {...props} />,
+                          ul: ({ node, ...props }) => <ul className="list-disc list-inside ml-4 mb-2" {...props} />,
+                          li: ({ node, ...props }) => <li className="mb-1" {...props} />, 
+                          strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+                          a: ({ node, ...props }) => <a className="text-blue-600 hover:underline" {...props} />, // Style links
+                        }}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+                    ) : (
+                      msg.text // Render user text directly
+                    )}
+                  </div>
+                   {msg.role === 'user' && (
+                     <Avatar className="h-8 w-8 border bg-white">
+                       <AvatarFallback className="bg-gray-200 text-gray-600">
+                         <User size={18} />
+                       </AvatarFallback>
+                     </Avatar>
+                   )}
+                </div>
+              ))}
+               {isLoading && (
+                 <div className="flex justify-start items-center gap-3 p-2">
+                    <Avatar className="h-8 w-8 border bg-white">
+                      <AvatarFallback className="bg-empowerPurple text-white">
+                        <Bot size={18} />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-xl shadow-sm">
+                        <p className="text-sm text-gray-500">Thinking</p>
+                        {/* Simple three dots animation */}
+                        <div className="flex space-x-1">
+                            <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                            <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                            <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                        </div>
+                    </div>
                  </div>
+               )}
+               {/* Display configuration or API errors */}
+               {error && !isLoading && (
+                 <div className="p-3 text-red-700 text-sm bg-red-100 rounded-lg shadow-sm border border-red-200">
+                    <p><span className="font-semibold">Error:</span> {error}</p>
+                 </div>
+               )}
             </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-center items-center p-2">
-                <p className="text-sm text-gray-500">Thinking...</p>
-                <div className="ml-2 h-4 w-4 border-t-2 border-b-2 border-empowerPurple rounded-full animate-spin"></div>
-            </div>
-           )}
-           {/* Display configuration or API errors */}
-           {error && !isLoading && (
-            <div className="p-2 text-red-600 text-sm bg-red-50 rounded-md">
-                <p>{error}</p>
-            </div>
-           )}
         </ScrollArea>
       </CardContent>
-      <CardFooter className="flex items-center space-x-2">
-        <Input
-          type="text"
-          placeholder={!API_KEY ? "Chat unavailable: API Key missing" : "Ask about learning paths..."}
-          value={input}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          disabled={isLoading || !model} // Disable input if model isn't initialized
-          className="flex-1"
-        />
-        <Button
-           onClick={handleSend}
-           disabled={isLoading || !input.trim() || !model} // Disable button if model isn't initialized
-           className="bg-empowerPurple hover:bg-empowerPurple-dark px-4 py-2"
-         >
-          {isLoading ? (
-             <div className="h-4 w-4 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
-          ) : 'Send'}
-        </Button>
+      <CardFooter className="p-4 border-t bg-gray-50">
+        <div className="flex items-center space-x-2 w-full">
+          <Input
+            type="text"
+            placeholder={!API_KEY ? "Chat unavailable: API Key missing" : "Ask about learning paths..."}
+            value={input}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            disabled={!model} // Input is no longer disabled while loading
+            className="flex-1 h-10 rounded-lg border-gray-300 focus:ring-empowerPurple focus:border-empowerPurple"
+            aria-label="Chat input"
+          />
+          <Button
+             onClick={handleSend}
+             disabled={isLoading || !input.trim() || !model} // Button remains disabled while loading or if input is empty
+             className="bg-empowerPurple hover:bg-empowerPurple/90 text-white rounded-lg h-10 w-10 p-0 flex items-center justify-center" // Make button square
+             aria-label="Send message"
+           >
+            {isLoading ? (
+               <div className="h-4 w-4 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+            ) : <SendHorizonal size={18} />}
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
