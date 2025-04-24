@@ -47,7 +47,7 @@ const HeroImage: React.FC<HeroImageProps> = ({ onClick }) => {
     <div 
       className="relative w-full h-[400px] md:h-[500px] cursor-pointer" // Added cursor-pointer for visual feedback
       ref={containerRef} 
-      onClick={onClick} // Attach the onClick handler here
+      //  onClick={onClick} // Attach the onClick handler here
     >
       {/* Main character */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

@@ -1,38 +1,47 @@
-
 import { Link } from "react-router-dom";
-import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, User,Heart } from "lucide-react"
+import { Shield, Lock, Eye, Cookie, Users, Clock, RefreshCw, Mail, Heart } from "lucide-react";
+import Navbar from "@/components/Navbar"; 
+import Footer from "@/components/Footer"; // Import Footer
+import { motion } from "framer-motion"; // Import motion
 
 export default function PrivacyPolicy() {
+  
+  // Animation variants for Fade + Slide Up/Down effect
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      y: 20 // Start slightly below and transparent
+    },
+    in: {
+      opacity: 1,
+      y: 0 // Fade in and slide to final position
+    },
+    out: {
+      opacity: 0,
+      y: -20 // Fade out and slide up slightly
+    }
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "easeInOut", // Smooth easing
+    duration: 0.4
+  };
+
   return (
-    <div className="min-h-screen bg-[#f8f8fe]">
-      {/* Header */}
-      <header className="border-b bg-white sticky top-0 z-50">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="font-bold text-xl text-[#8c7bff]">
-              EmpowerPath
-            </Link>
-          </div>
-          <nav className="flex items-center gap-6">
-            <Link to="/" className="text-sm font-medium hover:text-[#8c7bff] transition-colors">
-              Home
-            </Link>
-            <Link to="/dashboard" className="text-sm font-medium hover:text-[#8c7bff] transition-colors">
-              Dashboard
-            </Link>
-            <Link to="/resources" className="text-sm font-medium hover:text-[#8c7bff] transition-colors">
-              Resources
-            </Link>
-            <Link to="/community" className="text-sm font-medium hover:text-[#8c7bff] transition-colors">
-              Community
-            </Link>
-            
-          </nav>
-        </div>
-      </header>
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+      className="min-h-screen bg-[#f8f8fe] flex flex-col"
+    >
+      <Navbar />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
+      <main className="container mx-auto px-4 py-8 max-w-5xl flex-grow">
+        {/* KEEP EXISTING CONTENT */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="text-[#8c7bff]">Privacy</span> <span className="text-[#4a9fff]">Policy</span>
@@ -229,17 +238,7 @@ export default function PrivacyPolicy() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-8 mt-12">
-        <div className="container mx-auto px-4"> 
-          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-500">© 2025 EmpowerPath. All rights reserved.</p>
-          <p className="text-sm text-gray-500 mt-2 md:mt-0 flex items-center">
-            Made with <Heart size={14} className="mx-1 text-empowerPurple" /> for women and students education
-          </p>
-        </div>
-        </div>
-      </footer>
-    </div>
+      <Footer />
+    </motion.div>
   )
 }
