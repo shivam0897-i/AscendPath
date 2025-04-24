@@ -75,7 +75,16 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             description: error.message || "Please check your credentials and try again",
             variant: "destructive",
           });
-          return;
+        } else {
+          // Trigger toast on successful login
+          toast({
+            title: "Welcome back!",
+            description: "You have successfully logged in.",
+            duration: 1000,
+          });
+          if (onSuccess) {
+            onSuccess();
+          }
         }
       } else {
         // It's signup
@@ -92,13 +101,16 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             description: error.message || "There was an error creating your account",
             variant: "destructive",
           });
-          return;
+        } else {
+          // No welcome toast on sign up here, handled by AuthContext
+          if (onSuccess) {
+            onSuccess();
+          }
         }
       }
       
-      if (onSuccess) {
-        onSuccess();
-      }
+      // Removed onSuccess call from here as it's handled within login/signup blocks
+
     } catch (error) {
       toast({
         title: "An error occurred",

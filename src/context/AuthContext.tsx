@@ -28,16 +28,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (event === 'SIGNED_IN') {
-          // Use setTimeout to prevent potential deadlocks
-          setTimeout(() => {
-            toast({
-              title: "Welcome back!",
-              description: "You have successfully logged in.",
-              duration: 1000, // Set duration to 1 second
-            });
-          }, 0);
-        } else if (event === 'SIGNED_OUT') {
+        // Removed SIGNED_IN toast notification logic
+        // if (event === 'SIGNED_IN') { ... }
+        
+        if (event === 'SIGNED_OUT') {
           // Use setTimeout to prevent potential deadlocks
           setTimeout(() => {
             toast({
@@ -76,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       
       if (!error) {
+        // Keep account created notification here
         toast({
           title: "Account created",
           description: "Please check your email to verify your account.",
@@ -96,7 +91,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         password,
       });
       
-      return { error };
+      // Removed notification from here, will be added in Auth.tsx
+      return { error }; 
     } catch (error) {
       console.error("Error during sign in:", error);
       return { error };

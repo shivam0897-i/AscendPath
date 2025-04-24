@@ -56,7 +56,7 @@ const App = () => {
         <AuthProvider>
           <TooltipProvider>
             <Toaster />
-            <Sonner />
+            <Sonner position="bottom-left" /> {/* Set position here */}
             <BrowserRouter>
               <ScrollToTop />
               <AnimatedRoutes /> {/* Use the new component */}
