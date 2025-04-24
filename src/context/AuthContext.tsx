@@ -34,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             toast({
               title: "Welcome back!",
               description: "You have successfully logged in.",
+              duration: 1000, // Set duration to 1 second
             });
           }, 0);
         } else if (event === 'SIGNED_OUT') {
@@ -42,6 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             toast({
               title: "Logged out",
               description: "You have been logged out successfully.",
+              duration: 1000,
             });
           }, 0);
         }
