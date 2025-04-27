@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer";
 import {
   Card,
   CardContent,
@@ -498,8 +499,10 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
-  );
+    
+  ); 
 };
 
 export default Dashboard;
