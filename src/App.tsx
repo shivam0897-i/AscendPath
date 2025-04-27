@@ -1,7 +1,5 @@
-// src/App.tsx
 import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster as Sonner } from "@/components/ui/sonner"; // Import Sonner for toast
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"; // Import useLocation
@@ -17,6 +15,7 @@ import AboutUs from "./pages/AboutUs";
 import ScrollToTop from "./components/ScrollToTop";
 import Community from "./pages/Community";
 import { AnimatePresence } from "framer-motion"; // Import AnimatePresence
+
 
 // Create a client
 const queryClient = new QueryClient();
@@ -55,8 +54,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider>
-            <Toaster />
-            <Sonner position="bottom-left" /> {/* Set position here */}
+            <Sonner position="bottom-left" /> {/* Use Sonner for toast */}
             <BrowserRouter>
               <ScrollToTop />
               <AnimatedRoutes /> {/* Use the new component */}
