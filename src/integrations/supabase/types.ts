@@ -96,6 +96,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          challenges: any
           background: string | null
           created_at: string
           email: string | null
