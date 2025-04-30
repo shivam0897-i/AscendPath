@@ -1,40 +1,42 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
-async function generateRoadmapWithGemini(profile) {
-  console.log(`Generating roadmap for user: ${profile.id}`);
-  const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-  if (!GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY environment variable is not set.");
+import axios from 'https://cdn.skypack.dev/axios';
+
+async function checkIfUrlWorks(url) {
+  try {
+    const response = await axios.head(url, { timeout: 5000 });
+    return response.status >= 200 && response.status < 400;
+  } catch {
+    return false;
   }
-  // Use a suitable Gemini model (e.g., gemini-1.5-flash-latest)
-  const model = "gemini-1.5-flash-latest";
+}
+
+async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
+  const model = "gemini-2.0-flash";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
-  // Construct the detailed prompt for Gemini
+  
   const prompt = `
-    You are an expert learning path designer.
-    Create a detailed, personalized learning roadmap for a user with the following profile:
-    - Name: ${profile.first_name || 'User'}
-    - Goals: ${profile.goals?.join('; ') || 'Not specified'}
-    - Field/Current Skills: ${profile.skills?.join('; ') || 'Not specified'}
-    - Background: ${profile.background || 'Not specified'}
-    - Time Available: ${profile.time_available || 'Not specified'}
-    - Potential Challenges: ${profile.challenges || 'Not specified'}
+A learning resource was found to be broken.
 
-    Please structure the roadmap in JSON format with the following exact hierarchy and keys:
-    - A root object with a string 'title' (e.g., "Personalized Roadmap for [Name]") and a string 'description'.
-    - A 'phases' array. Each phase object must have a string 'title', a string 'description', and an integer 'position' (starting from 1).
-    - Each phase must contain a 'milestones' array. Each milestone object must have a string 'title', a string 'description', a string 'estimated_time' (e.g., "1 week", "2 days"), and an integer 'position' (starting from 1 within the phase).
-    - Each milestone must contain a 'resources' array. Each resource object must have a string 'title', a string 'type' (e.g., "Course", "Tutorial", "Book", "Article", "Video", "Documentation"), a string 'platform' (e.g., "Coursera", "Udemy", "YouTube", "Official Docs", "Blog Post"), and a string 'url' (use valid-looking placeholders like "https://example.com/resource" if unsure, but NOT just '#'). Optionally include a string 'image_url'.
+Please suggest a real, currently working alternative based on the following:
+- Title: "${resource.title}"
+- Type: ${resource.type}
+- Platform (if known): ${resource.platform}
+- Topic: Same as original
+- Trustworthy platforms: Coursera, edX, YouTube, freeCodeCamp, MDN, LeetCode, Fast.ai, etc.
 
-    Guidelines:
-    - The roadmap should be logical, sequential, and directly relevant to the user's goals and experience level implied in their profile.
-    - Base the number of phases and milestones on the goal complexity and timeline (if specified).
-    - Resource suggestions should be relevant to the milestone.
-    - Ensure all required keys are present in the JSON structure.
-    - Respond ONLY with the valid JSON object. Do not include any text before or after the JSON object, and do not use markdown formatting (like \`\`\`json).
+Respond with ONLY a JSON object like:
+{
+  "title": "...",
+  "type": "...",
+  "platform": "...",
+  "url": "https://...",
+  "image_url": "..."
+}
+If no good alternative exists, respond with: null
   `;
-  console.log("Sending request to Gemini API...");
+
   try {
     const response = await fetch(GEMINI_ENDPOINT, {
       method: 'POST',
@@ -53,123 +55,267 @@ async function generateRoadmapWithGemini(profile) {
         ]
       })
     });
+
+    const result = await response.json();
+    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!text || text === 'null') return null;
+
+    const cleaned = text.replace(/^```json\n?|\n?```$/g, '').trim();
+    const generated = JSON.parse(cleaned);
+    const isValid = await checkIfUrlWorks(generated.url);
+    return isValid ? generated : null;
+  } catch (error) {
+    console.error("Gemini fallback error:", error);
+    return null;
+  }
+}
+
+async function validateResource(resource, GEMINI_API_KEY) {
+  if (await checkIfUrlWorks(resource.url)) return resource;
+
+  console.warn(`Broken resource detected: ${resource.url}`);
+
+  // Try alternatives first
+  if (resource.alternative_resources?.length > 0) {
+    for (const alt of resource.alternative_resources) {
+      if (alt.url && await checkIfUrlWorks(alt.url)) {
+        console.log(`Replaced with working alternative: ${alt.url}`);
+        return alt;
+      }
+    }
+  }
+
+  // Ask Gemini for a new alternative
+  const geminiReplacement = await askGeminiForAlternative(resource, GEMINI_API_KEY);
+  if (geminiReplacement) {
+    console.log(`Gemini provided new alternative: ${geminiReplacement.url}`);
+    return geminiReplacement;
+  }
+
+  // If all fail
+  return { ...resource, url: 'Unavailable (link broken)' };
+}
+
+async function validateAndReplaceResourceUrls(roadmap) {
+  const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+  if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not set");
+
+  for (const phase of roadmap.phases) {
+    for (const milestone of phase.milestones) {
+      const validatedResources = await Promise.all(
+        milestone.resources.map(resource =>
+          validateResource(resource, GEMINI_API_KEY)
+        )
+      );
+      milestone.resources = validatedResources;
+    }
+  }
+
+  return roadmap;
+}
+
+
+async function generateRoadmapWithGemini(profile) {
+  console.log(`Generating roadmap for user: ${profile.id}`);
+  const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+  if (!GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY environment variable is not set.");
+  }
+
+  const model = "gemini-2.5-flash-preview-04-17";
+  const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+
+  const prompt = `You are an expert learning path designer and resource researcher.
+
+Create a highly detailed, fully personalized learning roadmap for a user based on the following profile:
+- Name: ${profile.first_name || 'User'}
+- Goals: ${profile.goals?.join('; ') || 'Not specified'}
+- Field/Current Skills: ${profile.skills?.join('; ') || 'Not specified'}
+- Background (education, work, relevant experience): ${profile.background || 'Not specified'}
+- Time Available (daily/weekly): ${profile.time_available || 'Not specified'}
+- Preferred Learning Style (e.g., videos, articles, projects) if known: ${profile.learning_style || 'Not specified'}
+- Potential Challenges or Limitations: ${profile.challenges || 'Not specified'}
+
+The roadmap must be realistic, motivating, actionable, and customized to the user's profile.
+
+--- 
+
+**STRICT GUIDELINES:**
+
+- **Resources** must be real, verifiable, working, and come from well-known, trusted platforms.
+- **Never invent links** or use fake placeholders. If no good resource is available, skip rather than invent.
+- **Match platforms to topics**:
+  - Coding/Software Development: LeetCode, HackerRank, Codeforces, FreeCodeCamp, GitHub.
+  - Web Development: MDN Web Docs, W3Schools, freeCodeCamp.
+  - Data Science/Machine Learning: Fast.ai, DeepLearning.AI, TensorFlow.org, Kaggle, edX.
+  - Research Papers: ArXiv, ResearchGate, Semantic Scholar.
+  - Certifications: Coursera, edX, official vendor sites (AWS, Google Cloud, etc.).
+  - Tutorials & Blogs: Medium, Dev.to, Official Company Blogs.
+  - General Learning: Coursera, edX, Udemy, Khan Academy, YouTube.
+- Prefer resources that are:
+  - Free or offer free tiers where possible.
+  - Highly rated (e.g., above 4.5★ if rating exists).
+  - Recently updated (ideally within the last 1–2 years).
+- **Match resource type to learning style** if available (e.g., prefer videos if user likes videos).
+- Include **practical projects, real-world exercises, or challenges** in appropriate milestones.
+- If multiple excellent resources exist, list one main resource + optionally up to two alternatives.
+- If the user's goal involves certifications, prioritize certification-aligned resources where available.
+
+--- 
+
+**OUTPUT FORMAT:** (Strict JSON, no extra text, no markdown)
+
+Root object:
+- 'title': string (e.g., "Personalized Roadmap for [Name]")
+- 'description': string (brief overview of the approach)
+- 'phases': array of objects:
+  - Each phase must have:
+    - 'title': string
+    - 'description': string
+    - 'position': integer (starting from 1)
+    - 'milestones': array of objects:
+      - Each milestone must have:
+        - 'title': string
+        - 'description': string
+        - 'estimated_time': string (e.g., "1 week", "2 days")
+        - 'position': integer (starting from 1 within the phase)
+        - 'resources': array of objects:
+          - Each resource must have:
+            - 'title': string
+            - 'type': string (Course, Tutorial, Book, Article, Video, Documentation)
+            - 'platform': string (e.g., Coursera, Udemy, YouTube, MDN, LeetCode, etc.)
+            - 'url': string (must be a real, verified, accessible link)
+            - Optional: 'image_url': string (if available)
+          - Optional field: 'alternative_resources' (array of up to 2 alternative resource objects with same structure)
+
+--- 
+
+**CRITICAL REMINDERS:**
+- All URLs must be real and tested for existence. No broken, fake, or placeholder links are allowed.
+- JSON must be clean, valid, and ready for parsing.
+- Respond with **only** the JSON object — no introductory or closing text.
+`;
+
+  try {
+    const response = await fetch(GEMINI_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt
+              }
+            ]
+          }
+        ]
+      })
+    });
+
     if (!response.ok) {
       const errorBody = await response.text();
       console.error('Gemini API Error Response:', errorBody);
       throw new Error(`Gemini API request failed: ${response.status} ${response.statusText}`);
     }
+
     const result = await response.json();
-    console.log('Gemini API Raw Result:', JSON.stringify(result)); // Log the raw result for debugging
-    // Extract the generated text content - adjust based on actual Gemini response structure
     const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!generatedText) {
-      console.error("Could not find generated text in Gemini response:", result);
       throw new Error('Could not extract roadmap content from Gemini response.');
     }
-    console.log("Extracted text from Gemini:", generatedText);
-    // Parse the extracted text string as JSON
-    let parsedRoadmap;
-    try {
-      parsedRoadmap = JSON.parse(generatedText);
-    } catch (parseError) {
-      console.error("Failed to parse Gemini response text as JSON:", parseError);
-      console.error("Invalid JSON string received:", generatedText);
-      throw new Error(`Failed to parse roadmap JSON from Gemini response: ${parseError.message}`);
-    }
-    // Optional: Add validation here to ensure parsedRoadmap matches GeneratedRoadmap structure
-    if (!parsedRoadmap || !parsedRoadmap.title || !Array.isArray(parsedRoadmap.phases)) {
-      console.error("Parsed roadmap is missing required top-level fields (title, phases):".parsedRoadmap);
-      throw new Error('Generated roadmap JSON is missing required fields.');
-    }
-    console.log("Successfully parsed generated roadmap.");
+
+    const cleanedText = generatedText.trim().replace(/^```json\n?|\n?```$/g, '').trim();
+    let parsedRoadmap = JSON.parse(cleanedText); 
+
+    parsedRoadmap = await validateAndReplaceResourceUrls(parsedRoadmap);
     return parsedRoadmap;
   } catch (error) {
     console.error("Error during Gemini API call or processing:", error);
-    // Re-throw the error to be caught by the main handler
     throw error;
   }
 }
-serve(async (req)=>{
-  // Handle CORS preflight request
+
+serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
       headers: corsHeaders
     });
   }
-  let supabaseClient; // Define outside try block
+
+  let supabaseClient;
   try {
-    // 1. Initialize Supabase Client
-    supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
-      global: {
-        headers: {
-          Authorization: req.headers.get('Authorization')
+    supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: {
+            Authorization: req.headers.get('Authorization')
+          }
         }
       }
-    });
-    // 2. Extract userId from request body
+    );
+
     const body = await req.json();
     const userId = body?.userId;
     if (!userId) {
       throw new Error('Missing userId in request body');
     }
-    console.log(`Function invoked for userId: ${userId}`);
-    // 3. Fetch user profile data
-    const { data: profile, error: profileError } = await supabaseClient.from('profiles').select('*') // Fetch all fields needed for the prompt
-    .eq('id', userId).single();
+
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
     if (profileError) {
-      console.error('Profile fetch error:', profileError);
-      // Handle case where profile might not exist cleanly
-      if (profileError.code === 'PGRST116') {
-        throw new Error(`Profile not found for userId: ${userId}`);
-      }
       throw new Error(`Failed to fetch profile: ${profileError.message}`);
     }
-    if (!profile) {
-      // Should be caught by PGRST116 above, but as a safeguard
-      throw new Error(`Profile data is null for userId: ${userId}`);
-    }
-    console.log(`Profile fetched for ${userId}`);
-    // 4. Generate roadmap using Gemini
+
     const generatedRoadmap = await generateRoadmapWithGemini(profile);
     console.log(`Roadmap structure generated for ${userId}`);
-    // 5. Save the generated roadmap to Supabase using the DB function
-    console.log("Calling database function 'create_user_roadmap'...");
-    const { data: savedRoadmapResult, error: transactionError } = await supabaseClient.rpc('create_user_roadmap', {
-      p_user_id: userId,
-      p_roadmap_title: generatedRoadmap.title,
-      p_roadmap_description: generatedRoadmap.description,
-      // Ensure the structure matches what the SQL function expects (jsonb)
-      p_phases: generatedRoadmap.phases
-    });
+
+    const { data: savedRoadmapResult, error: transactionError } =
+      await supabaseClient.rpc('create_user_roadmap', {
+        p_user_id: userId,
+        p_roadmap_title: generatedRoadmap.title,
+        p_roadmap_description: generatedRoadmap.description,
+        p_phases: generatedRoadmap.phases
+      });
+
     if (transactionError) {
-      console.error('Database function error saving roadmap:', transactionError);
       throw new Error(`Failed to save roadmap via DB function: ${transactionError.message}`);
     }
-    const newRoadmapId = savedRoadmapResult; // Assuming the function returns the new roadmap ID directly
-    console.log(`Roadmap successfully saved for userId ${userId} with ID: ${newRoadmapId}`);
-    // 6. Return success response
-    return new Response(JSON.stringify({
-      success: true,
-      message: 'Roadmap generated and saved successfully.',
-      roadmapId: newRoadmapId
-    }), {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json'
-      },
-      status: 200
-    });
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: 'Roadmap generated and saved successfully.',
+        roadmapId: savedRoadmapResult
+      }),
+      {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        status: 200
+      }
+    );
   } catch (error) {
     console.error('[generate-roadmap] Error:', error);
-    return new Response(JSON.stringify({
-      error: error.message
-    }), {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json'
-      },
-      // Use 500 for server-side errors, 4xx for client errors (like missing userId)
-      status: error.message.includes('Missing userId') || error.message.includes('Profile not found') ? 400 : 500
-    });
+    return new Response(
+      JSON.stringify({
+        error: error.message
+      }),
+      {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        status: 500
+      }
+    );
   }
 });
