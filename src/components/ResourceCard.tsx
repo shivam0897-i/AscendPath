@@ -1,14 +1,14 @@
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { BookOpen, ExternalLink } from "lucide-react"; // Import BookOpen
 
 interface Resource {
   title: string;
   type: string;
   platform: string;
   url: string;
-  imageUrl: string;
+  imageUrl: string | null; // Allow null
 }
 
 interface ResourceCardProps {
@@ -16,14 +16,25 @@ interface ResourceCardProps {
 }
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
+  // Use placeholder if imageUrl is null or empty
+  const imageSource = resource.imageUrl || "/placeholder.svg"; // Fallback to placeholder
+
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow">
-      <div className="h-36 overflow-hidden">
+      <div className="h-36 overflow-hidden bg-gray-100 flex items-center justify-center"> {/* Added background and centering */}
         <img
-          src={resource.imageUrl}
+          src={imageSource} // Use the variable with fallback
           alt={resource.title}
-          className="w-full h-full object-cover transition-transform hover:scale-105"
+          className={`w-full h-full transition-transform hover:scale-105 ${resource.imageUrl ? 'object-cover' : 'object-contain p-4 text-gray-400'}`} // Adjust styling for placeholder
+          onError={(e) => {
+            // Optional: Handle broken image links by setting to placeholder
+            (e.target as HTMLImageElement).src = '/placeholder.svg';
+            (e.target as HTMLImageElement).classList.add('object-contain', 'p-4', 'text-gray-400');
+            (e.target as HTMLImageElement).classList.remove('object-cover');
+          }}
         />
+        {/* Optional: Display an icon if no image URL provided *initially* */}
+        {/* {!resource.imageUrl && <BookOpen className="w-12 h-12 text-gray-300" />} */}
       </div>
       <CardContent className="p-4 flex-grow">
         <div className="flex justify-between items-start mb-2">
