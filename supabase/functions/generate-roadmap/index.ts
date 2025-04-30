@@ -24,7 +24,7 @@ Please suggest a real, currently working alternative based on the following:
 - Type: ${resource.type}
 - Platform (if known): ${resource.platform}
 - Topic: Same as original
-- Trustworthy platforms: Coursera, edX, YouTube, freeCodeCamp, MDN, LeetCode, Fast.ai, etc.
+- Trustworthy platforms: geekforgeeks , Coursera, edX, YouTube, freeCodeCamp, MDN, LeetCode, Fast.ai, etc.
 
 Respond with ONLY a JSON object like:
 {
@@ -185,7 +185,8 @@ Root object:
             - 'type': string (Course, Tutorial, Book, Article, Video, Documentation)
             - 'platform': string (e.g., Coursera, Udemy, YouTube, MDN, LeetCode, etc.)
             - 'url': string (must be a real, verified, accessible link)
-            - Optional: 'image_url': string (if available)
+            - 'image_url': string (MUST be a direct, valid URL to a relevant image/thumbnail. Find one if possible. DO NOT LEAVE EMPTY OR NULL.)
+            - 'description': string (Brief description of the resource) // Added description for context
           - Optional field: 'alternative_resources' (array of up to 2 alternative resource objects with same structure)
 
 --- 
