@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { GoogleIcon } from "../ui/google-icon";
 import {
   Form,
   FormControl,
@@ -38,9 +38,10 @@ const signupSchema = loginSchema.extend({
 type LoginFormValues = z.infer<typeof loginSchema>;
 type SignupFormValues = z.infer<typeof signupSchema>;
 
+
 export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGoogle, isLoading } = useAuth();
   const { toast } = useToast();
 
   const loginForm = useForm<LoginFormValues>({
@@ -76,7 +77,6 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             variant: "destructive",
           });
         } else {
-          // Trigger toast on successful login
           toast({
             title: "Welcome back!",
             description: "You have successfully logged in.",
@@ -90,7 +90,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
         // It's signup
         const signupValues = values as SignupFormValues;
         const { error } = await signUp(
-          signupValues.email, 
+          signupValues.email,
           signupValues.password,
           signupValues.firstName,
           signupValues.lastName
@@ -102,14 +102,12 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             variant: "destructive",
           });
         } else {
-          // No welcome toast on sign up here, handled by AuthContext
+          // Toast for signup is handled in AuthContext
           if (onSuccess) {
             onSuccess();
           }
         }
       }
-      
-      // Removed onSuccess call from here as it's handled within login/signup blocks
 
     } catch (error) {
       toast({
@@ -122,11 +120,25 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+      setIsSubmitting(true); 
+      try {
+          await signInWithGoogle();
+          
+      } catch (error) {
+           // Errors are handled within signInWithGoogle using toast
+           console.error("Google Sign In initiation failed", error);
+      } finally {
+           
+      }
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       {mode === "login" ? (
         <Form {...loginForm}>
           <form onSubmit={loginForm.handleSubmit(onSubmit as any)} className="space-y-6">
+            {/* Email Field */}
             <FormField
               control={loginForm.control}
               name="email"
@@ -134,13 +146,14 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="you@example.com" {...field} />
+                    <Input placeholder="you@example.com" {...field} disabled={isLoading || isSubmitting}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
+            {/* Password Field */}
             <FormField
               control={loginForm.control}
               name="password"
@@ -148,22 +161,42 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isSubmitting}>
+            {/* Login Button */}
+            <Button type="submit" className="w-full bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isLoading || isSubmitting}>
               {isSubmitting ? "Logging in..." : "Log in"}
             </Button>
+
+            {/* Separator */}
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            {/* Google Sign In Button */}
+            <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
+                {isLoading ? 'Processing...' : <><GoogleIcon/> Google</>}
+            </Button>
+
           </form>
         </Form>
       ) : (
         <Form {...signupForm}>
           <form onSubmit={signupForm.handleSubmit(onSubmit as any)} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            {/* First Name and Last Name Fields */}
+             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={signupForm.control}
                 name="firstName"
@@ -171,13 +204,12 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Jane" {...field} />
+                      <Input placeholder="Jane" {...field} disabled={isLoading || isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
               <FormField
                 control={signupForm.control}
                 name="lastName"
@@ -185,14 +217,15 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Doe" {...field} />
+                      <Input placeholder="Doe" {...field} disabled={isLoading || isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            
+
+            {/* Email Field */}
             <FormField
               control={signupForm.control}
               name="email"
@@ -200,13 +233,14 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="you@example.com" {...field} />
+                    <Input placeholder="you@example.com" {...field} disabled={isLoading || isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
+            {/* Password Field */}
             <FormField
               control={signupForm.control}
               name="password"
@@ -214,13 +248,14 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
+            {/* Confirm Password Field */}
             <FormField
               control={signupForm.control}
               name="confirmPassword"
@@ -228,15 +263,33 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isSubmitting}>
+            {/* Create Account Button */}
+            <Button type="submit" className="w-full bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isLoading || isSubmitting}>
               {isSubmitting ? "Creating account..." : "Create account"}
+            </Button>
+
+            {/* Separator */}
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            {/* Google Sign In Button */}
+            <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
+               {isLoading ? 'Processing...' : <><GoogleIcon /> Google</>}
             </Button>
           </form>
         </Form>

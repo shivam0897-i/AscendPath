@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 const Auth = () => {
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const navigate = useNavigate();
-  // Use the correct property name 'isLoading' from the context
+  
   const { user, isLoading } = useAuth();
 
   useEffect(() => {

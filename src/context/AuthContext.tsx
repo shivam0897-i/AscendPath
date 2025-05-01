@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -10,6 +9,7 @@ type AuthContextType = {
   isLoading: boolean;
   signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<void>; 
   signOut: () => Promise<void>;
 };
 
@@ -27,80 +27,130 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        // Removed SIGNED_IN toast notification logic
-        // if (event === 'SIGNED_IN') { ... }
-        
-        if (event === 'SIGNED_OUT') {
-          // Use setTimeout to prevent potential deadlocks
-          setTimeout(() => {
-            toast({
-              title: "Logged out",
-              description: "You have been logged out successfully.",
-              duration: 1000,
-            });
-          }, 0);
-        }
+        setIsLoading(false); // Moved isLoading to false after setting user/session
+        console.log("Auth state changed:", event, session);
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check initial session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+      setIsLoading(false); // Also set isLoading to false here
+    };
+    checkSession();
+
 
     return () => {
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
-  }, [toast]);
+  }, []);
 
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            first_name: firstName,
-            last_name: lastName,
-          },
+    setIsLoading(true);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
         },
+      },
+    });
+    if (error) {
+      console.error("Sign up error:", error.message);
+      toast({
+        title: "Sign Up Error",
+        description: error.message,
+        variant: "destructive",
       });
-      
-      if (!error) {
-        // Keep account created notification here
-        toast({
-          title: "Account created",
-          description: "Please check your email to verify your account.",
-        });
-      }
-      
-      return { error };
-    } catch (error) {
-      console.error("Error during sign up:", error);
-      return { error };
+    } else if (data.user) {
+      setUser(data.user);
+      setSession(data.session);
+      toast({
+        title: "Account Created",
+        description: "Please check your email to verify your account.",
+      });
+       // Optionally handle profile creation here or via a trigger
+       if (firstName || lastName) {
+          await supabase
+            .from('profiles') // Adjust table name if different
+            .update({ first_name: firstName, last_name: lastName })
+            .eq('id', data.user.id);
+       }
     }
+    setIsLoading(false);
+    return { error };
   };
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+    setIsLoading(true);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      console.error("Sign in error:", error.message);
+      toast({
+        title: "Sign In Error",
+        description: error.message,
+        variant: "destructive",
       });
-      
-      // Removed notification from here, will be added in Auth.tsx
-      return { error }; 
-    } catch (error) {
-      console.error("Error during sign in:", error);
-      return { error };
+    } else if (data.user) {
+      setUser(data.user);
+      setSession(data.session);
+      toast({
+        title: "Signed In",
+        description: "Welcome back!",
+      });
     }
+    setIsLoading(false);
+    return { error };
   };
 
+  // Add the Google sign-in function
+  const signInWithGoogle = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin // Redirect back to your app after Google auth
+        }
+      });
+      if (error) {
+        console.error("Google Sign in error:", error.message);
+        toast({
+          title: "Google Sign In Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        setIsLoading(false); // Stop loading on error
+      }
+     
+    };
+
+
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setIsLoading(true);
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Sign out error:", error.message);
+      toast({
+        title: "Sign Out Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      setUser(null);
+      setSession(null);
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+    }
+    setIsLoading(false);
   };
 
   const value = {
@@ -109,6 +159,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading,
     signUp,
     signIn,
+    signInWithGoogle, 
     signOut,
   };
 

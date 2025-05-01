@@ -50,7 +50,7 @@ export default function AboutUs() {
               <span className="text-black">About </span>
               <span className="text-[#8B7CFF]">EmpowerPath</span>
             </h1>
-            <p className="text-gray-600 text-lg mb-8">
+            <p className="text-gray-600 text-base md:text-lg mb-8"> {/* Changed text-lg to text-base md:text-lg */}
               Empowering women and students through personalized education and community support
             </p>
           </div>
@@ -67,9 +67,9 @@ export default function AboutUs() {
                   className="rounded-lg w-full h-auto"
                 />
               </div>
-              {/* Decorative elements */}
-              <div className="absolute top-[-20px] right-[-20px] w-20 h-20 bg-[#FFD166] rounded-full opacity-20 z-0"></div>
-              <div className="absolute bottom-[-30px] left-[-30px] w-16 h-16 bg-[#8B7CFF] rounded-full opacity-30 z-0"></div>
+              {/* Decorative elements - Hidden on mobile */}
+              <div className="absolute top-[-20px] right-[-20px] w-20 h-20 bg-[#FFD166] rounded-full opacity-20 z-0 hidden md:block"></div> {/* Added hidden md:block */}
+              <div className="absolute bottom-[-30px] left-[-30px] w-16 h-16 bg-[#8B7CFF] rounded-full opacity-30 z-0 hidden md:block"></div> {/* Added hidden md:block */}
             </div>
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
@@ -189,12 +189,12 @@ export default function AboutUs() {
           <div className="grid md:grid-cols-3 gap-8">
             {[1, 2, 3 ,4].map((i) => (
               <div key={i} className="text-center">
-                <div className="relative w-40 h-40 mx-auto mb-6">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-6"> {/* Changed w-40 h-40 to w-32 h-32 md:w-40 md:h-40 */}
                   <div className="absolute inset-0 rounded-full bg-[#F5F3FF]"></div>
                   <img
                     src="/placeholder.svg?height=160&width=160"
                     alt={`Team Member ${i}`}
-                    className="rounded-full relative z-10 w-40 h-40"
+                    className="rounded-full relative z-10 w-32 h-32 md:w-40 md:h-40" 
                   />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Team Member {i}</h3>
