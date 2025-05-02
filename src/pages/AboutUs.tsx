@@ -61,11 +61,15 @@ export default function AboutUs() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <div className="bg-[#F5F3FF] p-6 relative z-10">
-                <img
-                  src="/placeholder.svg?height=400&width=500"
-                  alt="Our Story"
-                  className="rounded-lg w-full h-auto"
-                />
+              
+        <img
+          src="src/assets/images/team.jpg"
+          alt="Image of our team"
+          className="rounded-lg w-full h-auto"
+          onContextMenu={(e) => e.preventDefault()} // Disable right-click
+          draggable="false" // Disable dragging
+        />
+
               </div>
               {/* Decorative elements - Hidden on mobile */}
               <div className="absolute top-[-20px] right-[-20px] w-20 h-20 bg-[#FFD166] rounded-full opacity-20 z-0 hidden md:block"></div> {/* Added hidden md:block */}

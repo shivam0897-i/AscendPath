@@ -55,31 +55,39 @@ const HeroImage: React.FC<HeroImageProps> = ({ onClick }) => {
           src="https://i.pravatar.cc/300?img=25" 
           alt="Student" 
           className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-white shadow-lg object-cover floating" 
+          onContextMenu={(e) => e.preventDefault()} // Disable right-click
+          draggable="false" // Disable dragging
         />
       </div>
       
       {/* Educational elements */}
       <div className="absolute top-[20%] left-[15%] floating">
         <div className="bg-empowerPurple-light p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f4bb.png" alt="Laptop" className="w-8 h-8 md:w-10 md:h-10" />
+          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f4bb.png" alt="Laptop" className="w-8 h-8 md:w-10 md:h-10" 
+          onContextMenu={(e) => e.preventDefault()} // Disable right-click
+          draggable="false" />
         </div>
       </div>
       
       <div className="absolute top-[30%] right-[15%] floating">
         <div className="bg-empowerBlue-light p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f4d6.png" alt="Book" className="w-8 h-8 md:w-10 md:h-10" />
+          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f4d6.png" alt="Book" className="w-8 h-8 md:w-10 md:h-10" onContextMenu={(e) => e.preventDefault()} // Disable right-click
+          draggable="false" // Disable dragging 
+          />
         </div>
       </div>
       
       <div className="absolute bottom-[20%] left-[25%] floating">
         <div className="bg-blue-100 p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f9d1-200d-1f4bc.png" alt="Teacher" className="w-8 h-8 md:w-10 md:h-10" />
+          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f9d1-200d-1f4bc.png" alt="Teacher" className="w-8 h-8 md:w-10 md:h-10" onContextMenu={(e) => e.preventDefault()} // Disable right-click
+          draggable="false"/>
         </div>
       </div>
       
       <div className="absolute bottom-[30%] right-[20%] floating">
         <div className="bg-purple-100 p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f393.png" alt="Graduation" className="w-8 h-8 md:w-10 md:h-10" />
+          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f393.png" alt="Graduation" className="w-8 h-8 md:w-10 md:h-10" onContextMenu={(e) => e.preventDefault()}
+draggable="false"  />
         </div>
       </div>
       
