@@ -63,7 +63,7 @@ export default function AboutUs() {
               <div className="bg-[#F5F3FF] p-6 relative z-10">
               
         <img
-          src="public/team.jpg"
+          src="/images/team.jpg"
           alt="Image of our team"
           className="rounded-lg w-full h-auto"
           onContextMenu={(e) => e.preventDefault()} // Disable right-click
