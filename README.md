@@ -1,6 +1,6 @@
-# Empower Learn Pathways
+# AscendPath
 
-Empower Learn Pathways is a modern web application designed to generate personalized learning roadmaps for students and women. By leveraging cutting-edge technologies, including the Gemini API, it empowers users by providing structured and tailored pathways to achieve their educational goals.
+AscendPath is a modern web application designed to generate personalized learning roadmaps for students and women. By leveraging cutting-edge technologies, including the Gemini API, it empowers users by providing structured and tailored pathways to achieve their educational goals.
 
 ---
 
@@ -16,11 +16,11 @@ Empower Learn Pathways is a modern web application designed to generate personal
 
 ## Project Info
 
-Empower Learn Pathways is built to simplify and enhance educational planning. It provides personalized roadmaps to help students and women navigate their learning journeys efficiently. The platform's modular and scalable design ensures reliability and a superior user experience.
+AscendPath is built to simplify and enhance educational planning. It provides personalized roadmaps to help students and women navigate their learning journeys efficiently. The platform's modular and scalable design ensures reliability and a superior user experience.
 
 This application utilizes the **Gemini API** and its powerful model to analyze user input and generate customized learning roadmaps, ensuring the best recommendations based on individual needs.
 
-Homepage for live preview: [Empower Learn Pathways](https://empower-learn-pathways.vercel.app)
+Homepage for live preview: [AscendPath](https://ascendpath.vercel.app)
 
 ---
 
@@ -89,7 +89,7 @@ To set up authentication:
 1. Configure the `.env` file with your authentication provider credentials (e.g., client IDs, secrets, etc.).
 2. Use the provided APIs to authenticate users and manage sessions.
 
-For more detailed information, refer to the [Authentication Section](https://github.com/shivam0897-i/empower-learn-pathways#authentication).
+For more detailed information, refer to the [Authentication Section](https://github.com/shivam0897-i/ascendpath#authentication).
 
 ---
 
@@ -113,4 +113,4 @@ Deployment is made simple using **Vercel**:
 
 ---
 
-Let me know if you'd like me to make further refinements or if you’re ready to apply this content to your `README.md` file! You can edit the file directly [here](https://github.com/shivam0897-i/empower-learn-pathways/edit/main/README.md).
+Let me know if you'd like me to make further refinements or if you’re ready to apply this content to your `README.md` file! You can edit the file directly [here](https://github.com/shivam0897-i/ascendpath/edit/main/README.md).
