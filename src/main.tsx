@@ -6,8 +6,8 @@ import './index.css'
 import { injectSpeedInsights } from '@vercel/speed-insights';
 
 injectSpeedInsights();
-
-
+import { inject } from "@vercel/analytics"
+inject();
 const container = document.getElementById("root")
 const root = createRoot(container!)
 root.render(
