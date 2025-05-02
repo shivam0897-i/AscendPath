@@ -48,7 +48,7 @@ export default function AboutUs() {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="text-black">About </span>
-              <span className="text-[#8B7CFF]">EmpowerPath</span>
+              <span className="text-[#8B7CFF]">AscendPath</span>
             </h1>
             <p className="text-gray-600 text-base md:text-lg mb-8"> {/* Changed text-lg to text-base md:text-lg */}
               Empowering women and students through personalized education and community support
@@ -78,7 +78,7 @@ export default function AboutUs() {
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-600 mb-4">
-                EmpowerPath was founded in 2025 with a clear mission: to bridge the gender gap in education and career
+                AscendPath was founded in 2025 with a clear mission: to bridge the gender gap in education and career
                 advancement through personalized learning experiences.
               </p>
               <p className="text-gray-600 mb-4">
@@ -185,7 +185,7 @@ export default function AboutUs() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl font-bold mb-6">Our Team</h2>
             <p className="text-gray-600 text-lg">
-              Meet the passionate individuals behind EmpowerPath who are dedicated to transforming education for women
+              Meet the passionate individuals behind AscendPath who are dedicated to transforming education for women
               worldwide.
             </p>
           </div>
@@ -216,7 +216,7 @@ export default function AboutUs() {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold mb-6">Our Values</h2>
-              <p className="text-gray-600 text-lg">The core principles that guide everything we do at EmpowerPath.</p>
+              <p className="text-gray-600 text-lg">The core principles that guide everything we do at AscendPath.</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">

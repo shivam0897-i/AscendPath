@@ -47,7 +47,7 @@ const Auth = () => {
       <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold gradient-text">EmpowerPath</h2>
+            <h2 className="text-3xl font-extrabold gradient-text">AscendPath</h2>
             <p className="mt-2 text-gray-600">
               {activeTab === "login"
                 ? "Log in to your account"

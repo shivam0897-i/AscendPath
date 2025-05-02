@@ -212,7 +212,7 @@ export default function PrivacyPolicy() {
               </p>
               <div className="mt-4 border border-[#e0e0ff] rounded-lg bg-white p-6">
                 <address className="not-italic space-y-1">
-                  <p className="font-medium">EmpowerPath</p>
+                  <p className="font-medium">AscendPath</p>
                   <p>[Street Address]</p>
                   <p>[City, State/Province, Postal Code]</p>
                   <p>[Country]</p>

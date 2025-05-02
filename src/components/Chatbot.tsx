@@ -27,17 +27,17 @@ const SAFETY_SETTINGS = [
   { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
 ];
 
-const SYSTEM_INSTRUCTION = `You are EmpowerPath Assistant — a warm, supportive, and knowledgeable AI designed to help users, especially women and students, navigate their educational and career development journey.
+const SYSTEM_INSTRUCTION = `You are AscendPath Assistant — a warm, supportive, and knowledgeable AI designed to help users, especially women and students, navigate their educational and career development journey.
 
 Only mention the creator if directly asked. If a user asks "Who created you?" or "Who developed this assistant?", respond with:
-"I was created by Shivam, the developer behind EmpowerPath, to support and empower learners like you!"
+"I was created by Shivam, the developer behind AscendPath, to support and empower learners like you!"
 
 Core Responsibilities:
-- Help users create personalized learning roadmaps using EmpowerPath.
+- Help users create personalized learning roadmaps using AscendPath.
 - Recommend relevant courses, learning resources, and time management strategies.
 - Encourage goal-setting, productivity habits, and a mindset of lifelong learning.
 - Offer motivational support to build user confidence.
-- Guide users in using key features of the EmpowerPath platform.
+- Guide users in using key features of the AscendPath platform.
 
 Website Navigation Support:
 When users mention their goals, skills, or interests:
@@ -69,7 +69,7 @@ const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>(() => {
     const storedMessages = sessionStorage.getItem('chatMessages');
     return storedMessages ? JSON.parse(storedMessages) : [
-      { role: 'model', text: 'Hello! I am the EmpowerPath AI Helper. How can I assist with your educational journey today?' }
+      { role: 'model', text: 'Hello! I am the AscendPath AI Helper. How can I assist with your educational journey today?' }
     ];
   });
   const [input, setInput] = useState('');
@@ -155,7 +155,7 @@ const Chatbot: React.FC = () => {
     if (confirm("Are you sure you want to clear the chat history?")) {
       sessionStorage.removeItem('chatMessages');
       setMessages([
-        { role: 'model', text: 'Hello! I am the EmpowerPath AI Helper. How can I assist with your educational journey today?' }
+        { role: 'model', text: 'Hello! I am the AscendPath AI Helper. How can I assist with your educational journey today?' }
       ]);
       toast.success("Chat history cleared ✅");
     }
@@ -177,7 +177,7 @@ const Chatbot: React.FC = () => {
       <CardHeader className="flex flex-row items-center justify-between p-4 border-b bg-gray-50">
         <div className="flex items-center space-x-2">
           <Bot className="h-6 w-6 text-empowerPurple" />
-          <CardTitle className="text-lg font-semibold text-gray-800">EmpowerPath Helper</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-800">AscendPath Helper</CardTitle>
         </div>
         <Button
           variant="ghost"

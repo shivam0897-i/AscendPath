@@ -24,7 +24,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <span className="font-bold text-2xl gradient-text">EmpowerPath</span>
+              <span className="font-bold text-2xl gradient-text">AscendPath</span>
             </Link>
           </div>
 
