@@ -8,7 +8,7 @@ interface Resource {
   type: string;
   platform: string;
   url: string;
-  imageUrl: string | null; // Allow null
+  imageUrl: string | null; 
 }
 
 interface ResourceCardProps {
@@ -34,7 +34,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           }}
         />
         {/* Optional: Display an icon if no image URL provided *initially* */}
-        {/* {!resource.imageUrl && <BookOpen className="w-12 h-12 text-gray-300" />} */}
+        {!resource.imageUrl && <BookOpen className="w-12 h-12 text-gray-300" />}
       </div>
       <CardContent className="p-4 flex-grow">
         <div className="flex justify-between items-start mb-2">

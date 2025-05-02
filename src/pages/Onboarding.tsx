@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
@@ -28,10 +29,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Navbar from "@/components/Navbar";
-// Import the supabase client
 import { supabase } from "@/integrations/supabase/client";
-// Import useAuth to get user ID (assuming you have an auth context)
-import { useAuth } from "@/context/AuthContext"; // Adjust path if needed
+import { useAuth } from "@/context/AuthContext";
 
 const OnboardingSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -89,6 +88,7 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
+  const [isGenerating, setIsGenerating] = useState(false);
   const { user } = useAuth(); // Get user from auth context
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
@@ -188,53 +188,35 @@ const Onboarding = () => {
       }
 
       console.log("Profile saved successfully:", savedProfile);
-      toast.success("Your profile has been saved!");
+      // toast.success("Your profile has been saved! . Generating your roadmap...");
       profileSaved = true; // Mark profile as saved
+      toast.success("Your profile has been saved! Generating your roadmap...");
+      setIsGenerating(true);
 
-      // --- Trigger backend roadmap generation --- 
-      if (profileSaved) { // Only trigger if profile save was successful
-        console.log("Triggering roadmap generation function...");
-        try {
-          const { data: functionData, error: functionError } = await supabase.functions.invoke('generate-roadmap', {
-            // Pass the userId in the body
-            body: JSON.stringify({ userId: user.id })
-          });
+      const { data: functionData, error: functionError } = await supabase.functions.invoke("generate-roadmap", {
+        body: JSON.stringify({ userId: user.id }),
+      });
 
-          if (functionError) {
-              // Throw function-specific error to be caught by the outer catch block
-              // or handle it specifically here
-              throw functionError;
-          }
+      if (functionError) throw functionError;
 
-          console.log('Roadmap generation function invoked successfully:', functionData);
-          // Inform user generation started, but don't block navigation
-          toast.info("Generating your personalized roadmap in the background...");
+      console.log("Roadmap generation function response:", functionData);
+      toast.info("Roadmap is being generated...");
 
-        } catch (functionError: any) {
-          // Catch errors specifically from the function invocation
-          console.error("Roadmap generation trigger failed:", functionError);
-          toast.error(`Failed to start roadmap generation: ${functionError.message || 'Check function logs.'}`);
-          // Decide if you want to proceed to dashboard even if trigger fails
-          // Currently, it proceeds because the catch doesn't re-throw or return
-        }
-      }
-      // --------------------------------------------
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000); // simulate loading
 
-      // Remove old localStorage data if it exists
-      localStorage.removeItem("userData");
-
-      // Navigate to dashboard AFTER attempting to trigger generation
-      navigate("/dashboard");
 
     } catch (error: any) {
       // Catch errors from profile saving or re-thrown function errors
       console.error("Error during profile save or roadmap trigger:", error);
       if (!profileSaved) { // Only show profile save error if it failed
-         toast.error(`Failed to save profile: ${error.message || 'Unknown error'}`);
+        toast.error(`Failed to save profile: ${error.message || 'Unknown error'}`);
       }
       // Potentially add different error handling if needed
     } finally {
       setIsSubmitting(false); // Reset submitting state regardless of success/failure
+      setIsGenerating(false); // In case roadmap generation fails
     }
   };
 
@@ -289,88 +271,88 @@ const Onboarding = () => {
                         <FormMessage />
                       </FormItem>
                     )} />
-                     <FormField control={form.control} name="field" render={({ field }) => (
-                       <FormItem>
-                         <FormLabel>Which field are you interested in?</FormLabel>
-                         <FormControl>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                             <SelectTrigger><SelectValue placeholder="Select a field" /></SelectTrigger>
-                             <SelectContent>{fields.map((fieldOption) => (<SelectItem key={fieldOption.value} value={fieldOption.value}>{fieldOption.label}</SelectItem>))}</SelectContent>
-                           </Select>
-                         </FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )} />
+                    <FormField control={form.control} name="field" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Which field are you interested in?</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger><SelectValue placeholder="Select a field" /></SelectTrigger>
+                            <SelectContent>{fields.map((fieldOption) => (<SelectItem key={fieldOption.value} value={fieldOption.value}>{fieldOption.label}</SelectItem>))}</SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
                   </div>
                 )}
                 {step === 3 && (
-                   <div className="space-y-6 animate-fade-in">
-                     <h2 className="text-xl font-semibold mb-4">Your Background & Time</h2>
-                     <FormField control={form.control} name="background" render={({ field }) => (
-                       <FormItem>
-                         <FormLabel>What is your educational background?</FormLabel>
-                         <FormControl>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                             <SelectTrigger><SelectValue placeholder="Select your background" /></SelectTrigger>
-                             <SelectContent>{backgrounds.map((bg) => (<SelectItem key={bg.value} value={bg.value}>{bg.label}</SelectItem>))}</SelectContent>
-                           </Select>
-                         </FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )} />
-                     <FormField control={form.control} name="experience" render={({ field }) => (
-                       <FormItem>
-                         <FormLabel>What is your experience level in your chosen field?</FormLabel>
-                         <FormControl>
-                           <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 gap-4">
-                             {experienceLevels.map((level) => (
-                               <FormItem key={level.value}>
-                                 <FormLabel className="flex items-center space-x-2 space-y-0 cursor-pointer">
-                                   <FormControl><RadioGroupItem value={level.value} /></FormControl>
-                                   <span>{level.label}</span>
-                                 </FormLabel>
-                               </FormItem>
-                             ))}
-                           </RadioGroup>
-                         </FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )} />
-                      <FormField control={form.control} name="timeCommitment" render={({ field }) => (
-                       <FormItem>
-                         <FormLabel>How many hours per week can you commit to learning?<span className="ml-2 text-empowerPurple font-semibold">{field.value} hours</span></FormLabel>
-                         <FormControl>
-                           <Slider min={1} max={40} step={1} value={[field.value]} onValueChange={(vals) => field.onChange(vals[0])} className="py-4" />
-                         </FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )} />
+                  <div className="space-y-6 animate-fade-in">
+                    <h2 className="text-xl font-semibold mb-4">Your Background & Time</h2>
+                    <FormField control={form.control} name="background" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>What is your educational background?</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger><SelectValue placeholder="Select your background" /></SelectTrigger>
+                            <SelectContent>{backgrounds.map((bg) => (<SelectItem key={bg.value} value={bg.value}>{bg.label}</SelectItem>))}</SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="experience" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>What is your experience level in your chosen field?</FormLabel>
+                        <FormControl>
+                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 gap-4">
+                            {experienceLevels.map((level) => (
+                              <FormItem key={level.value}>
+                                <FormLabel className="flex items-center space-x-2 space-y-0 cursor-pointer">
+                                  <FormControl><RadioGroupItem value={level.value} /></FormControl>
+                                  <span>{level.label}</span>
+                                </FormLabel>
+                              </FormItem>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="timeCommitment" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>How many hours per week can you commit to learning?<span className="ml-2 text-empowerPurple font-semibold">{field.value} hours</span></FormLabel>
+                        <FormControl>
+                          <Slider min={1} max={40} step={1} value={[field.value]} onValueChange={(vals) => field.onChange(vals[0])} className="py-4" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
                   </div>
                 )}
-                 {step === 4 && (
-                   <div className="space-y-6 animate-fade-in">
-                     <h2 className="text-xl font-semibold mb-4">Almost there!</h2>
-                     <FormField control={form.control} name="challenges" render={({ field }) => (
-                       <FormItem>
-                         <FormLabel>What challenges might you face in achieving your goals? (Optional)</FormLabel>
-                         <FormControl><Textarea placeholder="Financial constraints, time limitations, lack of specific resources..." className="min-h-[100px]" {...field} /></FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )} />
-                     <FormField control={form.control} name="timeline" render={({ field }) => (
-                       <FormItem>
-                         <FormLabel>What is your target timeline for achieving your goal?</FormLabel>
-                         <FormControl>
-                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                             <SelectTrigger><SelectValue placeholder="Select a timeline" /></SelectTrigger>
-                             <SelectContent>{timelines.map((time) => (<SelectItem key={time.value} value={time.value}>{time.label}</SelectItem>))}</SelectContent>
-                           </Select>
-                         </FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )} />
+                {step === 4 && (
+                  <div className="space-y-6 animate-fade-in">
+                    <h2 className="text-xl font-semibold mb-4">Almost there!</h2>
+                    <FormField control={form.control} name="challenges" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>What challenges might you face in achieving your goals? (Optional)</FormLabel>
+                        <FormControl><Textarea placeholder="Financial constraints, time limitations, lack of specific resources..." className="min-h-[100px]" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="timeline" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>What is your target timeline for achieving your goal?</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger><SelectValue placeholder="Select a timeline" /></SelectTrigger>
+                            <SelectContent>{timelines.map((time) => (<SelectItem key={time.value} value={time.value}>{time.label}</SelectItem>))}</SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
                   </div>
-                 )}
+                )}
 
                 {/* --- Navigation Buttons (Unchanged) --- */}
                 <div className="flex justify-between pt-4">
@@ -382,7 +364,7 @@ const Onboarding = () => {
                     <div></div>
                   )}
                   <Button type="button" onClick={nextStep} className="bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isSubmitting}>
-                    {isSubmitting ? ("Saving...") : step === totalSteps ? (<><Check className="mr-2 h-4 w-4" /> Complete</>) : (<>Next <ArrowRight className="ml-2 h-4 w-4" /></>)}
+                    {isSubmitting ? ("Generating roadmap") : step === totalSteps ? (<><Check className="mr-2 h-4 w-4" /> Complete</>) : (<>Next <ArrowRight className="ml-2 h-4 w-4" /></>)}
                   </Button>
                 </div>
               </form>
@@ -390,6 +372,18 @@ const Onboarding = () => {
           </CardContent>
         </Card>
       </div>
+      {isGenerating && (
+
+        <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+
+          <div className="text-center">
+            <Loader2 className="animate-spin h-10 w-10 text-empowerPurple mx-auto mb-4" />
+            <p className="text-lg font-medium text-empowerPurple">Generating your roadmap...</p>
+            <p className="text-sm text-gray-500 mt-1">This may take a few moments</p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

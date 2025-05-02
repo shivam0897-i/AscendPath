@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-// Add BookOpen and ExternalLink to the import from lucide-react
+
 import { CheckCircle2, ChevronDown, Clock, BookOpen, ExternalLink } from "lucide-react"; 
 import { Checkbox } from "@/components/ui/checkbox";
 

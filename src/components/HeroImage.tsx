@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Define the props type to include onClick
+
 interface HeroImageProps {
   onClick?: () => void; // Make onClick optional
 }

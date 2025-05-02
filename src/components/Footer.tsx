@@ -13,16 +13,16 @@ const Footer = () => {
               Empowering women through personalized educational roadmaps.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-empowerPurple">
+              <a href="https://www.facebook.com/" className="text-gray-400 hover:text-empowerPurple">
                 <Facebook size={18} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-empowerPurple">
+              <a href="https://x.com/" className="text-gray-400 hover:text-empowerPurple">
                 <Twitter size={18} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-empowerPurple">
+              <a href="https://www.instagram.com/" className="text-gray-400 hover:text-empowerPurple">
                 <Instagram size={18} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-empowerPurple">
+              <a href="https://www.linkedin.com/" className="text-gray-400 hover:text-empowerPurple">
                 <Linkedin size={18} />
               </a>
             </div>
@@ -41,7 +41,7 @@ const Footer = () => {
                 <Link to="/dashboard" className="text-gray-500 hover:text-empowerPurple">Your Dashboard</Link>
               </li>
               <li>
-                <Link to="#" className="text-gray-500 hover:text-empowerPurple">Resources</Link>
+                <Link to="/resources" className="text-gray-500 hover:text-empowerPurple">Resources</Link>
               </li>
             </ul>
           </div>
