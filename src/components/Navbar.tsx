@@ -96,10 +96,10 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
         <Link to="/dashboard" className="block py-2 hover:text-empowerPurple">
           Dashboard
         </Link>
-        <Link to="#" className="block py-2 hover:text-empowerPurple">
+        <Link to="/resources" className="block py-2 hover:text-empowerPurple">
           Resources
         </Link>
-        <Link to="#" className="block py-2 hover:text-empowerPurple">
+        <Link to="/community" className="block py-2 hover:text-empowerPurple">
           Community
         </Link>
       </>
@@ -111,7 +111,7 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
         <Link to="/dashboard" className="hover:text-empowerPurple">
           Dashboard
         </Link>
-        <Link to="#" className="hover:text-empowerPurple">
+        <Link to="/resources" className="hover:text-empowerPurple">
           Resources
         </Link>
         <Link to="/community" className="hover:text-empowerPurple">

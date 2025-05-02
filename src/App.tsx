@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import Resources from "./pages/Resources"
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./pages/AboutUs";
@@ -32,6 +33,7 @@ const AnimatedRoutes = () => {
         <Route path="/auth" element={<Auth />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/resources" element={<Resources />} />
         <Route path="/onboarding" element={
           <ProtectedRoute>
             <Onboarding />
