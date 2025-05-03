@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { UserMenu } from "@/components/auth/UserMenu";
 
+
 interface NavbarProps {
   minimal?: boolean;
 }
@@ -13,7 +14,7 @@ interface NavbarProps {
 const Navbar = ({ minimal = false }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
-
+  const { signOut } = useAuth();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -65,7 +66,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
                 {user ? (
                   <Button
                     onClick={() => {
-                      const { signOut } = require("@/context/AuthContext").useAuth();
+                      
                       signOut();
                       setIsMenuOpen(false);
                     }}
