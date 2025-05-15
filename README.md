@@ -1,6 +1,22 @@
 # 🚀 AscendPath
 
-AscendPath is a modern web application designed to generate personalized learning roadmaps for students and women. By leveraging Supabase and the Gemini API, AscendPath delivers tailored educational strategies to empower learners and simplify their journeys.
+AscendPath is a modern web application designed to generate personalized learning roadmaps for students and women. By leveraging Supabase and the Gemini API, AscendPath delivers tailored educational experiences.
+
+---
+
+## 📋 Table of Contents
+1. [Why AscendPath?](#-why-ascendpath)
+2. [Key Features](#-key-features)
+3. [Meet Edura: Your Educational Chatbot](#-meet-edura-your-educational-chatbot)
+4. [Live Demo](#-live-demo)
+5. [Quick Start](#️-quick-start)
+6. [Tech Stack](#-tech-stack)
+7. [Authentication](#-authentication)
+8. [Supabase Integration](#-supabase-integration)
+9. [How to Contribute](#️-how-to-contribute)
+10. [Deployment](#-deployment)
+11. [FAQs](#-faqs)
+12. [Final Thoughts](#-final-thoughts)
 
 ---
 
@@ -20,6 +36,29 @@ AscendPath is a modern web application designed to generate personalized learnin
 - **Real-Time Database**: Powered by Supabase for seamless data handling.
 - **Responsive UI**: Optimized for all devices with Tailwind CSS.
 - **Collaborative Ready**: Easy to extend and integrate new features.
+- **Educational Chatbot**: Edura, an AI-powered assistant for guiding users and answering educational queries.
+
+---
+
+## 🤖 Meet Edura: Your Educational Chatbot
+
+AscendPath features **Edura**, an AI-powered chatbot designed to assist users in navigating the website and answering educational queries.
+
+### Key Abilities
+- **Personalized Assistance**: Guides users through the platform and helps them make the most of its features.
+- **Educational Queries**: Provides quick answers to common questions about learning resources and roadmaps.
+- **User-Friendly Interface**: Seamless interaction with a responsive and intuitive design.
+
+### How It Works
+- Edura leverages advanced AI techniques to understand user queries and offer relevant responses.
+- Integrated with the platform to provide contextual help and recommendations.
+
+### Example Use Cases
+- Ask Edura: "What is the best roadmap to learn Python?"
+- Navigate the platform: "How do I access my saved roadmaps?"
+- Get educational tips: "What resources are available for web development?"
+
+Feel free to explore and interact with Edura to make your learning journey smoother and more engaging!
 
 ---
 
@@ -177,9 +216,22 @@ Deploy your project effortlessly using **Vercel**:
 
 ---
 
+## ❓ FAQs
+
+### Q: What is Edura, and how does it assist users?
+A: Edura is an AI-powered chatbot that helps users navigate the platform and provides educational guidance.
+
+### Q: Can I use AscendPath without a Supabase account?
+A: No, a Supabase account is required to manage authentication and database features.
+
+### Q: How do I report a bug or suggest a feature?
+A: Please create an issue [here](https://github.com/shivam0897-i/AscendPath/issues).
+
+---
+
 ## 🎉 Final Thoughts
 
-AscendPath is more than just a tool—it's a step toward accessible and personalized education for everyone. Whether you're exploring innovative solutions or collaborating on impactful ideas, AscendPath is designed to adapt and grow with your vision.
+AscendPath is more than just a tool—it's a step toward accessible and personalized education for everyone. Whether you're exploring innovative solutions or collaborating on impactful ideas, AscendPath is here to help.
 
 Feel free to explore, contribute, and make this project even better. Together, we can create something truly transformative.
 
