@@ -13,7 +13,7 @@ async function checkIfUrlWorks(url) {
 }
 
 async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
-  const model = "gemini-2.0-flash";
+  const model = "gemini-2.5-flash-preview-04-17";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
   
   const prompt = `
