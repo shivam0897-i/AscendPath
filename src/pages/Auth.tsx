@@ -27,7 +27,7 @@ const Auth = () => {
 
   const handleSuccess = () => {
     console.log("Auth successful, navigating to dashboard.");
-    navigate("/");
+    navigate("/dashboard");
   };
 
   // Render loading indicator or null while checking/redirecting
