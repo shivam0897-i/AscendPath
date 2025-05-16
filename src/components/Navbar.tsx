@@ -103,6 +103,9 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
         <Link to="/community" className="block py-2 hover:text-empowerPurple">
           Community
         </Link>
+        <Link to="/Questionnaire" className="block py-2 hover:text-empowerPurple">
+          Create 
+        </Link>
       </>
     ) : (
       <>
@@ -117,6 +120,9 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
         </Link>
         <Link to="/community" className="hover:text-empowerPurple">
           Community
+        </Link>
+        <Link to="/Questionnaire" className="block py-2 hover:text-empowerPurple">
+          Create 
         </Link>
       </>
     )}

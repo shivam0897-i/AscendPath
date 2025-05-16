@@ -15,6 +15,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./pages/AboutUs";
 import ScrollToTop from "./components/ScrollToTop";
 import Community from "./pages/Community";
+import { CareerQuestionnaire } from "./pages/CareerQuestionnairePage";
 import { AnimatePresence } from "framer-motion"; // Import AnimatePresence
 
 
@@ -33,6 +34,7 @@ const AnimatedRoutes = () => {
         <Route path="/auth" element={<Auth />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/Questionnaire" element={<CareerQuestionnaire/>} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/onboarding" element={
           <ProtectedRoute>
