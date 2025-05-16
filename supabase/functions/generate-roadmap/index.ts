@@ -141,65 +141,101 @@ Create a highly detailed, fully personalized learning roadmap for a user based o
 
 The roadmap must be realistic, motivating, actionable, and customized to the user's profile.
 
---- 
+---
 
 **STRICT GUIDELINES:**
 
 - **Resources** must be real, verifiable, working, and come from well-known, trusted platforms.
 - **Never invent links** or use fake placeholders. If no good resource is available, skip rather than invent.
-- **You can use live search (Google Search) if you need to find real working links or current alternatives. Only choose links that you have verified from search results.
+- **Use live search** (Google Search) to find the best and most current resources if necessary.
+- **Only include resources that are accessible and appropriate to the user’s preferences.**
 
-- **Match platforms to topics**:
-  - Coding/Software Development: LeetCode, HackerRank, Codeforces, FreeCodeCamp, GitHub.
-  - Web Development: MDN Web Docs, W3Schools, freeCodeCamp.
-  - Data Science/Machine Learning: Fast.ai, DeepLearning.AI, TensorFlow.org, Kaggle, edX.
-  - Research Papers: ArXiv, ResearchGate, Semantic Scholar.
-  - Certifications: Coursera, edX, official vendor sites (AWS, Google Cloud, etc.).
-  - Tutorials & Blogs: Medium, Dev.to, Official Company Blogs.
-  - General Learning: Coursera, edX, Udemy, Khan Academy, YouTube.
-- Prefer resources that are:
-  - Free or offer free tiers where possible.
-  - Highly rated (e.g., above 4.5★ if rating exists).
-  - Recently updated (ideally within the last 1–2 years).
-- **Match resource type to learning style** if available (e.g., prefer videos if user likes videos).
-- Include **practical projects, real-world exercises, or challenges** in appropriate milestones.
-- If multiple excellent resources exist, list one main resource + optionally up to two alternatives.
-- If the user's goal involves certifications, prioritize certification-aligned resources where available.
+---
 
---- 
+**Match platforms to topics:**
 
-**OUTPUT FORMAT:** (Strict JSON, no extra text, no markdown)
+- **Coding/Software Development**:  
+  LeetCode, HackerRank, Codeforces, FreeCodeCamp, GitHub, Codewars, Exercism, GeeksforGeeks, JetBrains Academy, Codecademy
+
+- **Web Development**:  
+  MDN Web Docs, W3Schools, FreeCodeCamp, CSS-Tricks, Scrimba, Frontend Masters, The Odin Project
+
+- **Data Science / Machine Learning**:  
+  Fast.ai, DeepLearning.AI, TensorFlow.org, Kaggle, edX, Coursera, DataCamp, MIT OpenCourseWare, Towards Data Science (Medium), Papers with Code
+
+- **Research Papers**:  
+  ArXiv, ResearchGate, Semantic Scholar, IEEE Xplore, Google Scholar, Springer, Nature, ScienceDirect
+
+- **Certifications**:  
+  Coursera, edX, official vendor sites (AWS, Google Cloud, Microsoft Learn, IBM, Oracle, Cisco Networking Academy, CompTIA)
+
+- **Tutorials & Blogs**:  
+  Medium, Dev.to, LogRocket Blog, Smashing Magazine, CSS-Tricks, Official Company Blogs (e.g., Google AI, AWS, Netflix Tech Blog), Hashnode
+
+- **General Learning**:  
+  Coursera, edX, Udemy, Khan Academy, YouTube (CrashCourse, freeCodeCamp, The Net Ninja, Fireship, Academind), LinkedIn Learning, OpenLearn
+
+- **Tech**:  
+  TechCrunch, The Verge, Wired, IEEE Spectrum, Stack Overflow, Hacker News, GitHub Trending
+
+- **Business**:  
+  Harvard Business Review, Investopedia, Bloomberg, Forbes, Entrepreneur, Y Combinator Library, McKinsey Insights
+
+- **Healthcare**:  
+  PubMed, WebMD, Healthline, Medscape, Mayo Clinic, WHO, CDC, NIH, BMJ
+
+- **Education**:  
+  Khan Academy, Coursera, edX, TED-Ed, OpenStax, Academic Earth, Class Central, FutureLearn
+
+- **Arts**:  
+  Google Arts & Culture, ArtStation, DeviantArt, The Met Collection, MoMA Learning, Skillshare (Art), Domestika
+
+- **Science**:  
+  NASA.gov, National Geographic, Science.org, Nature, Scientific American, HowStuffWorks, NOVA PBS
+
+- **Other (Cross-disciplinary)**:  
+  Wikipedia, YouTube (Veritasium, Kurzgesagt, CrashCourse), Quora, Reddit (r/AskScience, r/AskAcademia), Library Genesis, Open Culture, Archive.org
+
+---
+
+**Resource Selection Priorities:**
+- Prefer free or freemium resources.
+- Prefer resources with high ratings (e.g., 4.5★ or higher).
+- Prefer recently updated materials (within the past 1–2 years).
+- Match resource type to user’s learning style (videos, articles, interactive, etc.).
+- Include real-world projects, challenges, or case studies in milestones.
+
+---
+
+**OUTPUT FORMAT:** (Strict JSON)
 
 Root object:
-- 'title': string (e.g., "Personalized Roadmap for [Name]")
-- 'description': string (brief overview of the approach)
-- 'phases': array of objects:
-  - Each phase must have:
+- 'title': string
+- 'description': string
+- 'phases': array of:
+  - 'title': string
+  - 'description': string
+  - 'position': integer
+  - 'milestones': array of:
     - 'title': string
     - 'description': string
-    - 'position': integer (starting from 1)
-    - 'milestones': array of objects:
-      - Each milestone must have:
-        - 'title': string
-        - 'description': string
-        - 'estimated_time': string (e.g., "1 week", "2 days")
-        - 'position': integer (starting from 1 within the phase)
-        - 'resources': array of objects:
-          - Each resource must have:
-            - 'title': string
-            - 'type': string (Course, Tutorial, Book, Article, Video, Documentation)
-            - 'platform': string (e.g., Coursera, Udemy, YouTube, MDN, LeetCode, etc.)
-            - 'url': string (must be a real, verified, accessible link)
-            - 'image_url': string (MUST be a direct, valid URL to a relevant image/thumbnail. Find one if possible. DO NOT LEAVE EMPTY OR NULL.)
-            - 'description': string (Brief description of the resource) // Added description for context
-          - Optional field: 'alternative_resources' (array of up to 2 alternative resource objects with same structure)
+    - 'estimated_time': string
+    - 'position': integer
+    - 'resources': array of:
+      - 'title': string
+      - 'type': string (Course, Tutorial, Book, Article, Video, Documentation)
+      - 'platform': string
+      - 'url': string (REAL, working link)
+      - 'image_url': string (REAL image link, no empty values)
+      - 'description': string (brief but informative)
+      - optional 'alternative_resources': up to 2 objects with same structure
 
---- 
+---
 
-**CRITICAL REMINDERS:**
-- All URLs must be real and tested for existence. No broken, fake, or placeholder links are allowed.
-- JSON must be clean, valid, and ready for parsing.
-- Respond with **only** the JSON object — no introductory or closing text.
+**REMINDERS:**
+- Do NOT include text outside the JSON.
+- Do NOT use placeholders or fake URLs.
+- All content must be parseable and clean.
 `;
 
   try {
