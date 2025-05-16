@@ -16,27 +16,46 @@ async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
   const model = "gemini-1.5-pro-latest";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
   
-  const prompt = `
-A learning resource was found to be broken.
-You can use live search (Google Search) if you need to find real working links or current alternatives. Only choose links that you have verified from search results.
+  const prompt = `A learning resource has been identified as broken or inaccessible.
+You are authorized to perform live searches (e.g., Google Search) to locate a verified, real, and currently accessible alternative.
+Only provide links after confirming their validity and relevance.
 
+Special instructions for YouTube links:
+- Always verify that the YouTube URL uses the canonical video format:
+  - https://www.youtube.com/watch?v=VIDEO_ID
+  - or https://youtu.be/VIDEO_ID
+- Avoid URLs with additional query parameters that may lead to “no result found” pages, such as playlist-only links or region-restricted URLs.
+- Confirm by opening the link that the video is live and accessible in the general region.
+- If a direct working link is not found, search by video title or channel name to find an equivalent, valid video.
 
-Please suggest a real, currently working alternative based on the following:
+Based on the following details, find a suitable alternative resource that matches the original topic and learning format:
+
 - Title: "${resource.title}"
-- Type: ${resource.type}
+- Type: ${resource.type} (e.g., Course, Tutorial, Video, Article, Documentation)
 - Platform (if known): ${resource.platform}
-- Topic: Same as original
-- Trustworthy platforms: geekforgeeks , Coursera, edX, YouTube, freeCodeCamp, MDN, LeetCode, Fast.ai, etc.
+- Topic: Same as the original resource's subject area
+- Preferred sources (prioritize these trusted platforms):
+  GeekforGeeks, Coursera, edX, YouTube, freeCodeCamp, MDN Web Docs, LeetCode, Fast.ai, Kaggle, HackerRank, Official Vendor Sites
 
-Respond with ONLY a JSON object like:
+Your response MUST be a JSON object exactly as follows, with no extra text:
+
 {
-  "title": "...",
-  "type": "...",
-  "platform": "...",
-  "url": "https://...",
-  "image_url": "..."
+  "title": "Alternative resource title",
+  "type": "Resource type",
+  "platform": "Platform name",
+  "url": "https://valid-resource-link",
+  "image_url": "https://direct-link-to-resource-thumbnail-or-cover-image"
 }
-If no good alternative exists, respond with: null
+
+If no appropriate alternative is found, respond with the JSON value:
+
+null
+
+**IMPORTANT:**
+- Do NOT invent or guess URLs.
+- Do NOT provide broken, expired, or paywalled resources unless explicitly stated.
+- Ensure the alternative is as close in scope and quality to the original as possible.
+
   `;
 
   try {
