@@ -1,6 +1,6 @@
 # 🚀 AscendPath
 
-AscendPath is a modern web application designed to generate personalized learning roadmaps for students and women. By leveraging Supabase and the Gemini API, AscendPath delivers tailored educational experiences.
+AscendPath is a modern web application designed to generate personalized learning roadmaps for students and working professionals. By leveraging Supabase and the Gemini API, AscendPath delivers tailored educational experiences.
 
 ---
 
@@ -23,7 +23,7 @@ AscendPath is a modern web application designed to generate personalized learnin
 ## 🌟 Why AscendPath?
 
 - **Personalized Learning Roadmaps**: Tailored educational paths based on user input.
-- **Empowering Women & Students**: Focused on making learning accessible and effective.
+- **Empowering Working professionals & Students**: Focused on making learning accessible and effective.
 - **Modern Tech Stack**: Built with Supabase, React, and Tailwind CSS.
 - **Scalable & Modular**: Designed for flexibility and future innovation.
 

@@ -51,7 +51,7 @@ export default function AboutUs() {
               <span className="text-[#8B7CFF]">AscendPath</span>
             </h1>
             <p className="text-gray-600 text-base md:text-lg mb-8"> {/* Changed text-lg to text-base md:text-lg */}
-              Empowering women and students through personalized education and community support
+              Empowering working professionals and students through personalized education and community support
             </p>
           </div>
         </section>
@@ -82,7 +82,7 @@ export default function AboutUs() {
                 advancement through personalized learning experiences.
               </p>
               <p className="text-gray-600 mb-4">
-                What began as a small initiative to help women and students navigate their educational journeys has grown into a
+                What began as a small initiative to help working professionals and students navigate their educational journeys has grown into a
                 comprehensive platform that serves thousands of learners worldwide.
               </p>
               <p className="text-gray-600">
@@ -100,7 +100,7 @@ export default function AboutUs() {
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
               <p className="text-gray-600 text-lg">
-                To empower women and student through accessible, personalized education that adapts to their unique needs and
+                To empower working professionals and student through accessible, personalized education that adapts to their unique needs and
                 circumstances.
               </p>
             </div>
@@ -150,7 +150,7 @@ export default function AboutUs() {
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-center">Community</h3>
                 <p className="text-gray-600 text-center">
-                  We foster a supportive network where women and students can connect, collaborate, and grow together.
+                  We foster a supportive network where working professionals and students can connect, collaborate, and grow together.
                 </p>
               </div>
 
@@ -227,7 +227,7 @@ export default function AboutUs() {
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Inclusivity</h3>
                   <p className="text-gray-600">
-                    We believe in creating educational opportunities that are accessible to women and students from all backgrounds,
+                    We believe in creating educational opportunities that are accessible to working professionals and students from all backgrounds,
                     regardless of their circumstances.
                   </p>
                 </div>
@@ -240,7 +240,7 @@ export default function AboutUs() {
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Empowerment</h3>
                   <p className="text-gray-600">
-                    We empower women and students to take control of their educational journey and develop the confidence to pursue
+                    We empower working professionals and students to take control of their educational journey and develop the confidence to pursue
                     their goals.
                   </p>
                 </div>
@@ -280,7 +280,7 @@ export default function AboutUs() {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-6">Join Our Community</h2>
             <p className="text-gray-600 text-lg mb-8">
-              Ready to chart your own educational journey? Join thousands of women and students who are transforming their lives
+              Ready to chart your own educational journey? Join thousands of working professionals and students who are transforming their lives
               through personalized learning.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
