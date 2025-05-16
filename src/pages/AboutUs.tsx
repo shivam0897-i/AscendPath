@@ -185,7 +185,7 @@ export default function AboutUs() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl font-bold mb-6">Our Team</h2>
             <p className="text-gray-600 text-lg">
-              Meet the passionate individuals behind AscendPath who are dedicated to transforming education for women
+              Meet the passionate individuals behind AscendPath who are dedicated to transforming education for students
               worldwide.
             </p>
           </div>

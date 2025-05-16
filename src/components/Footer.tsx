@@ -10,7 +10,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">AscendPath</h3>
             <p className="text-gray-600 mb-4 text-sm">
-              Empowering women through personalized educational roadmaps.
+              Empowering students through personalized educational roadmaps.
             </p>
             <div className="flex space-x-4">
               <a href="https://www.facebook.com/" className="text-gray-400 hover:text-empowerPurple">
