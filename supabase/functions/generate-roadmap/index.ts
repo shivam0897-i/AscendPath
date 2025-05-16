@@ -54,7 +54,8 @@ If no good alternative exists, respond with: null
               }
             ]
           }
-        ],tools: [{ type: "retrieval" }] // This enables Google Search grounding
+        ]
+        // ,tools: [{ type: "retrieval" }] // This enables Google Search grounding
       })
     });
 
@@ -216,7 +217,8 @@ Root object:
               }
             ]
           }
-        ],tools: [{ type: "retrieval" }] // This enables Google Search grounding
+        ]
+        // ,tools: [{ type: "retrieval" }] // This enables Google Search grounding
       })
     });
 
