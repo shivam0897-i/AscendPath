@@ -175,23 +175,26 @@ The roadmap must be realistic, motivating, actionable, and customized to the use
 - **General Learning**:  
   Coursera, edX, Udemy, Khan Academy, YouTube (CrashCourse, freeCodeCamp, The Net Ninja, Fireship, Academind), LinkedIn Learning, OpenLearn
 
-- **Tech**:  
-  TechCrunch, The Verge, Wired, IEEE Spectrum, Stack Overflow, Hacker News, GitHub Trending
+- **Commerce / Business**:  
+  Coursera, edX, LinkedIn Learning, Google Scholar, Khan Academy, MIT OpenCourseWare
 
-- **Business**:  
-  Harvard Business Review, Investopedia, Bloomberg, Forbes, Entrepreneur, Y Combinator Library, McKinsey Insights
+- **News / Current Events**:  
+  The Wall Street Journal, CNBC, Forbes, Inc
 
-- **Healthcare**:  
-  PubMed, WebMD, Healthline, Medscape, Mayo Clinic, WHO, CDC, NIH, BMJ
+- **Medical**:  
+  OnlineMedEd, AccessMedicine (McGraw Hill), AMBOSS, Medscape, Khan Academy, [AIMS Education YouTube List](https://aimseducation.edu/blog/20-best-medical-youtube-channels-to-follow-this-year)
 
 - **Education**:  
-  Khan Academy, Coursera, edX, TED-Ed, OpenStax, Academic Earth, Class Central, FutureLearn
+  Coursera, edX, Khan Academy, BYJU'S, SWAYAM, NCERT e-Pathshala, DIKSHA, Lumen Learning, TED-Ed, LinkedIn Learning
 
-- **Arts**:  
-  Google Arts & Culture, ArtStation, DeviantArt, The Met Collection, MoMA Learning, Skillshare (Art), Domestika
+- **Art & Design**:  
+  Coursera, edX, Skillshare, Adobe Creative Cloud Tutorials (Adobe Learn), Udemy, CreativeLive, Autodesk Knowledge Network, Sketch App Resources, New Masters Academy, Watts Atelier, Behance
 
 - **Science**:  
   NASA.gov, National Geographic, Science.org, Nature, Scientific American, HowStuffWorks, NOVA PBS
+
+- **CS-Related YouTube Channels**:  
+  freeCodeCamp, CS Dojo, Traversy Media, The Coding Train, Computerphile
 
 - **Other (Cross-disciplinary)**:  
   Wikipedia, YouTube (Veritasium, Kurzgesagt, CrashCourse), Quora, Reddit (r/AskScience, r/AskAcademia), Library Genesis, Open Culture, Archive.org
@@ -236,6 +239,7 @@ Root object:
 - Do NOT include text outside the JSON.
 - Do NOT use placeholders or fake URLs.
 - All content must be parseable and clean.
+
 `;
 
   try {
