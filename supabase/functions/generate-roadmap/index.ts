@@ -13,11 +13,13 @@ async function checkIfUrlWorks(url) {
 }
 
 async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
-  const model = "gemini-2.5-pro-preview-05-06";
+  const model = "gemini-1.5-pro-latest";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
   
   const prompt = `
 A learning resource was found to be broken.
+You can use live search (Google Search) if you need to find real working links or current alternatives. Only choose links that you have verified from search results.
+
 
 Please suggest a real, currently working alternative based on the following:
 - Title: "${resource.title}"
@@ -52,7 +54,7 @@ If no good alternative exists, respond with: null
               }
             ]
           }
-        ]
+        ],tools: [{ type: "retrieval" }] // This enables Google Search grounding
       })
     });
 
@@ -144,6 +146,8 @@ The roadmap must be realistic, motivating, actionable, and customized to the use
 
 - **Resources** must be real, verifiable, working, and come from well-known, trusted platforms.
 - **Never invent links** or use fake placeholders. If no good resource is available, skip rather than invent.
+- **You can use live search (Google Search) if you need to find real working links or current alternatives. Only choose links that you have verified from search results.
+
 - **Match platforms to topics**:
   - Coding/Software Development: LeetCode, HackerRank, Codeforces, FreeCodeCamp, GitHub.
   - Web Development: MDN Web Docs, W3Schools, freeCodeCamp.
@@ -212,7 +216,7 @@ Root object:
               }
             ]
           }
-        ]
+        ],tools: [{ type: "retrieval" }] // This enables Google Search grounding
       })
     });
 
