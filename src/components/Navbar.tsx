@@ -66,7 +66,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
                 {user ? (
                   <Button
                     onClick={() => {
-                      
+
                       signOut();
                       setIsMenuOpen(false);
                     }}
@@ -104,7 +104,7 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
           Community
         </Link>
         <Link to="/Questionnaire" className="block py-2 hover:text-empowerPurple">
-          Create 
+          Find Career
         </Link>
       </>
     ) : (
@@ -122,7 +122,7 @@ const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
           Community
         </Link>
         <Link to="/Questionnaire" className="block py-2 hover:text-empowerPurple">
-          Create 
+          Find Career
         </Link>
       </>
     )}
