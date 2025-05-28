@@ -64,7 +64,7 @@ Feel free to explore and interact with Edura to make your learning journey smoot
 
 ## 🚀 Live Demo
 
-Check out the live version of AscendPath: [AscendPath](https://ascendpath.vercel.app)
+Check out the live version of AscendPath: [AscendPath](https://ascendpath.xyz)
 
 ---
 
