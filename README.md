@@ -4,8 +4,8 @@
 
 ## 🏆 Team Details & Overview
 
-- **Team Name:** [Your Team Name Here]
-- **Problem Statement Name:** [Insert Problem Statement Name]
+- **Team Name:** HackHawks
+- **Problem Statement Name:** AI-Driven Career Counseling System for Students
 - **Project Title:** AscendPath
 - **Brief Project Description:**  
   AscendPath is a modern web application that generates personalized learning roadmaps for students and working professionals. Leveraging Supabase, Gemini API, and IBM Watson AI, AscendPath delivers tailored educational paths and interactive guidance via Edura, an AI-powered chatbot. The platform aims to make learning accessible, effective, and engaging for everyone.
