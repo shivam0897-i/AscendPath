@@ -73,7 +73,7 @@ Feel free to explore and interact with Edura to make your learning journey smoot
 ## 🚀 Live Demo & Video
 
 - **Live Demo:** [AscendPath](https://ascendpath.xyz)
-- **Demo Video (max 2 minutes):** [Watch here](#) <!-- Replace # with your demo video link -->
+- **Demo Video (max 2 minutes):** [Watch here](https://drive.google.com/file/d/1MhQSESOujMkOKxJyuS2bTrX_ps579xtf/view?usp=sharing) <!-- Replace # with your demo video link -->
 
 ---
 
