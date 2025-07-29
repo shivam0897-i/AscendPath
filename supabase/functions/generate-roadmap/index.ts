@@ -13,7 +13,7 @@ async function checkIfUrlWorks(url) {
 }
 
 async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
-  const model = "gemini-1.5-pro-latest";
+  const model = "gemini-2.5-pro";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
   
   const prompt = `
@@ -125,7 +125,7 @@ async function generateRoadmapWithGemini(profile) {
     throw new Error("GEMINI_API_KEY environment variable is not set.");
   }
 
-  const model = "gemini-2.5-pro-preview-05-06";
+  const model = "gemini-2.5-pro";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
 
   const prompt = `You are an expert learning path designer and resource researcher.
