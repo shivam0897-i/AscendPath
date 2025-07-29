@@ -1,2 +1,5 @@
 .env
 node_modules
+
+# Supabase temporary files
+supabase/.temp/
