@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
-const MODEL_NAME = 'gemini-2.5-flash-preview-04-17';
+const MODEL_NAME = 'gemini-2.5-flash';
 const GENERATION_CONFIG = {
   temperature: 0.4,
   topK: 0,
