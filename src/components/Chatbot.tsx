@@ -1,68 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, Content } from '@google/generative-ai';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bot, User, SendHorizonal, Trash } from 'lucide-react'; // Added Trash icon
+import { Bot, User, SendHorizonal, Trash } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-
-const API_KEY = import.meta.env.GEMINI_API_KEY;
-
-const MODEL_NAME = 'gemini-2.5-flash';
-const GENERATION_CONFIG = {
-  temperature: 0.4,
-  topK: 0,
-  topP: 0.85,
-  maxOutputTokens: 2048,
-};
-const SAFETY_SETTINGS = [
-  { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-];
-
-const SYSTEM_INSTRUCTION = `You are AscendPath Assistant — a warm, supportive, and knowledgeable AI designed to help users, especially working professionals and students, navigate their educational and career development journey.
-
-Only mention the creator if directly asked. If a user asks "Who created you?" or "Who developed this assistant?", respond with:
-"I was created by Shivam, the developer behind AscendPath, to support and empower learners like you!"
-
-Core Responsibilities:
-- Help users create personalized learning roadmaps using AscendPath.
-- Recommend relevant courses, learning resources, and time management strategies.
-- Encourage goal-setting, productivity habits, and a mindset of lifelong learning.
-- Offer motivational support to build user confidence.
-- Guide users in using key features of the AscendPath platform.
-
-Website Navigation Support:
-When users mention their goals, skills, or interests:
-- Direct them to the Personalized Roadmap Tool:
-  “Start building your personalized roadmap by visiting the [Onboarding Tool](https://ascendpath.xyz/onboarding)!”
-- Guide them to Learning Resources:
-  “Explore relevant learning resources and materials in our [Resources Page](https://ascendpath.xyz/resources)!”
-- Help them manage their learning journey in the Dashboard:
-  “Track and update your learning progress in your [Dashboard](https://ascendpath.xyz/dashboard).”
-
-Tone & Behavior Guidelines:
-- Always be warm, encouraging, and supportive.
-- Use a motivational, growth-oriented tone.
-- Format responses with Markdown for clarity (e.g., **bold**, bullet points, headings).
-- Ask clarifying questions when needed to personalize advice.
-- Gently redirect conversations back to education, development, or learning if they go off-topic.
-- Provide clear, practical, and actionable responses.
-- Don't give any code
-
-Your mission is to empower every user to grow confidently on their learning journey.
-`;
-
 interface Message {
   role: 'user' | 'model';
   text: string;
+}
+
+interface ApiMessage {
+  role: 'user' | 'model';
+  parts: { text: string }[];
 }
 
 const Chatbot: React.FC = () => {
@@ -78,17 +32,6 @@ const Chatbot: React.FC = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
-  const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
-  const model = genAI ? genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    generationConfig: GENERATION_CONFIG,
-    safetySettings: SAFETY_SETTINGS,
-    systemInstruction: {
-      role: "system",
-      parts: [{ text: SYSTEM_INSTRUCTION }],
-    }
-  }) : null;
-
   const scrollToBottom = () => {
     if (viewportRef.current) {
       viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
@@ -101,17 +44,15 @@ const Chatbot: React.FC = () => {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!model || !input.trim() || isLoading) {
-      if (!model) {
-        setError("Chatbot is not configured correctly. API Key might be missing.");
-      }
+    if (!input.trim() || isLoading) {
       return;
     }
 
     const userMessage: Message = { role: 'user', text: input };
     const currentInput = input;
 
-    const historyForAPI: Content[] = messages
+    // Convert messages to API format (excluding the initial welcome message)
+    const historyForAPI: ApiMessage[] = messages
       .filter((msg, index) => !(index === 0 && msg.role === 'model'))
       .map(msg => ({
         role: msg.role,
@@ -125,25 +66,38 @@ const Chatbot: React.FC = () => {
     requestAnimationFrame(scrollToBottom);
 
     try {
-      const chat = model.startChat({
-        history: historyForAPI,
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          history: historyForAPI,
+          input: currentInput,
+        }),
       });
 
-      const result = await chat.sendMessage(currentInput);
-      const response = result.response;
-      const modelMessage: Message = { role: 'model', text: response.text() };
-      setMessages((prev) => [...prev, modelMessage]);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to get response');
+      }
+
+      if (data.success && data.text) {
+        const modelMessage: Message = { role: 'model', text: data.text };
+        setMessages((prev) => [...prev, modelMessage]);
+      } else {
+        throw new Error('Invalid response format');
+      }
+
     } catch (err: any) {
-      console.error('Error calling Gemini API:', err);
-      let errorMessage = `Failed to get response from AI.`;
-      if (err instanceof Error) {
+      console.error('Error calling API:', err);
+      let errorMessage = 'Failed to get response from AI.';
+      
+      if (err.message) {
         errorMessage += ` ${err.message}`;
-      } else if (typeof err === 'string') {
-        errorMessage += ` ${err}`;
       }
-      if (err.message?.includes('API key not valid')) {
-        errorMessage = "Error: Invalid Gemini API Key provided.";
-      }
+      
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -160,7 +114,6 @@ const Chatbot: React.FC = () => {
       toast.success("Chat history cleared ✅");
     }
   };
-  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -271,17 +224,17 @@ const Chatbot: React.FC = () => {
         <div className="flex items-center space-x-2 w-full">
           <Input
             type="text"
-            placeholder={!API_KEY ? "Chat unavailable: API Key missing" : "Ask about learning paths..."}
+            placeholder="Ask about learning paths..."
             value={input}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
-            disabled={!model}
+            disabled={isLoading}
             className="flex-1 h-10 rounded-lg border-gray-300 focus:ring-empowerPurple focus:border-empowerPurple"
             aria-label="Chat input"
           />
           <Button
             onClick={handleSend}
-            disabled={isLoading || !input.trim() || !model}
+            disabled={isLoading || !input.trim()}
             className="bg-empowerPurple hover:bg-empowerPurple/90 text-white rounded-lg h-10 w-10 p-0 flex items-center justify-center"
             aria-label="Send message"
           >
