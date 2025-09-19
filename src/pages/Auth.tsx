@@ -44,11 +44,11 @@ const Auth = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar minimal />
 
-      <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+      <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-md w-full space-y-8 bg-card p-8 rounded-lg shadow-md">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold gradient-text">AscendPath</h2>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-muted-foreground">
               {activeTab === "login"
                 ? "Log in to your account"
                 : "Create a new account"}

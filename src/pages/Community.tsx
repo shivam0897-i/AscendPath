@@ -109,12 +109,12 @@ export default function CommunityPage() {
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
-      className="min-h-screen bg-white flex flex-col"
+      className="min-h-screen bg-background flex flex-col"
     >
       <Navbar />
       {/* Wrap content in a main tag with container styles */}
       <main className="container mx-auto px-4 py-12 flex-grow">
-        {/* KEEP EXISTING CONTENT */} 
+        {/* KEEP EXISTING CONTENT */}
         <div className="flex flex-col items-center text-center mb-12">
           {/* Updated heading styles to match Privacy Policy (removed lg:text-6xl) */}
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -123,7 +123,7 @@ export default function CommunityPage() {
               Learning Community
             </span>
           </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mb-8">
+          <p className="text-lg text-muted-foreground max-w-3xl mb-8">
             Connect with fellow students, share your journey, and collaborate on educational roadmaps. Our community is
             built to support and empower each other through every step of the learning process.
           </p>
@@ -152,10 +152,8 @@ export default function CommunityPage() {
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start mb-2">
-                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                        {discussion.category}
-                      </Badge>
-                      <div className="flex items-center text-gray-500 text-sm">
+                      <Badge variant="secondary">{discussion.category}</Badge>
+                      <div className="flex items-center text-muted-foreground text-sm">
                         <MessageSquare className="h-4 w-4 mr-1" />
                         {discussion.replies}
                       </div>
@@ -163,7 +161,7 @@ export default function CommunityPage() {
                     <CardTitle className="text-xl">{discussion.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 line-clamp-3">{discussion.excerpt}</p>
+                    <p className="text-muted-foreground line-clamp-3">{discussion.excerpt}</p>
                   </CardContent>
                   <CardFooter className="flex justify-between pt-2 border-t">
                     <div className="flex items-center">
@@ -173,7 +171,7 @@ export default function CommunityPage() {
                       </Avatar>
                       <span className="text-sm font-medium">{discussion.author.name}</span>
                     </div>
-                    <span className="text-sm text-gray-500">{discussion.date}</span>
+                    <span className="text-sm text-muted-foreground">{discussion.date}</span>
                   </CardFooter>
                 </Card>
               ))}
@@ -188,9 +186,7 @@ export default function CommunityPage() {
               {studyGroups.map((group, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
-                    <Badge variant="outline" className="w-fit mb-2 bg-blue-50 text-blue-700 border-blue-200">
-                      {group.topic}
-                    </Badge>
+                    <Badge variant="secondary" className="w-fit mb-2">{group.topic}</Badge>
                     <CardTitle>{group.name}</CardTitle>
                     <CardDescription className="flex items-center">
                       <Users className="h-4 w-4 mr-1" />
@@ -198,16 +194,16 @@ export default function CommunityPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 mb-4">{group.description}</p>
+                    <p className="text-muted-foreground mb-4">{group.description}</p>
                     <div className="flex -space-x-2">
                       {[1, 2, 3, 4].map((i) => (
-                        <Avatar key={i} className="border-2 border-white">
+                        <Avatar key={i} className="border-2 border-background">
                           <AvatarImage src={`/placeholder.svg?height=32&width=32`} />
                           <AvatarFallback>U{i}</AvatarFallback>
                         </Avatar>
                       ))}
                       {group.members > 4 && (
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border-2 border-white text-xs font-medium">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted border-2 border-background text-xs font-medium">
                           +{group.members - 4}
                         </div>
                       )}
@@ -225,40 +221,40 @@ export default function CommunityPage() {
           </TabsContent>
         </Tabs>
 
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 md:p-12 mb-16">
+        <div className="bg-muted/40 rounded-2xl p-8 md:p-12 mb-16">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-4">Start Your Own Study Group</h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Have a specific learning goal? Create a study group and connect with students who share your interests.
                 Lead discussions, share resources, and accelerate your learning journey together.
               </p>
               <div className="space-y-4">
                 <div className="flex items-start">
-                  <div className="bg-white p-2 rounded-full mr-4 shadow-sm">
+                  <div className="bg-muted p-2 rounded-full mr-4 shadow-sm">
                     <Users className="h-5 w-5 text-purple-500" />
                   </div>
                   <div>
                     <h3 className="font-medium">Build Your Network</h3>
-                    <p className="text-sm text-gray-500">Connect with peers who share your educational goals</p>
+                    <p className="text-sm text-muted-foreground">Connect with peers who share your educational goals</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-white p-2 rounded-full mr-4 shadow-sm">
+                  <div className="bg-muted p-2 rounded-full mr-4 shadow-sm">
                     <BookOpen className="h-5 w-5 text-purple-500" />
                   </div>
                   <div>
                     <h3 className="font-medium">Collaborative Learning</h3>
-                    <p className="text-sm text-gray-500">Share resources and learn from different perspectives</p>
+                    <p className="text-sm text-muted-foreground">Share resources and learn from different perspectives</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-white p-2 rounded-full mr-4 shadow-sm">
+                  <div className="bg-muted p-2 rounded-full mr-4 shadow-sm">
                     <Award className="h-5 w-5 text-purple-500" />
                   </div>
                   <div>
                     <h3 className="font-medium">Track Progress Together</h3>
-                    <p className="text-sm text-gray-500">Stay motivated and celebrate achievements as a group</p>
+                    <p className="text-sm text-muted-foreground">Stay motivated and celebrate achievements as a group</p>
                   </div>
                 </div>
               </div>
@@ -267,8 +263,8 @@ export default function CommunityPage() {
               </Button>
             </div>
             <div className="relative hidden md:block">
-              <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-200 rounded-full opacity-50"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-blue-200 rounded-full opacity-50"></div>
+              <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-800/20 rounded-full opacity-50"></div>
+              <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-blue-800/20 rounded-full opacity-50"></div>
               {/* Replace with actual image component or path */}
               <img
                 src="/placeholder.svg?height=400&width=400"
