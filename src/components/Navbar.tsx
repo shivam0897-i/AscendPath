@@ -2,10 +2,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { UserMenu } from "@/components/auth/UserMenu";
-
+import { useTheme } from "@/context/ThemeProvider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavbarProps {
   minimal?: boolean;
@@ -20,7 +26,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
   };
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-background text-foreground shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
@@ -34,11 +40,15 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
                 <NavLinks />
-                {user ? <UserMenu /> : <AuthButtons />}
+                <div className="flex items-center space-x-4">
+                  {user ? <UserMenu /> : <AuthButtons />}
+                  <ThemeToggle />
+                </div>
               </div>
 
               {/* Mobile menu button */}
-              <div className="md:hidden">
+              <div className="md:hidden flex items-center space-x-2">
+                <ThemeToggle />
                 <Button variant="ghost" size="sm" onClick={toggleMenu} className="p-1">
                   {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </Button>
@@ -66,7 +76,6 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
                 {user ? (
                   <Button
                     onClick={() => {
-
                       signOut();
                       setIsMenuOpen(false);
                     }}
@@ -84,6 +93,33 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
         )}
       </div>
     </nav>
+  );
+};
+
+const ThemeToggle = () => {
+  const { setTheme } = useTheme();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("light")}>
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          System
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
