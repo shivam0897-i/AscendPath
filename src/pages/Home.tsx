@@ -113,7 +113,7 @@ const Home = () => {
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Chart Your Own <span className="gradient-text">Educational Journey</span>
               </h1>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-muted-foreground mb-8">
                 A personalized learning platform designed to empower working professionals and students with custom educational roadmaps tailored to your goals, skills, and schedule.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -148,23 +148,23 @@ const Home = () => {
         </section>
 
         {/* Feature Section */}
-        <section className="py-16 bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-muted/40 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">How We Empower Your Education</h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                 Our platform offers a comprehensive set of tools to help you navigate your educational journey with confidence.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature, index) => (
-                <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <div key={index} className="bg-card p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                   <div className="h-12 w-12 bg-empowerPurple-light rounded-full flex items-center justify-center mb-4">
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <p className="text-muted-foreground">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -175,28 +175,28 @@ const Home = () => {
         <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Our simple 3-step process creates your personalized educational roadmap
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="h-16 w-16 bg-empowerPurple text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
+              <div className="h-16 w-16 bg-empowerPurple text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
               <h3 className="text-xl font-bold mb-2">Share Your Goals</h3>
-              <p className="text-gray-600">Tell us about your educational goals, current skills, and available time.</p>
+              <p className="text-muted-foreground">Tell us about your educational goals, current skills, and available time.</p>
             </div>
 
             <div className="text-center">
-              <div className="h-16 w-16 bg-empowerPurple text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
+              <div className="h-16 w-16 bg-empowerPurple text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
               <h3 className="text-xl font-bold mb-2">Get Your Roadmap</h3>
-              <p className="text-gray-600">Receive a custom learning path with timeline, steps, and resources.</p>
+              <p className="text-muted-foreground">Receive a custom learning path with timeline, steps, and resources.</p>
             </div>
 
             <div className="text-center">
-              <div className="h-16 w-16 bg-empowerPurple text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
+              <div className="h-16 w-16 bg-empowerPurple text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
               <h3 className="text-xl font-bold mb-2">Track Your Progress</h3>
-              <p className="text-gray-600">Follow your roadmap, track milestones, and adjust as needed.</p>
+              <p className="text-muted-foreground">Follow your roadmap, track milestones, and adjust as needed.</p>
             </div>
           </div>
 
@@ -208,19 +208,19 @@ const Home = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="py-16 bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-muted/40 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Success Stories</h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                 Hear from working professionals and students who have transformed their educational journey with our platform
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
+                <div key={index} className="bg-card p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <p className="text-muted-foreground italic mb-4">"{testimonial.quote}"</p>
                   <div className="flex items-center">
                     <img
                       src={testimonial.avatar}
@@ -236,13 +236,13 @@ const Home = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-empowerPurple text-white">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-empowerPurple text-primary-foreground">
           <div className="max-w-7xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Begin Your Journey?</h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
               Take the first step toward your educational and career goals today.
             </p>
-            <Button asChild size="lg" className="bg-white text-empowerPurple hover:bg-gray-100">
+            <Button asChild size="lg" className="bg-primary-foreground text-empowerPurple hover:bg-muted">
               <Link to="/onboarding">Get Started Now</Link>
             </Button>
           </div>
@@ -259,8 +259,8 @@ const Home = () => {
           aria-label="Open Chat"
         >
           <div className="flex items-center">
-            <MessageSquare className="h-6 w-6 text-white" />
-            <span className="text-white ml-2">Edura</span>
+            <MessageSquare className="h-6 w-6 text-primary-foreground" />
+            <span className="text-primary-foreground ml-2">Edura</span>
           </div>
         </Button>
       )}
@@ -274,7 +274,7 @@ const Home = () => {
               onClick={toggleChat}
               variant="ghost"
               size="sm"
-              className="absolute top-2 right-2 p-1 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600"
+              className="absolute top-2 right-2 p-1 rounded-full bg-muted hover:bg-muted/80 text-muted-foreground"
               aria-label="Close Chat"
             >
               <X className="h-4 w-4" />
