@@ -47,20 +47,19 @@ async function checkIfUrlWorks(url: string): Promise<boolean> {
 }
 
 async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
-  const model = "gemini-2.5-pro";
+  const model = "gemini-3-pro-preview";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
   
   const prompt = `
 A learning resource was found to be broken.
-You can use live search (Google Search) if you need to find real working links or current alternatives. Only choose links that you have verified from search results.
-
+Use Google Search to find a real, currently working alternative.
 
 Please suggest a real, currently working alternative based on the following:
 - Title: "${resource.title}"
 - Type: ${resource.type}
 - Platform (if known): ${resource.platform}
 - Topic: Same as original
-- Trustworthy platforms: geekforgeeks , Coursera, edX, YouTube, freeCodeCamp, MDN, LeetCode, Fast.ai, etc.
+- Trustworthy platforms: GeeksforGeeks, Coursera, edX, YouTube, freeCodeCamp, MDN, LeetCode, Fast.ai, etc.
 
 Respond with ONLY a JSON object like:
 {
@@ -88,8 +87,8 @@ If no good alternative exists, respond with: null
               }
             ]
           }
-        ]
-        // ,tools: [{ type: "retrieval" }] // This enables Google Search grounding
+        ],
+        tools: [{ google_search: {} }] // Enable Google Search grounding
       })
     });
 
@@ -159,7 +158,7 @@ async function generateRoadmapWithGemini(profile) {
     throw new Error("GEMINI_API_KEY environment variable is not set.");
   }
 
-  const model = "gemini-2.5-pro";
+  const model = "gemini-3-pro-preview";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
 
   const prompt = `You are an expert learning path designer and resource researcher.
@@ -291,8 +290,13 @@ Root object:
               }
             ]
           }
-        ]
-        // ,tools: [{ type: "retrieval" }] // This enables Google Search grounding
+        ],
+        tools: [{ google_search: {} }], // Enable Google Search grounding for real resources
+        generationConfig: {
+          temperature: 0.7,
+          topP: 0.9,
+          maxOutputTokens: 8192
+        }
       })
     });
 
