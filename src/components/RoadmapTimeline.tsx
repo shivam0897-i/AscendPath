@@ -80,19 +80,19 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
               </div>
 
               {/* Phase Header / Trigger */}
-              <div className="ml-4 flex-grow">
+              <div className="ml-4 flex-grow min-w-0 overflow-hidden">
                 <CollapsibleTrigger asChild>
                    <Button variant="ghost" className="p-0 h-auto w-full justify-between hover:bg-transparent">
-                     <div className="text-left">
-                       <div className="flex items-center">
-                         <h3 className="text-xl font-heading font-semibold mr-2 text-charcoal dark:text-cream">{phase.title}</h3>
-                         <Badge variant="outline" className="text-xs border-terracotta/30 text-terracotta">
+                     <div className="text-left flex-1 min-w-0 pr-2">
+                       <div className="flex items-center flex-wrap gap-2">
+                         <h3 className="text-lg sm:text-xl font-heading font-semibold text-charcoal dark:text-cream break-words">{phase.title}</h3>
+                         <Badge variant="outline" className="text-xs border-terracotta/30 text-terracotta flex-shrink-0">
                            {phase.completionPercentage ?? 0}% complete
                          </Badge>
                        </div>
-                       <p className="text-muted-foreground mt-1">{phase.description}</p>
+                       <p className="text-muted-foreground mt-1 text-sm sm:text-base break-words line-clamp-2">{phase.description}</p>
                      </div>
-                     <ChevronDown className={`h-5 w-5 transition-transform text-terracotta ${openPhases[phaseIndex] ? "transform rotate-180" : ""}`} />
+                     <ChevronDown className={`h-5 w-5 transition-transform text-terracotta flex-shrink-0 ${openPhases[phaseIndex] ? "transform rotate-180" : ""}`} />
                    </Button>
                  </CollapsibleTrigger>
 
@@ -103,7 +103,7 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
             </div>
 
             {/* Phase Content (Milestones) */}
-            <CollapsibleContent className="ml-16 mt-4 space-y-4">
+            <CollapsibleContent className="ml-6 sm:ml-16 mt-4 space-y-4">
               {phase.milestones.map((milestone) => {
                 const isCompleted = milestone.completed;
 
@@ -111,22 +111,22 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
                   <Card key={milestone.id} className={`overflow-hidden border-l-4 shadow-warm hover:shadow-warm-md transition-shadow ${
                     isCompleted ? "border-l-sage" : "border-l-terracotta"
                   }`}>
-                    <CardContent className="p-4 flex items-start justify-between">
+                    <CardContent className="p-3 sm:p-4">
                       {/* Milestone Details */}
-                      <div className="flex-grow mr-4">
-                        <div className="flex items-center mb-1">
+                      <div className="min-w-0">
+                        <div className="flex items-start mb-1">
                            <Checkbox
                               id={`milestone-check-${milestone.id}`}
                               checked={isCompleted}
                               onCheckedChange={() => onMilestoneToggle(milestone.id, isCompleted)}
-                              className="mr-3 border-charcoal/30 data-[state=checked]:bg-terracotta data-[state=checked]:border-terracotta"
+                              className="mr-3 mt-1 flex-shrink-0 border-charcoal/30 data-[state=checked]:bg-terracotta data-[state=checked]:border-terracotta"
                            />
-                           <label htmlFor={`milestone-check-${milestone.id}`} className="font-medium text-lg cursor-pointer text-charcoal dark:text-cream">
+                           <label htmlFor={`milestone-check-${milestone.id}`} className="font-medium text-base sm:text-lg cursor-pointer text-charcoal dark:text-cream break-words">
                               {milestone.title}
                            </label>
                         </div>
 
-                        <p className="text-muted-foreground mt-1 text-sm pl-7"> 
+                        <p className="text-muted-foreground mt-1 text-sm pl-7 break-words"> 
                            {milestone.description}
                         </p>
 
@@ -152,15 +152,14 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
                                     {resource.imageUrl ? (
                                       <img src={resource.imageUrl} alt={resource.title} className="w-full h-full object-cover" />
                                     ) : (
-                                       <BookOpen className="w-5 h-5 text-sage"/> // Use the imported icon
+                                       <BookOpen className="w-5 h-5 text-sage"/>
                                     )}
                                   </div>
-                                  <div className="flex-grow">
-                                    <p className="font-medium group-hover:text-terracotta transition-colors">{resource.title}</p>
-                                    <p className="text-xs text-muted-foreground">{resource.type} • {resource.platform}</p>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-medium group-hover:text-terracotta transition-colors truncate">{resource.title}</p>
+                                    <p className="text-xs text-muted-foreground truncate">{resource.type} • {resource.platform}</p>
                                   </div>
-                                   {/* Use the imported icon */}
-                                   <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-terracotta ml-2 transition-colors" />
+                                   <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-terracotta ml-2 transition-colors flex-shrink-0" />
                                 </a>
                               ))}
                             </div>
