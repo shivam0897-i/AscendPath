@@ -90,7 +90,7 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
                            {phase.completionPercentage ?? 0}% complete
                          </Badge>
                        </div>
-                       <p className="text-muted-foreground mt-1 text-sm sm:text-base break-words line-clamp-2">{phase.description}</p>
+                       <p className="text-muted-foreground mt-1 text-sm sm:text-base whitespace-normal">{phase.description}</p>
                      </div>
                      <ChevronDown className={`h-5 w-5 transition-transform text-terracotta flex-shrink-0 ${openPhases[phaseIndex] ? "transform rotate-180" : ""}`} />
                    </Button>
@@ -156,8 +156,8 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
                                     )}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <p className="font-medium group-hover:text-terracotta transition-colors truncate">{resource.title}</p>
-                                    <p className="text-xs text-muted-foreground truncate">{resource.type} • {resource.platform}</p>
+                                    <p className="font-medium group-hover:text-terracotta transition-colors break-words">{resource.title}</p>
+                                    <p className="text-xs text-muted-foreground">{resource.type} • {resource.platform}</p>
                                   </div>
                                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-terracotta ml-2 transition-colors flex-shrink-0" />
                                 </a>
