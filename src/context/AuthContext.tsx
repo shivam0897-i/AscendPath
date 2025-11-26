@@ -27,8 +27,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        setIsLoading(false); // Moved isLoading to false after setting user/session
-        console.log("Auth state changed:", event, session);
+        setIsLoading(false);
+        // Note: Avoid logging session data in production for security
       }
     );
 
@@ -60,7 +60,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       },
     });
     if (error) {
-      console.error("Sign up error:", error.message);
       toast({
         title: "Sign Up Error",
         description: error.message,
@@ -92,7 +91,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       password,
     });
     if (error) {
-      console.error("Sign in error:", error.message);
       toast({
         title: "Sign In Error",
         description: error.message,
@@ -120,7 +118,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
       if (error) {
-        console.error("Google Sign in error:", error.message);
         toast({
           title: "Google Sign In Error",
           description: error.message,
@@ -136,7 +133,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error("Sign out error:", error.message);
       toast({
         title: "Sign Out Error",
         description: error.message,

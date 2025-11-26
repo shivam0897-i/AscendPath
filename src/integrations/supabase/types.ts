@@ -96,7 +96,7 @@ export type Database = {
       }
       profiles: {
         Row: {
-          challenges: any
+          challenges: string[] | null
           background: string | null
           created_at: string
           email: string | null
@@ -109,6 +109,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          challenges?: string[] | null
           background?: string | null
           created_at?: string
           email?: string | null
@@ -121,6 +122,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          challenges?: string[] | null
           background?: string | null
           created_at?: string
           email?: string | null

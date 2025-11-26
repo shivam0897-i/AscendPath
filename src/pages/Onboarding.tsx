@@ -146,7 +146,6 @@ const Onboarding = () => {
   const onSubmit = async (data: OnboardingValues) => {
     if (!user) {
       toast.error("You must be logged in to save your profile.");
-      console.error("User not found for profile submission.");
       // Optionally redirect to login: navigate('/auth');
       return;
     }
@@ -173,8 +172,6 @@ const Onboarding = () => {
     let profileSaved = false; // Flag to track if profile save was successful
 
     try {
-      console.log("Submitting profile data to Supabase:", profileData);
-
       // Upsert profile data into Supabase
       const { data: savedProfile, error } = await supabase
         .from('profiles')
@@ -183,12 +180,9 @@ const Onboarding = () => {
         .single();
 
       if (error) {
-        console.error("Supabase profile save error details:", error);
         throw error;
       }
 
-      console.log("Profile saved successfully:", savedProfile);
-      // toast.success("Your profile has been saved! . Generating your roadmap...");
       profileSaved = true; // Mark profile as saved
       toast.success("Your profile has been saved! Generating your roadmap...");
       setIsGenerating(true);
@@ -199,7 +193,6 @@ const Onboarding = () => {
 
       if (functionError) throw functionError;
 
-      console.log("Roadmap generation function response:", functionData);
       toast.info("Roadmap is being generated...");
 
       setTimeout(() => {
@@ -209,11 +202,11 @@ const Onboarding = () => {
 
     } catch (error: any) {
       // Catch errors from profile saving or re-thrown function errors
-      console.error("Error during profile save or roadmap trigger:", error);
-      if (!profileSaved) { // Only show profile save error if it failed
-        toast.error(`Failed to save profile: ${error.message || 'Unknown error'}`);
+      if (!profileSaved) {
+        toast.error("Failed to save profile. Please try again.");
+      } else {
+        toast.error("Failed to generate roadmap. Please try again.");
       }
-      // Potentially add different error handling if needed
     } finally {
       setIsSubmitting(false); // Reset submitting state regardless of success/failure
       setIsGenerating(false); // In case roadmap generation fails
@@ -221,30 +214,30 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-warm-gradient">
       <Navbar minimal={true} />
 
       <div className="flex-grow container max-w-3xl px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Create Your Learning Profile</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-heading font-bold mb-2 text-charcoal dark:text-cream">Create Your Learning Profile</h1>
+          <p className="text-muted-foreground">
             Help us understand your goals and circumstances so we can create your perfect learning path.
           </p>
 
           <div className="mt-6">
-            <Progress value={progress} className="h-2 bg-gray-200" />
-            <p className="text-sm text-gray-500 mt-1">Step {step} of {totalSteps}</p>
+            <Progress value={progress} className="h-2 bg-cream/50 [&>div]:bg-gradient-to-r [&>div]:from-terracotta [&>div]:to-sage" />
+            <p className="text-sm text-muted-foreground mt-1">Step {step} of {totalSteps}</p>
           </div>
         </div>
 
-        <Card className="shadow-md">
+        <Card className="shadow-warm border-terracotta/10">
           <CardContent className="pt-6">
             <Form {...form}>
               <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
                 {/* --- Form Steps 1-4 (Content unchanged) --- */}
                 {step === 1 && (
                   <div className="space-y-6 animate-fade-in">
-                    <h2 className="text-xl font-semibold mb-4">Tell us about yourself</h2>
+                    <h2 className="text-xl font-heading font-semibold mb-4 text-charcoal dark:text-cream">Tell us about yourself</h2>
                     <FormField control={form.control} name="name" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Your Name</FormLabel>
@@ -263,7 +256,7 @@ const Onboarding = () => {
                 )}
                 {step === 2 && (
                   <div className="space-y-6 animate-fade-in">
-                    <h2 className="text-xl font-semibold mb-4">Your Goals</h2>
+                    <h2 className="text-xl font-heading font-semibold mb-4 text-charcoal dark:text-cream">Your Goals</h2>
                     <FormField control={form.control} name="goal" render={({ field }) => (
                       <FormItem>
                         <FormLabel>What is your educational or career goal?</FormLabel>
@@ -287,7 +280,7 @@ const Onboarding = () => {
                 )}
                 {step === 3 && (
                   <div className="space-y-6 animate-fade-in">
-                    <h2 className="text-xl font-semibold mb-4">Your Background & Time</h2>
+                    <h2 className="text-xl font-heading font-semibold mb-4 text-charcoal dark:text-cream">Your Background & Time</h2>
                     <FormField control={form.control} name="background" render={({ field }) => (
                       <FormItem>
                         <FormLabel>What is your educational background?</FormLabel>
@@ -320,7 +313,7 @@ const Onboarding = () => {
                     )} />
                     <FormField control={form.control} name="timeCommitment" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>How many hours per week can you commit to learning?<span className="ml-2 text-empowerPurple font-semibold">{field.value} hours</span></FormLabel>
+                        <FormLabel>How many hours per week can you commit to learning?<span className="ml-2 text-terracotta font-semibold">{field.value} hours</span></FormLabel>
                         <FormControl>
                           <Slider min={1} max={40} step={1} value={[field.value]} onValueChange={(vals) => field.onChange(vals[0])} className="py-4" />
                         </FormControl>
@@ -331,7 +324,7 @@ const Onboarding = () => {
                 )}
                 {step === 4 && (
                   <div className="space-y-6 animate-fade-in">
-                    <h2 className="text-xl font-semibold mb-4">Almost there!</h2>
+                    <h2 className="text-xl font-heading font-semibold mb-4 text-charcoal dark:text-cream">Almost there!</h2>
                     <FormField control={form.control} name="challenges" render={({ field }) => (
                       <FormItem>
                         <FormLabel>What challenges might you face in achieving your goals? (Optional)</FormLabel>
@@ -357,13 +350,13 @@ const Onboarding = () => {
                 {/* --- Navigation Buttons (Unchanged) --- */}
                 <div className="flex justify-between pt-4">
                   {step > 1 ? (
-                    <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting}>
+                    <Button type="button" variant="outline" onClick={prevStep} disabled={isSubmitting} className="border-charcoal/20 hover:border-terracotta hover:text-terracotta">
                       <ArrowLeft className="mr-2 h-4 w-4" /> Back
                     </Button>
                   ) : (
                     <div></div>
                   )}
-                  <Button type="button" onClick={nextStep} className="bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isSubmitting}>
+                  <Button type="button" onClick={nextStep} className="bg-terracotta hover:bg-terracotta-dark shadow-warm" disabled={isSubmitting}>
                     {isSubmitting ? ("Generating roadmap") : step === totalSteps ? (<><Check className="mr-2 h-4 w-4" /> Complete</>) : (<>Next <ArrowRight className="ml-2 h-4 w-4" /></>)}
                   </Button>
                 </div>
@@ -374,12 +367,12 @@ const Onboarding = () => {
       </div>
       {isGenerating && (
 
-        <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-cream/90 backdrop-blur-sm flex items-center justify-center">
 
           <div className="text-center">
-            <Loader2 className="animate-spin h-10 w-10 text-empowerPurple mx-auto mb-4" />
-            <p className="text-lg font-medium text-empowerPurple">Generating your roadmap...</p>
-            <p className="text-sm text-gray-500 mt-1">This may take a few moments</p>
+            <Loader2 className="animate-spin h-10 w-10 text-terracotta mx-auto mb-4" />
+            <p className="text-lg font-heading font-medium text-terracotta">Charting your path...</p>
+            <p className="text-sm text-charcoal/60 mt-1">This may take a few moments</p>
           </div>
         </div>
       )}

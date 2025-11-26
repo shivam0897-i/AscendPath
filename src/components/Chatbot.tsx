@@ -91,14 +91,7 @@ const Chatbot: React.FC = () => {
       }
 
     } catch (err: any) {
-      console.error('Error calling API:', err);
-      let errorMessage = 'Failed to get response from AI.';
-      
-      if (err.message) {
-        errorMessage += ` ${err.message}`;
-      }
-      
-      setError(errorMessage);
+      setError('Failed to get response from AI. Please try again.');
     } finally {
       setIsLoading(false);
       requestAnimationFrame(scrollToBottom);
@@ -126,17 +119,17 @@ const Chatbot: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between p-4 border-b bg-gray-50">
+    <Card className="w-full max-w-md mx-auto bg-white shadow-warm-lg rounded-2xl overflow-hidden border-terracotta/10">
+      <CardHeader className="flex flex-row items-center justify-between p-4 border-b bg-gradient-to-r from-terracotta-light/30 to-sage-light/30">
         <div className="flex items-center space-x-2">
-          <Bot className="h-6 w-6 text-empowerPurple" />
-          <CardTitle className="text-lg font-semibold text-gray-800">AscendPath Helper</CardTitle>
+          <Bot className="h-6 w-6 text-terracotta" />
+          <CardTitle className="text-lg font-heading font-semibold text-charcoal">AscendPath Helper</CardTitle>
         </div>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleClearChat}
-          className="text-gray-500 hover:text-empowerPurple ml-3"
+          className="text-charcoal/60 hover:text-terracotta ml-3"
           aria-label="Clear Chat"
         >
           <Trash size={18} />
@@ -144,7 +137,7 @@ const Chatbot: React.FC = () => {
       </CardHeader>
       <CardContent className="p-0">
         <ScrollArea className="h-[450px] w-full" ref={scrollAreaRef}>
-          <div className="p-4 space-y-4 bg-gray-50" ref={viewportRef} data-radix-scroll-area-viewport>
+          <div className="p-4 space-y-4 bg-cream/30" ref={viewportRef} data-radix-scroll-area-viewport>
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -155,7 +148,7 @@ const Chatbot: React.FC = () => {
               >
                 {msg.role === 'model' && (
                   <Avatar className="h-8 w-8 border bg-white">
-                    <AvatarFallback className="bg-empowerPurple text-white">
+                    <AvatarFallback className="bg-terracotta text-white">
                       <Bot size={18} />
                     </AvatarFallback>
                   </Avatar>
@@ -164,8 +157,8 @@ const Chatbot: React.FC = () => {
                   className={cn(
                     "text-sm max-w-[85%] px-3 py-2 rounded-xl shadow-sm",
                     msg.role === 'user'
-                      ? 'bg-empowerPurple text-white'
-                      : 'bg-white text-gray-800',
+                      ? 'bg-terracotta text-white'
+                      : 'bg-white text-charcoal',
                     msg.role === 'model' ? 'prose prose-sm max-w-none' : ''
                   )}
                 >
@@ -198,16 +191,16 @@ const Chatbot: React.FC = () => {
             {isLoading && (
               <div className="flex justify-start items-center gap-3 p-2">
                 <Avatar className="h-8 w-8 border bg-white">
-                  <AvatarFallback className="bg-empowerPurple text-white">
+                  <AvatarFallback className="bg-terracotta text-white">
                     <Bot size={18} />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-xl shadow-sm">
-                  <p className="text-sm text-gray-500">Thinking</p>
+                  <p className="text-sm text-charcoal/60">Thinking</p>
                   <div className="flex space-x-1">
-                    <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                    <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                    <span className="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                    <span className="h-1.5 w-1.5 bg-terracotta/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="h-1.5 w-1.5 bg-terracotta/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="h-1.5 w-1.5 bg-terracotta/60 rounded-full animate-bounce"></span>
                   </div>
                 </div>
               </div>
@@ -220,7 +213,7 @@ const Chatbot: React.FC = () => {
           </div>
         </ScrollArea>
       </CardContent>
-      <CardFooter className="p-4 border-t bg-gray-50">
+      <CardFooter className="p-4 border-t bg-cream/30">
         <div className="flex items-center space-x-2 w-full">
           <Input
             type="text"
@@ -229,13 +222,13 @@ const Chatbot: React.FC = () => {
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
-            className="flex-1 h-10 rounded-lg border-gray-300 focus:ring-empowerPurple focus:border-empowerPurple"
+            className="flex-1 h-10 rounded-lg border-charcoal/20 focus:ring-terracotta focus:border-terracotta"
             aria-label="Chat input"
           />
           <Button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="bg-empowerPurple hover:bg-empowerPurple/90 text-white rounded-lg h-10 w-10 p-0 flex items-center justify-center"
+            className="bg-terracotta hover:bg-terracotta-dark text-white rounded-lg h-10 w-10 p-0 flex items-center justify-center shadow-warm"
             aria-label="Send message"
           >
             {isLoading ? (

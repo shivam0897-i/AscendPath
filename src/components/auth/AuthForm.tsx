@@ -127,7 +127,6 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
           
       } catch (error) {
            // Errors are handled within signInWithGoogle using toast
-           console.error("Google Sign In initiation failed", error);
       } finally {
            
       }
@@ -169,7 +168,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             />
 
             {/* Login Button */}
-            <Button type="submit" className="w-full bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isLoading || isSubmitting}>
+            <Button type="submit" className="w-full bg-terracotta hover:bg-terracotta-dark shadow-warm" disabled={isLoading || isSubmitting}>
               {isSubmitting ? "Logging in..." : "Log in"}
             </Button>
 
@@ -186,7 +185,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             </div>
 
             {/* Google Sign In Button */}
-            <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
+            <Button variant="outline" type="button" className="w-full border-charcoal/20 hover:border-terracotta hover:text-terracotta" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
                 {isLoading ? 'Processing...' : <><GoogleIcon/> Google</>}
             </Button>
 
@@ -271,7 +270,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             />
 
             {/* Create Account Button */}
-            <Button type="submit" className="w-full bg-empowerPurple hover:bg-empowerPurple-dark" disabled={isLoading || isSubmitting}>
+            <Button type="submit" className="w-full bg-terracotta hover:bg-terracotta-dark shadow-warm" disabled={isLoading || isSubmitting}>
               {isSubmitting ? "Creating account..." : "Create account"}
             </Button>
 
@@ -288,7 +287,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             </div>
 
             {/* Google Sign In Button */}
-            <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
+            <Button variant="outline" type="button" className="w-full border-charcoal/20 hover:border-terracotta hover:text-terracotta" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
                {isLoading ? 'Processing...' : <><GoogleIcon /> Google</>}
             </Button>
           </form>

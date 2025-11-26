@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Label } from "@/components/ui/label"
@@ -10,7 +11,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, GraduationCap, Lightbulb, Award, Download, Share2, ArrowRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, GraduationCap, Lightbulb, Award, Download, Share2, ArrowRight, ArrowLeft } from 'lucide-react'
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 
 // Main form data type
 export type FormData = {
@@ -103,8 +106,8 @@ function PersonalInfoForm({ data, updateData }: PersonalInfoFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Personal Information</h3>
-        <p className="text-gray-600">Let&apos;s start with some basic information about your educational background.</p>
+        <h3 className="text-xl font-heading font-semibold text-charcoal">Personal Information</h3>
+        <p className="text-muted-foreground">Let&apos;s start with some basic information about your educational background.</p>
       </div>
 
       <div className="space-y-6">
@@ -117,26 +120,26 @@ function PersonalInfoForm({ data, updateData }: PersonalInfoFormProps) {
             onValueChange={(value) => updateData({ educationLevel: value })}
             className="grid grid-cols-1 gap-3 sm:grid-cols-2"
           >
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="High School" id="high-school" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="High School" id="high-school" className="text-terracotta" />
               <Label htmlFor="high-school" className="flex-1 cursor-pointer font-medium">
                 High School
               </Label>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="Undergraduate" id="undergraduate" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="Undergraduate" id="undergraduate" className="text-terracotta" />
               <Label htmlFor="undergraduate" className="flex-1 cursor-pointer font-medium">
                 Undergraduate
               </Label>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="Graduate" id="graduate" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="Graduate" id="graduate" className="text-terracotta" />
               <Label htmlFor="graduate" className="flex-1 cursor-pointer font-medium">
                 Graduate
               </Label>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="Other" id="other-education" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="Other" id="other-education" className="text-terracotta" />
               <Label htmlFor="other-education" className="flex-1 cursor-pointer font-medium">
                 Other
               </Label>
@@ -153,26 +156,26 @@ function PersonalInfoForm({ data, updateData }: PersonalInfoFormProps) {
             onValueChange={(value) => updateData({ ageRange: value })}
             className="grid grid-cols-1 gap-3 sm:grid-cols-2"
           >
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="15-18" id="age-15-18" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="15-18" id="age-15-18" className="text-terracotta" />
               <Label htmlFor="age-15-18" className="flex-1 cursor-pointer font-medium">
                 15-18
               </Label>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="19-22" id="age-19-22" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="19-22" id="age-19-22" className="text-terracotta" />
               <Label htmlFor="age-19-22" className="flex-1 cursor-pointer font-medium">
                 19-22
               </Label>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="23-25" id="age-23-25" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="23-25" id="age-23-25" className="text-terracotta" />
               <Label htmlFor="age-23-25" className="flex-1 cursor-pointer font-medium">
                 23-25
               </Label>
             </div>
-            <div className="flex items-center space-x-3 rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="25+" id="age-25-plus" className="text-purple-500" />
+            <div className="flex items-center space-x-3 rounded-lg border border-terracotta/20 p-4 hover:bg-cream transition-colors">
+              <RadioGroupItem value="25+" id="age-25-plus" className="text-terracotta" />
               <Label htmlFor="age-25-plus" className="flex-1 cursor-pointer font-medium">
                 25+
               </Label>
@@ -189,7 +192,7 @@ function PersonalInfoForm({ data, updateData }: PersonalInfoFormProps) {
             value={data.major}
             onChange={(e) => updateData({ major: e.target.value })}
             placeholder="E.g., Computer Science, Business, Psychology, etc."
-            className="rounded-lg border-gray-200 p-3 focus:border-purple-300 focus:ring-purple-300"
+            className="rounded-lg border-terracotta/20 p-3 focus:border-terracotta focus:ring-terracotta"
           />
         </div>
       </div>
@@ -276,8 +279,8 @@ function InterestsForm({ data, updateData }: InterestsFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Interests</h3>
-        <p className="text-gray-600">Tell us about what interests you the most.</p>
+        <h3 className="text-xl font-heading font-semibold text-charcoal">Interests</h3>
+        <p className="text-muted-foreground">Tell us about what interests you the most.</p>
       </div>
 
       <div className="space-y-8">
@@ -450,8 +453,8 @@ function SkillsForm({ data, updateData }: SkillsFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Skills and Strengths</h3>
-        <p className="text-gray-600">Let&apos;s identify your key skills and strengths.</p>
+        <h3 className="text-xl font-heading font-semibold text-charcoal">Skills and Strengths</h3>
+        <p className="text-muted-foreground">Let&apos;s identify your key skills and strengths.</p>
       </div>
 
       <div className="space-y-8">
@@ -613,8 +616,8 @@ function WorkPreferencesForm({ data, updateData }: WorkPreferencesFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Work Preferences and Values</h3>
-        <p className="text-gray-600">Let&apos;s understand what you value in a work environment.</p>
+        <h3 className="text-xl font-heading font-semibold text-charcoal">Work Preferences and Values</h3>
+        <p className="text-muted-foreground">Let&apos;s understand what you value in a work environment.</p>
       </div>
 
       <div className="space-y-8">
@@ -787,8 +790,8 @@ function GoalsForm({ data, updateData }: GoalsFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Goals and Aspirations</h3>
-        <p className="text-gray-600">Let&apos;s understand your career goals and aspirations.</p>
+        <h3 className="text-xl font-heading font-semibold text-charcoal">Goals and Aspirations</h3>
+        <p className="text-muted-foreground">Let&apos;s understand your career goals and aspirations.</p>
       </div>
 
       <div className="space-y-8">
@@ -925,8 +928,8 @@ function AdditionalInfoForm({ data, updateData }: AdditionalInfoFormProps) {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-800">Additional Information</h3>
-        <p className="text-gray-600">
+        <h3 className="text-xl font-heading font-semibold text-charcoal">Additional Information</h3>
+        <p className="text-muted-foreground">
           Please provide any additional information that might help us suggest the best career path for you.
         </p>
       </div>
@@ -1143,8 +1146,8 @@ function ResultsPage({ formData }: ResultsPageProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mb-6"></div>
-        <p className="text-lg font-medium text-gray-700">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-terracotta mb-6"></div>
+        <p className="text-lg font-medium text-charcoal">
           Analyzing your responses and generating career suggestions...
         </p>
       </div>
@@ -1154,10 +1157,10 @@ function ResultsPage({ formData }: ResultsPageProps) {
   return (
     <div className="space-y-10">
       <div className="text-center space-y-4">
-        <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+        <h3 className="text-2xl font-heading font-bold gradient-text">
           Your Career Suggestions
         </h3>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-muted-foreground max-w-2xl mx-auto">
           Based on your responses, we&apos;ve identified the following career paths that may be a good fit for you.
           Explore these options to find your ideal career path.
         </p>
@@ -1165,30 +1168,30 @@ function ResultsPage({ formData }: ResultsPageProps) {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {careerSuggestions.map((career, index) => (
-          <Card key={index} className="overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 pb-4">
+          <Card key={index} className="overflow-hidden border-terracotta/10 hover:shadow-warm-md transition-shadow">
+            <CardHeader className="bg-warm-gradient pb-4">
               <div className="flex justify-between items-start">
-                <CardTitle className="text-xl text-gray-800">{career.title}</CardTitle>
-                <Badge variant="outline" className="bg-white font-medium">
+                <CardTitle className="text-xl text-charcoal">{career.title}</CardTitle>
+                <Badge variant="outline" className="bg-white font-medium border-terracotta/30">
                   {career.matchScore}% Match
                 </Badge>
               </div>
-              <CardDescription className="text-gray-600">{career.category}</CardDescription>
+              <CardDescription className="text-charcoal/70">{career.category}</CardDescription>
             </CardHeader>
             <CardContent className="pt-6 space-y-5">
-              <p className="text-gray-700">{career.description}</p>
+              <p className="text-charcoal/80">{career.description}</p>
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <GraduationCap className="h-4 w-4 text-purple-500" />
+                  <GraduationCap className="h-4 w-4 text-terracotta" />
                   <span className="font-medium">Education Path:</span>
                 </div>
-                <p className="text-sm text-gray-600 pl-6">{career.educationPath}</p>
+                <p className="text-sm text-muted-foreground pl-6">{career.educationPath}</p>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Award className="h-4 w-4 text-purple-500" />
+                  <Award className="h-4 w-4 text-terracotta" />
                   <span className="font-medium">Key Skills:</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5 pl-6">
@@ -1196,7 +1199,7 @@ function ResultsPage({ formData }: ResultsPageProps) {
                     <Badge
                       key={i}
                       variant="secondary"
-                      className="text-xs bg-purple-100 text-purple-700 hover:bg-purple-200"
+                      className="text-xs bg-sage-light/50 text-sage-dark hover:bg-sage-light"
                     >
                       {skill}
                     </Badge>
@@ -1208,14 +1211,14 @@ function ResultsPage({ formData }: ResultsPageProps) {
         ))}
       </div>
 
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-8 rounded-2xl space-y-6">
+      <div className="bg-warm-gradient p-8 rounded-2xl space-y-6 border border-terracotta/10">
         <div className="flex items-start gap-4">
-          <Lightbulb className="h-8 w-8 text-purple-500 mt-1 flex-shrink-0" />
+          <Lightbulb className="h-8 w-8 text-terracotta mt-1 flex-shrink-0" />
           <div>
-            <h4 className="font-semibold text-xl text-gray-800">Next Steps</h4>
-            <p className="text-gray-600 mt-2">
+            <h4 className="font-heading font-semibold text-xl text-charcoal">Next Steps</h4>
+            <p className="text-muted-foreground mt-2">
               Consider researching these career paths further, speaking with professionals in these fields, or exploring
-              educational opportunities that align with these suggestions. EmpowerPath offers resources to help you
+              educational opportunities that align with these suggestions. AscendPath offers resources to help you
               connect with mentors and educational programs in your areas of interest.
             </p>
           </div>
@@ -1224,14 +1227,14 @@ function ResultsPage({ formData }: ResultsPageProps) {
         <div className="flex flex-wrap gap-4 pt-2">
           <Button
             onClick={handleDownloadResults}
-            className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white px-6 py-2.5 h-auto rounded-lg"
+            className="bg-terracotta hover:bg-terracotta-dark text-white px-6 py-2.5 h-auto rounded-lg shadow-warm"
           >
             <Download className="h-4 w-4 mr-2" />
             Download Your Results
           </Button>
           <Button
             variant="outline"
-            className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2.5 h-auto rounded-lg"
+            className="border-terracotta/30 text-charcoal hover:bg-cream px-6 py-2.5 h-auto rounded-lg"
           >
             <Share2 className="h-4 w-4 mr-2" />
             Share Results
@@ -1295,7 +1298,7 @@ export function CareerQuestionnaire() {
     "Results",
   ]
 
-  const updateFormData = (section: keyof FormData, data: any) => {
+  const updateFormData = <K extends keyof FormData>(section: K, data: Partial<FormData[K]>) => {
     setFormData((prev) => ({
       ...prev,
       [section]: {
@@ -1349,37 +1352,48 @@ export function CareerQuestionnaire() {
   }
 
   return (
-    <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
-      <div className="p-6 border-b">
+    <div className="bg-white dark:bg-charcoal-light shadow-warm-lg rounded-2xl overflow-hidden border border-terracotta/10 dark:border-cream/10">
+      <div className="p-6 border-b border-terracotta/10 dark:border-cream/10">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <h2 className="text-xl font-heading font-semibold gradient-text">
             {steps[currentStep]}
           </h2>
-          <span className="text-sm text-gray-500 font-medium">
+          <span className="text-sm text-muted-foreground dark:text-cream/60 font-medium">
             Step {currentStep + 1} of {steps.length}
           </span>
         </div>
         <Progress
           value={((currentStep + 1) / steps.length) * 100}
-          className="h-2 bg-gray-100"
+          className="h-2 bg-cream dark:bg-charcoal"
         />
       </div>
 
-      <div className="p-8">{renderStep()}</div>
+      <div className="p-6 sm:p-8">{renderStep()}</div>
 
-      <div className="px-8 py-6 bg-gray-50 flex justify-between">
-        <Button
-          variant="outline"
-          onClick={handlePrevious}
-          disabled={currentStep === 0}
-          className="flex items-center gap-2 border-gray-300 text-gray-700"
-        >
-          <ChevronLeft className="h-4 w-4" /> Previous
-        </Button>
+      <div className="px-6 sm:px-8 py-5 sm:py-6 bg-cream/50 dark:bg-charcoal/50 flex justify-between items-center gap-4">
+        {currentStep === 0 ? (
+          <Button
+            asChild
+            variant="outline"
+            className="flex items-center gap-2 border-charcoal/20 dark:border-cream/20 text-charcoal dark:text-cream hover:bg-sage/10"
+          >
+            <Link to="/">
+              <ArrowLeft className="h-4 w-4" /> Back to Home
+            </Link>
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            className="flex items-center gap-2 border-charcoal/20 dark:border-cream/20 text-charcoal dark:text-cream hover:bg-sage/10"
+          >
+            <ChevronLeft className="h-4 w-4" /> Previous
+          </Button>
+        )}
         {currentStep < steps.length - 1 ? (
           <Button
             onClick={handleNext}
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+            className="flex items-center gap-2 bg-terracotta hover:bg-terracotta-dark text-white shadow-warm"
           >
             Next <ChevronRight className="h-4 w-4" />
           </Button>
@@ -1392,97 +1406,96 @@ export function CareerQuestionnaire() {
 // Optional: Page Component with Header and Hero Section
 export function CareerQuestionnairePage() {
   return (
-    <div className="min-h-screen bg-[#f9f8ff]">
-      {/* Navigation */}
-      <header className="border-b bg-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            EmpowerPath
-          </h1>
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-gray-700 hover:text-purple-500 transition-colors">
-              Home
-            </a>
-            <a href="#" className="text-gray-700 hover:text-purple-500 transition-colors">
-              Dashboard
-            </a>
-            <a href="#" className="text-gray-700 hover:text-purple-500 transition-colors">
-              Resources
-            </a>
-            <a href="#" className="text-gray-700 hover:text-purple-500 transition-colors">
-              Community
-            </a>
-          </nav>
-          <button className="p-2 rounded-full hover:bg-gray-100">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-gray-700"
+    <div className="min-h-screen flex flex-col bg-cream dark:bg-charcoal">
+      {/* Shared Navigation */}
+      <Navbar />
+
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden">
+          {/* Background elements */}
+          <div className="absolute inset-0 bg-gradient-to-br from-cream via-white to-sage/10 dark:from-charcoal dark:via-charcoal-light dark:to-sage/5" />
+          <div className="absolute top-20 right-[10%] w-64 h-64 bg-terracotta/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-10 left-[5%] w-48 h-48 bg-sage/15 rounded-full blur-2xl pointer-events-none" />
+          
+          <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+            {/* Back Button */}
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-charcoal dark:hover:text-cream transition-colors mb-8 group"
             >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h1 className="text-5xl font-bold leading-tight">
-              <span className="text-gray-900">Discover Your</span>
-              <br />
-              <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
-                Ideal Career Path
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-md">
-              A personalized assessment designed to match your interests, skills, and values with career paths that will
-              help you thrive professionally.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white px-8 py-6 rounded-lg text-lg h-auto">
-                Get Started <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                variant="outline"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-6 rounded-lg text-lg h-auto"
-              >
-                Learn More
-              </Button>
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              Back to Home
+            </Link>
+            
+            <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+              <div className="space-y-6">
+                <h1 className="text-4xl md:text-5xl font-heading font-bold leading-tight">
+                  <span className="text-charcoal dark:text-cream">Discover Your</span>
+                  <br />
+                  <span className="gradient-text">
+                    Ideal Career Path
+                  </span>
+                </h1>
+                <p className="text-lg text-muted-foreground dark:text-cream/70 max-w-md leading-relaxed">
+                  A personalized assessment designed to match your interests, skills, and values with career paths that will help you thrive professionally.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <Button 
+                    className="bg-terracotta hover:bg-terracotta-dark text-white px-6 py-5 rounded-xl text-base h-auto shadow-warm transition-all hover:shadow-warm-lg"
+                    onClick={() => document.getElementById('questionnaire-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Get Started <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="border-2 border-charcoal/20 dark:border-cream/20 text-charcoal dark:text-cream hover:bg-sage/10 px-6 py-5 rounded-xl text-base h-auto"
+                  >
+                    <Link to="/resources">Learn More</Link>
+                  </Button>
+                </div>
+              </div>
+              <div className="relative hidden md:block">
+                <div className="absolute top-1/4 -left-6 w-16 h-16 bg-terracotta/20 rounded-full opacity-60 animate-pulse-soft"></div>
+                <div className="absolute bottom-1/4 -right-6 w-24 h-24 bg-amber-300/30 rounded-full opacity-60"></div>
+                <div className="absolute -bottom-6 left-1/4 w-32 h-32 bg-sage/20 rounded-full opacity-40"></div>
+                <div className="relative z-10 bg-white dark:bg-charcoal-light p-6 rounded-2xl shadow-warm-lg border border-border/50 dark:border-cream/10">
+                  {/* Career icons visual */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-terracotta/10 dark:bg-terracotta/20 p-6 rounded-xl flex flex-col items-center justify-center gap-2">
+                      <GraduationCap className="h-10 w-10 text-terracotta" />
+                      <span className="text-sm font-medium text-charcoal dark:text-cream">Education</span>
+                    </div>
+                    <div className="bg-sage/10 dark:bg-sage/20 p-6 rounded-xl flex flex-col items-center justify-center gap-2">
+                      <Lightbulb className="h-10 w-10 text-sage-dark dark:text-sage" />
+                      <span className="text-sm font-medium text-charcoal dark:text-cream">Skills</span>
+                    </div>
+                    <div className="bg-amber-500/10 p-6 rounded-xl flex flex-col items-center justify-center gap-2">
+                      <Award className="h-10 w-10 text-amber-600 dark:text-amber-400" />
+                      <span className="text-sm font-medium text-charcoal dark:text-cream">Goals</span>
+                    </div>
+                    <div className="bg-terracotta/10 dark:bg-terracotta/20 p-6 rounded-xl flex flex-col items-center justify-center gap-2">
+                      <ArrowRight className="h-10 w-10 text-terracotta" />
+                      <span className="text-sm font-medium text-charcoal dark:text-cream">Career</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="relative hidden md:block">
-            <div className="absolute top-1/4 -left-10 w-20 h-20 bg-purple-200 rounded-full opacity-60"></div>
-            <div className="absolute bottom-1/4 -right-10 w-32 h-32 bg-yellow-200 rounded-full opacity-60"></div>
-            <div className="absolute -bottom-10 left-1/4 w-40 h-40 bg-blue-200 rounded-full opacity-40"></div>
-            <div className="relative z-10 bg-white p-8 rounded-2xl shadow-xl">
-              <img
-                src="/placeholder.svg?height=400&width=400"
-                alt="Career Assessment"
-                className="rounded-xl mx-auto"
-                width={400}
-                height={400}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Questionnaire Section */}
-      <section className="container mx-auto px-4 py-12 md:py-16">
-        <div className="max-w-4xl mx-auto">
-          <CareerQuestionnaire />
-        </div>
-      </section>
+        {/* Questionnaire Section */}
+        <section id="questionnaire-section" className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+          <div className="max-w-4xl mx-auto">
+            <CareerQuestionnaire />
+          </div>
+        </section>
+      </main>
+
+      {/* Shared Footer */}
+      <Footer />
     </div>
   )
 }

@@ -1,9 +1,43 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders } from '../_shared/cors.ts';
+import { getCorsHeaders, corsHeaders } from '../_shared/cors.ts';
 import axios from 'https://cdn.skypack.dev/axios';
 
-async function checkIfUrlWorks(url) {
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 5; // 5 requests per minute per user
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function checkRateLimit(userId: string): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const userLimit = rateLimitStore.get(userId);
+  
+  if (!userLimit || now > userLimit.resetTime) {
+    // Reset or initialize rate limit
+    rateLimitStore.set(userId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true };
+  }
+  
+  if (userLimit.count >= MAX_REQUESTS_PER_WINDOW) {
+    const retryAfter = Math.ceil((userLimit.resetTime - now) / 1000);
+    return { allowed: false, retryAfter };
+  }
+  
+  userLimit.count++;
+  return { allowed: true };
+}
+
+// Clean up old entries periodically (every 5 minutes)
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of rateLimitStore.entries()) {
+    if (now > value.resetTime) {
+      rateLimitStore.delete(key);
+    }
+  }
+}, 5 * 60 * 1000);
+
+async function checkIfUrlWorks(url: string): Promise<boolean> {
   try {
     const response = await axios.head(url, { timeout: 5000 });
     return response.status >= 200 && response.status < 400;
@@ -286,30 +320,54 @@ Root object:
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+  
   if (req.method === 'OPTIONS') {
-    return new Response('ok', {
-      headers: corsHeaders
-    });
+    return new Response('ok', { headers });
   }
 
   let supabaseClient;
   try {
+    // Create Supabase client with user's auth token
     supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
           headers: {
-            Authorization: req.headers.get('Authorization')
+            Authorization: req.headers.get('Authorization') ?? ''
           }
         }
       }
     );
 
-    const body = await req.json();
-    const userId = body?.userId;
-    if (!userId) {
-      throw new Error('Missing userId in request body');
+    // Extract user ID from the authenticated session (not from request body - prevents IDOR)
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Invalid or missing authentication' }),
+        {
+          headers: { ...headers, 'Content-Type': 'application/json' },
+          status: 401
+        }
+      );
+    }
+    const userId = user.id;
+
+    // Check rate limit before processing
+    const rateLimitResult = checkRateLimit(userId);
+    if (!rateLimitResult.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: 'Rate limit exceeded. Please try again later.',
+          retryAfter: rateLimitResult.retryAfter
+        }),
+        {
+          headers: { ...headers, 'Content-Type': 'application/json', 'Retry-After': String(rateLimitResult.retryAfter) },
+          status: 429
+        }
+      );
     }
 
     const { data: profile, error: profileError } = await supabaseClient
@@ -343,10 +401,7 @@ serve(async (req) => {
         roadmapId: savedRoadmapResult
       }),
       {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
+        headers: { ...headers, 'Content-Type': 'application/json' },
         status: 200
       }
     );
@@ -354,13 +409,10 @@ serve(async (req) => {
     console.error('[generate-roadmap] Error:', error);
     return new Response(
       JSON.stringify({
-        error: error.message
+        error: 'Failed to generate roadmap. Please try again.'
       }),
       {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
+        headers: { ...headers, 'Content-Type': 'application/json' },
         status: 500
       }
     );

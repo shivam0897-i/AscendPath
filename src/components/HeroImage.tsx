@@ -1,114 +1,71 @@
 
 import { useEffect, useRef } from "react";
-
+import { Mountain, BookOpen, Target, Compass, Award, TrendingUp } from "lucide-react";
 
 interface HeroImageProps {
-  onClick?: () => void; // Make onClick optional
+  onClick?: () => void;
 }
 
 const HeroImage: React.FC<HeroImageProps> = ({ onClick }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    if (!containerRef.current) return;
-    
-    const container = containerRef.current;
-    
-    // Add "floating" animation effect with slight random movements
-    const animate = () => {
-      const floatingElements = container.querySelectorAll('.floating');
-      
-      floatingElements.forEach((el) => {
-        const element = el as HTMLElement;
-        const randomX = (Math.random() - 0.5) * 10; // Random movement in X direction
-        const randomY = (Math.random() - 0.5) * 10; // Random movement in Y direction
-        const randomDelay = Math.random() * 2; // Random delay
-        const randomDuration = 3 + Math.random() * 3; // Random duration between 3-6s
-        
-        element.style.transition = `transform ${randomDuration}s ease-in-out ${randomDelay}s`;
-        element.style.transform = `translate(${randomX}px, ${randomY}px)`;
-        
-        setTimeout(() => {
-          element.style.transform = '';
-        }, randomDuration * 1000 + randomDelay * 1000);
-      });
-      
-      // Continue the animation
-      setTimeout(animate, 6000);
-    };
-    
-    // Start the animation
-    animate();
-    
-  }, []);
-
   return (
-    // Add the onClick handler to this div
-    <div 
-      className="relative w-full h-[400px] md:h-[500px] cursor-pointer" // Added cursor-pointer for visual feedback
-      ref={containerRef} 
-      //  onClick={onClick} // Attach the onClick handler here
-    >
-      {/* Main character */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <img 
-          src="/images/logo.jpg" 
-          alt="Student" 
-          className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-white shadow-lg object-cover floating" 
-          onContextMenu={(e) => e.preventDefault()} // Disable right-click
-          draggable="false" // Disable dragging
-        />
-      </div>
+    <div className="relative w-full aspect-square max-w-[340px] lg:max-w-[400px] mx-auto">
+      {/* Outer glow ring */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-terracotta/20 via-transparent to-sage/20 dark:from-terracotta/30 dark:to-sage/30 blur-2xl scale-110" />
       
-      {/* Educational elements */}
-      <div className="absolute top-[20%] left-[15%] floating">
-        <div className="bg-empowerPurple-light p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f4bb.png" alt="Laptop" className="w-8 h-8 md:w-10 md:h-10" 
-          onContextMenu={(e) => e.preventDefault()} // Disable right-click
-          draggable="false" />
+      {/* Main visual container - centered logo with orbital elements */}
+      <div className="relative w-full h-full flex items-center justify-center">
+        
+        {/* Orbital track - subtle ring */}
+        <div className="absolute inset-4 rounded-full border border-dashed border-charcoal/10 dark:border-cream/10" />
+        <div className="absolute inset-10 rounded-full border border-charcoal/5 dark:border-cream/5" />
+        
+        {/* Central logo */}
+        <div className="relative z-10">
+          <div className="relative bg-gradient-to-br from-cream to-white dark:from-charcoal-light dark:to-charcoal p-1.5 rounded-full shadow-warm-lg">
+            <img 
+              src="/images/logo.jpg" 
+              alt="AscendPath" 
+              className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full object-cover ring-4 ring-terracotta/20 dark:ring-terracotta/40" 
+              onContextMenu={(e) => e.preventDefault()}
+              draggable="false"
+            />
+          </div>
+          
+          {/* Achievement badge - positioned intentionally */}
+          <div className="absolute -top-2 -right-2 bg-terracotta text-white p-2.5 rounded-xl shadow-warm-md">
+            <Award className="w-5 h-5" />
+          </div>
         </div>
-      </div>
-      
-      <div className="absolute top-[30%] right-[15%] floating">
-        <div className="bg-empowerBlue-light p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f4d6.png" alt="Book" className="w-8 h-8 md:w-10 md:h-10" onContextMenu={(e) => e.preventDefault()} // Disable right-click
-          draggable="false" // Disable dragging 
-          />
+        
+        {/* Orbital milestone markers - positioned at cardinal points for narrative */}
+        {/* Top - Learning/Knowledge */}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2">
+          <div className="bg-gradient-to-br from-terracotta-light to-amber-100 dark:from-terracotta/40 dark:to-amber-900/40 p-3 rounded-xl shadow-warm border border-terracotta/10 dark:border-terracotta/30">
+            <BookOpen className="w-5 h-5 text-terracotta-dark dark:text-terracotta-light" />
+          </div>
         </div>
-      </div>
-      
-      <div className="absolute bottom-[20%] left-[25%] floating">
-        <div className="bg-blue-100 p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f9d1-200d-1f4bc.png" alt="Teacher" className="w-8 h-8 md:w-10 md:h-10" onContextMenu={(e) => e.preventDefault()} // Disable right-click
-          draggable="false"/>
+        
+        {/* Right - Goals/Target */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <div className="bg-gradient-to-br from-sage-light to-green-100 dark:from-sage/40 dark:to-green-900/40 p-3 rounded-xl shadow-warm border border-sage/10 dark:border-sage/30">
+            <Target className="w-5 h-5 text-sage-dark dark:text-sage" />
+          </div>
         </div>
-      </div>
-      
-      <div className="absolute bottom-[30%] right-[20%] floating">
-        <div className="bg-purple-100 p-3 md:p-4 rounded-lg shadow-md">
-          <img src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f393.png" alt="Graduation" className="w-8 h-8 md:w-10 md:h-10" onContextMenu={(e) => e.preventDefault()}
-draggable="false"  />
+        
+        {/* Bottom - Progress/Growth */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
+          <div className="bg-gradient-to-br from-cream to-stone-100 dark:from-charcoal-light dark:to-charcoal p-3 rounded-xl shadow-warm border border-charcoal/10 dark:border-cream/15">
+            <TrendingUp className="w-5 h-5 text-charcoal dark:text-cream" />
+          </div>
         </div>
-      </div>
-      
-      {/* Abstract shapes */}
-      <div className="absolute top-[45%] left-[5%] floating">
-        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-empowerPurple to-empowerPurple-light opacity-40" />
-      </div>
-      
-      <div className="absolute bottom-[10%] right-[10%] floating">
-        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-r from-empowerBlue to-empowerBlue-light opacity-30" />
-      </div>
-      
-      <div className="absolute top-[10%] right-[30%] floating">
-        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-yellow-200 opacity-60" />
-      </div>
-      
-      {/* Connect lines (optional) - these would look better with SVG paths but using divs for simplicity */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none"> {/* Added pointer-events-none */} 
-        <div className="absolute top-[30%] left-[25%] w-[50%] h-[1px] bg-gray-200 transform rotate-[25deg]" />
-        <div className="absolute top-[40%] left-[20%] w-[60%] h-[1px] bg-gray-200 transform -rotate-[15deg]" />
-        <div className="absolute top-[60%] left-[30%] w-[40%] h-[1px] bg-gray-200 transform rotate-[5deg]" />
+        
+        {/* Left - Direction/Guidance */}
+        <div className="absolute left-2 top-1/2 -translate-y-1/2">
+          <div className="bg-gradient-to-br from-amber-100 to-yellow-50 dark:from-amber-900/40 dark:to-yellow-900/30 p-3 rounded-xl shadow-warm border border-amber-200/40 dark:border-amber-500/30">
+            <Compass className="w-5 h-5 text-amber-700 dark:text-amber-400" />
+          </div>
+        </div>
+        
       </div>
     </div>
   );

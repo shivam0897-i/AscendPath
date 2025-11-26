@@ -35,7 +35,7 @@ export default function PrivacyPolicy() {
       exit="out"
       variants={pageVariants}
       transition={pageTransition}
-      className="min-h-screen bg-[#f8f8fe] flex flex-col"
+      className="min-h-screen bg-cream flex flex-col"
     >
       <Navbar />
 
@@ -43,12 +43,12 @@ export default function PrivacyPolicy() {
       <main className="container mx-auto px-4 py-8 max-w-5xl flex-grow">
         {/* KEEP EXISTING CONTENT */}
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-[#8c7bff]">Privacy</span> <span className="text-[#4a9fff]">Policy</span>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+            <span className="text-terracotta">Privacy</span> <span className="text-sage-dark">Policy</span>
           </h1>
           
           <div className="mt-6 max-w-2xl mx-auto">
-            <p className="text-lg text-gray-500">
+            <p className="text-lg text-muted-foreground">
               We value your privacy and are committed to protecting your personal information. This policy outlines how
               we collect, use, and safeguard your data.
             </p>
@@ -59,12 +59,12 @@ export default function PrivacyPolicy() {
           {/* Information We Collect */}
           <section id="information" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-terracotta-light/50 p-2 rounded-lg text-terracotta">
                 <Eye />
               </div>
-              <h2 className="text-2xl font-bold">Information We Collect</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Information We Collect</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p className="mb-4">
                 When you visit the site, we automatically collect certain information about your device, including
                 information about your web browser, IP address, time zone, and some of the cookies that are installed on
@@ -82,12 +82,12 @@ export default function PrivacyPolicy() {
           {/* How We Use Your Information */}
           <section id="usage" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-sage-light/50 p-2 rounded-lg text-sage-dark">
                 <Shield />
               </div>
-              <h2 className="text-2xl font-bold">How We Use Your Information</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">How We Use Your Information</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p className="mb-4">
                 We use the information that we collect generally to fulfill any orders placed through the site
                 (including processing your payment information, arranging for shipping, and providing you with invoices
@@ -108,12 +108,12 @@ export default function PrivacyPolicy() {
           {/* Cookies */}
           <section id="cookies" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-terracotta-light/50 p-2 rounded-lg text-terracotta">
                 <Cookie />
               </div>
-              <h2 className="text-2xl font-bold">Cookies</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Cookies</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p className="mb-4">
                 We use cookies to help us remember and process the items in your shopping cart, understand and save your
                 preferences for future visits, and compile aggregate data about site traffic and site interactions.
@@ -128,12 +128,12 @@ export default function PrivacyPolicy() {
           {/* Third-Party Disclosure */}
           <section id="third-party" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-sage-light/50 p-2 rounded-lg text-sage-dark">
                 <Users />
               </div>
-              <h2 className="text-2xl font-bold">Third-Party Disclosure</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Third-Party Disclosure</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p className="mb-4">
                 We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties
                 unless we provide you with advance notice. This does not include website hosting partners and other
@@ -146,12 +146,12 @@ export default function PrivacyPolicy() {
           {/* Your Rights */}
           <section id="rights" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-terracotta-light/50 p-2 rounded-lg text-terracotta">
                 <Lock />
               </div>
-              <h2 className="text-2xl font-bold">Your Rights</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Your Rights</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p className="mb-4">
                 If you are a European resident, you have the right to access personal information we hold about you and
                 to ask that your personal information be corrected, updated, or deleted. If you would like to exercise
@@ -168,12 +168,12 @@ export default function PrivacyPolicy() {
           {/* Data Retention */}
           <section id="retention" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-sage-light/50 p-2 rounded-lg text-sage-dark">
                 <Clock />
               </div>
-              <h2 className="text-2xl font-bold">Data Retention</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Data Retention</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p>
                 When you place an order through the site, we will maintain your Order Information for our records unless
                 and until you ask us to delete this information.
@@ -184,12 +184,12 @@ export default function PrivacyPolicy() {
           {/* Changes */}
           <section id="changes" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-terracotta-light/50 p-2 rounded-lg text-terracotta">
                 <RefreshCw />
               </div>
-              <h2 className="text-2xl font-bold">Changes</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Changes</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p>
                 We may update this privacy policy from time to time in order to reflect, for example, changes to our
                 practices or for other operational, legal or regulatory reasons.
@@ -200,25 +200,25 @@ export default function PrivacyPolicy() {
           {/* Contact Us */}
           <section id="contact" className="scroll-mt-20">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-[#f0eeff] p-2 rounded-lg text-[#8c7bff]">
+              <div className="bg-sage-light/50 p-2 rounded-lg text-sage-dark">
                 <Mail />
               </div>
-              <h2 className="text-2xl font-bold">Contact Us</h2>
+              <h2 className="text-2xl font-heading font-bold text-charcoal dark:text-cream">Contact Us</h2>
             </div>
-            <div className="pl-12 text-gray-500">
+            <div className="pl-12 text-muted-foreground">
               <p className="mb-4">
                 For more information about our privacy practices, if you have questions, or if you would like to make a
                 complaint, please contact us by e-mail or by mail using the details provided below:
               </p>
-              <div className="mt-4 border border-[#e0e0ff] rounded-lg bg-white p-6">
+              <div className="mt-4 border border-terracotta/20 rounded-lg bg-white p-6 shadow-warm">
                 <address className="not-italic space-y-1">
-                  <p className="font-medium">AscendPath</p>
+                  <p className="font-medium text-charcoal">AscendPath</p>
                   <p>[Street Address]</p>
                   <p>[City, State/Province, Postal Code]</p>
                   <p>[Country]</p>
                   <p className="mt-2">
                     Email:{" "}
-                    <a href="mailto:[your email]" className="text-[#4a9fff] hover:underline">
+                    <a href="mailto:[your email]" className="text-terracotta hover:underline">
                       [your email]
                     </a>
                   </p>
@@ -231,7 +231,7 @@ export default function PrivacyPolicy() {
         <div className="mt-12 pt-8 border-t flex justify-center">
           <Link
             to="/"
-            className="inline-flex h-10 items-center justify-center rounded-full bg-[#8c7bff] px-8 py-2 text-sm font-medium text-white shadow transition-colors hover:bg-[#7a69ff]"
+            className="inline-flex h-10 items-center justify-center rounded-full bg-terracotta px-8 py-2 text-sm font-medium text-white shadow-warm transition-colors hover:bg-terracotta-dark"
           >
             ← Back to Home
           </Link>

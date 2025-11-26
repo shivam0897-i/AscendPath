@@ -28,159 +28,63 @@ import {
 import Navbar from "@/components/Navbar";
 import RoadmapTimeline from "@/components/RoadmapTimeline";
 import ResourceCard from "@/components/ResourceCard";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
-import type { Database } from "@/integrations/supabase/types";
-import { toast } from "sonner";
-
-// --- Types Fetched from Supabase ---
-type Profile = Database['public']['Tables']['profiles']['Row'];
-type RoadmapFromSupabase = Database['public']['Tables']['roadmaps']['Row'];
-type PhaseFromSupabase = Database['public']['Tables']['phases']['Row'];
-type MilestoneFromSupabase = Database['public']['Tables']['milestones']['Row'];
-type ResourceFromSupabase = Database['public']['Tables']['resources']['Row'];
-
-// Combined type for the state
-type FullRoadmapFromSupabase = RoadmapFromSupabase & {
-    phases: (PhaseFromSupabase & {
-        milestones: (MilestoneFromSupabase & {
-            resources: ResourceFromSupabase[];
-        })[];
-    })[];
-};
-
-// --- Types Expected by Components ---
-type ResourceForTimeline = Omit<ResourceFromSupabase, 'image_url'> & {
-    imageUrl: string | null;
-};
-type MilestoneForTimeline = Omit<MilestoneFromSupabase, 'estimated_time'> & {
-    id: string;
-    estimatedTime: string | null;
-    completed: boolean;
-    resources: ResourceForTimeline[];
-};
-type PhaseForTimeline = Omit<PhaseFromSupabase, 'completion_percentage'> & {
-    id: string; // Ensure phase id is present
-    completionPercentage: number | null;
-    milestones: MilestoneForTimeline[];
-};
+import {
+  useProfile,
+  useRoadmap,
+  useMilestoneToggle,
+  calculateOverallProgress,
+  transformPhasesForTimeline,
+  profileHelpers,
+  type ResourceForTimeline,
+} from "@/hooks/useRoadmap";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, isLoading: authIsLoading } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [roadmap, setRoadmap] = useState<FullRoadmapFromSupabase | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [overallProgress, setOverallProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Fetching Logic
+  // Use React Query hooks for data fetching
+  const { data: profile, isLoading: profileLoading, error: profileError } = useProfile();
+  const { data: roadmap, isLoading: roadmapLoading, error: roadmapError } = useRoadmap();
+  const milestoneToggle = useMilestoneToggle();
+
+  // Redirect if not authenticated
   useEffect(() => {
-        if (authIsLoading) return;
-        if (!user) { navigate("/auth"); return; }
-        const fetchData = async () => {
-          setLoading(true); setError(null);
-          try {
-            // Fetch Profile
-            const { data: profileData, error: profileError } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-            if (profileError && profileError.code !== 'PGRST116') throw profileError;
-            if (!profileData) { navigate("/onboarding"); return; }
-            setProfile(profileData);
-            
-            // Fetch Roadmap - ADD .limit(1) to handle potential duplicates
-            const { data: roadmapData, error: roadmapError } = await supabase.from('roadmaps')
-              .select(`*, phases(*, milestones(*, resources(*)))`)
-              .eq('user_id', user.id)
-              .order('created_at', { ascending: false }) // Optionally order to get the latest
-              .limit(1)
-              .maybeSingle();
-
-            console.log("Raw roadmap fetch result:", { roadmapData, roadmapError });
-
-            // Error handling remains the same, maybeSingle now won't throw PGRST116 for multiple rows if limit(1) is used.
-            if (roadmapError) throw roadmapError; // Throw other errors
-            
-            setRoadmap(roadmapData ? roadmapData as FullRoadmapFromSupabase : null);
-
-          } catch (fetchError: any) { 
-              console.error("Fetch Error:", fetchError);
-              // Check if it's the expected 'no rows' error code for profile, handle gracefully
-              if (fetchError?.code === 'PGRST116' && !profile) {
-                  console.log("Profile not found, redirecting to onboarding.");
-                  navigate("/onboarding");
-                  return; // Prevent setting generic error
-              }
-              setError(fetchError.message || "Failed to load dashboard data."); 
-              setProfile(null); setRoadmap(null); 
-          }
-          finally { setLoading(false); }
-        };
-        fetchData();
+    if (!authIsLoading && !user) {
+      navigate("/auth");
+    }
   }, [user, authIsLoading, navigate]);
 
-  // Calculate Overall Progress
+  // Redirect to onboarding if no profile
   useEffect(() => {
-    if (roadmap?.phases) {
-      const milestones = roadmap.phases.flatMap(p => p.milestones || []);
-      const total = milestones.length; if (total === 0) { setOverallProgress(0); return; }
-      const completed = milestones.filter(m => m.completed === true).length;
-      setOverallProgress(Math.round((completed / total) * 100));
-    } else { setOverallProgress(0); }
-  }, [roadmap]);
+    if (!profileLoading && !profile && user) {
+      navigate("/onboarding");
+    }
+  }, [profile, profileLoading, user, navigate]);
+
+  // Calculate progress from roadmap data
+  const overallProgress = calculateOverallProgress(roadmap);
 
   // Handle Milestone Toggle
   const handleMilestoneToggle = async (milestoneId: string, currentStatus: boolean) => {
-      const newStatus = !currentStatus;
-      const originalRoadmap = roadmap;
-      let affectedPhaseId: string | null = null;
-      let tempUpdatedRoadmap = roadmap ? { ...roadmap } : null;
-      if (tempUpdatedRoadmap) {
-          tempUpdatedRoadmap.phases = tempUpdatedRoadmap.phases.map(phase => {
-              const milestoneIndex = phase.milestones.findIndex(m => m.id === milestoneId);
-              if (milestoneIndex !== -1) {
-                  affectedPhaseId = phase.id;
-                  const updatedMilestones = [...phase.milestones];
-                  updatedMilestones[milestoneIndex] = { ...updatedMilestones[milestoneIndex], completed: newStatus, updated_at: new Date().toISOString() };
-                  return { ...phase, milestones: updatedMilestones };
-              } return phase;
-          });
-      }
-      if (tempUpdatedRoadmap && affectedPhaseId) {
-          const phaseIndexToUpdate = tempUpdatedRoadmap.phases.findIndex(p => p.id === affectedPhaseId);
-          if (phaseIndexToUpdate !== -1) {
-              const phaseToUpdate = tempUpdatedRoadmap.phases[phaseIndexToUpdate];
-              const totalM = phaseToUpdate.milestones.length;
-              const completedM = phaseToUpdate.milestones.filter(m => m.completed === true).length;
-              const newPhasePercentage = totalM > 0 ? Math.round((completedM / totalM) * 100) : 0;
-              tempUpdatedRoadmap.phases[phaseIndexToUpdate] = { ...phaseToUpdate, completion_percentage: newPhasePercentage };
-          }
-      }
-      setRoadmap(tempUpdatedRoadmap);
-      try {
-          const { error: updateError } = await supabase.from('milestones').update({ completed: newStatus, updated_at: new Date().toISOString() }).eq('id', milestoneId);
-          if (updateError) throw updateError;
-          toast.success(newStatus ? "Milestone completed!" : "Milestone marked incomplete.");
-      } catch (dbError: any) { console.error("Update Error:", dbError); toast.error(`Update failed: ${dbError.message}`); setRoadmap(originalRoadmap); }
+    milestoneToggle.mutate({ milestoneId, newStatus: !currentStatus });
   };
 
-  // Helper Functions
-  const getGoal = (d: Profile | null): string => d?.goals?.find(g => g.toLowerCase().startsWith("achieve goal:"))?.split(":").slice(1).join(":").trim() || d?.goals?.[0] || "-";
-  const getFieldLabel = (d: Profile | null): string => d?.skills?.find(s => s.toLowerCase().startsWith("field:"))?.split(":").slice(1).join(":").trim() || d?.skills?.[0] || "-";
-  const getTimelineLabel = (d: Profile | null): string => d?.goals?.find(g => g.toLowerCase().includes("within"))?.split("within").pop()?.trim() || "-";
-  const getExperienceLabel = (d: Profile | null): string => d?.skills?.find(s => s.toLowerCase().startsWith("experience:"))?.split(":").slice(1).join(":").trim() || "-";
-  const getBackgroundLabel = (d: Profile | null): string => d?.background?.replace(/_/g, ' ').replace(/ \w/g, l => l.toUpperCase()) || "N/A";
+  // Use helper functions from hook
+  const { getGoal, getFieldLabel, getTimelineLabel, getExperienceLabel, getBackgroundLabel } = profileHelpers;
+
+  // Loading state
+  const loading = authIsLoading || profileLoading || roadmapLoading;
+  const error = profileError?.message || roadmapError?.message;
 
   // --- Loading / Error / No Profile States ---
-  if (authIsLoading || loading) return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-12 w-12 animate-spin text-empowerPurple" /> <p className="ml-4 text-lg text-muted-foreground">Loading...</p></div>;
-  if (error) return <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4"><Navbar /><div className="text-center"><Info className="h-12 w-12 mx-auto text-destructive mb-4" /><h2 className="text-2xl font-bold mb-2 text-destructive-foreground">Error</h2><p className="text-muted-foreground mb-4">{error}</p><Button onClick={() => window.location.reload()}>Try Again</Button></div><Footer /></div>;
-  if (!profile) return <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4"><Navbar /><div className="text-center"><Info className="h-12 w-12 mx-auto text-yellow-500 dark:text-yellow-400 mb-4" /><h2 className="text-2xl font-bold mb-2 text-yellow-700 dark:text-yellow-300">Profile Not Found</h2><p className="text-muted-foreground mb-4">Please complete onboarding.</p><Button onClick={() => navigate("/onboarding")}>Go to Onboarding</Button></div><Footer /></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-12 w-12 animate-spin text-terracotta" /> <p className="ml-4 text-lg text-muted-foreground font-heading">Loading your journey...</p></div>;
+  if (error) return <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4"><Navbar /><div className="text-center"><Info className="h-12 w-12 mx-auto text-destructive mb-4" /><h2 className="text-2xl font-heading font-bold mb-2 text-destructive-foreground">Error</h2><p className="text-muted-foreground mb-4">{error}</p><Button onClick={() => window.location.reload()} className="bg-terracotta hover:bg-terracotta-dark">Try Again</Button></div><Footer /></div>;
+  if (!profile) return <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4"><Navbar /><div className="text-center"><Info className="h-12 w-12 mx-auto text-amber-500 dark:text-amber-400 mb-4" /><h2 className="text-2xl font-heading font-bold mb-2 text-amber-700 dark:text-amber-300">Profile Not Found</h2><p className="text-muted-foreground mb-4">Please complete onboarding.</p><Button onClick={() => navigate("/onboarding")} className="bg-terracotta hover:bg-terracotta-dark">Go to Onboarding</Button></div><Footer /></div>;
 
   // --- Prepare data for Components ---
-  const phasesForTimeline: PhaseForTimeline[] | undefined = roadmap?.phases?.map(phase => ({
-      ...phase, completionPercentage: phase.completion_percentage,
-      milestones: phase.milestones?.map(milestone => ({ ...milestone, estimatedTime: milestone.estimated_time, completed: milestone.completed === true, resources: milestone.resources?.map(resource => ({ ...resource, imageUrl: resource.image_url })) || [] })) || [],
-  }));
+  const phasesForTimeline = transformPhasesForTimeline(roadmap);
   const currentPhaseForFocus = roadmap?.phases?.find(phase => phase.milestones?.some(m => m.completed !== true));
   const currentMilestoneForFocus = currentPhaseForFocus?.milestones?.find(m => m.completed !== true);
   const currentResourcesForOverview: ResourceForTimeline[] = currentMilestoneForFocus?.resources?.slice(0, 2).map(r => ({ ...r, imageUrl: r.image_url })) ?? [];
@@ -191,19 +95,19 @@ const Dashboard = () => {
       <Navbar />
       <div className="container px-4 py-8 flex-grow">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"><div><h1 className="text-3xl font-bold">Welcome, {profile.first_name || 'User'}</h1><p className="text-muted-foreground mt-1">Your learning journey</p></div><div className="mt-4 md:mt-0 flex items-center space-x-4"><Badge className="bg-empowerPurple capitalize">{getFieldLabel(profile)}</Badge><Badge variant="outline" className="border-empowerPurple text-empowerPurple capitalize"><Clock className="h-3 w-3 mr-1" />{getTimelineLabel(profile)} plan</Badge></div></div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"><div><h1 className="text-3xl font-heading font-bold text-charcoal dark:text-cream">Welcome, {profile.first_name || 'User'}</h1><p className="text-muted-foreground mt-1">Your learning journey awaits</p></div><div className="mt-4 md:mt-0 flex items-center space-x-4"><Badge className="bg-terracotta text-white capitalize">{getFieldLabel(profile)}</Badge><Badge variant="outline" className="border-sage text-sage-dark capitalize"><Clock className="h-3 w-3 mr-1" />{getTimelineLabel(profile)} plan</Badge></div></div>
         {/* Goal Card */}
-        <Card className="mb-8 shadow-md"><CardHeader className="pb-2"><CardTitle>Goal</CardTitle><CardDescription>Your target objective</CardDescription></CardHeader><CardContent><p className="text-lg font-medium">{getGoal(profile)}</p>{profile.challenges && (<p className="text-sm text-muted-foreground mt-2">Challenges: {profile.challenges}</p>)}</CardContent></Card>
+        <Card className="mb-8 shadow-warm border-terracotta/20"><CardHeader className="pb-2"><CardTitle className="font-heading text-charcoal dark:text-cream">Your Goal</CardTitle><CardDescription>Your target objective</CardDescription></CardHeader><CardContent><p className="text-lg font-medium text-charcoal dark:text-cream">{getGoal(profile)}</p>{profile.challenges && (<p className="text-sm text-muted-foreground mt-2">Challenges: {profile.challenges}</p>)}</CardContent></Card>
         {/* Tabs */}
         <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center"><TabsList className="grid grid-cols-3 w-full sm:w-[400px] mb-4 sm:mb-0"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="roadmap">Roadmap</TabsTrigger><TabsTrigger value="resources">Resources</TabsTrigger></TabsList><div className="flex items-center w-full sm:w-auto justify-end"><p className="text-sm text-muted-foreground mr-2 whitespace-nowrap">Progress:</p><div className="w-full sm:w-48 flex items-center"><Progress value={overallProgress} className="h-2 mr-2 flex-grow" /><span className="text-sm font-medium">{overallProgress}%</span></div></div></div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center"><TabsList className="grid grid-cols-3 w-full sm:w-[400px] mb-4 sm:mb-0 bg-cream/50 dark:bg-charcoal/50"><TabsTrigger value="overview" className="data-[state=active]:bg-terracotta data-[state=active]:text-white">Overview</TabsTrigger><TabsTrigger value="roadmap" className="data-[state=active]:bg-terracotta data-[state=active]:text-white">Roadmap</TabsTrigger><TabsTrigger value="resources" className="data-[state=active]:bg-terracotta data-[state=active]:text-white">Resources</TabsTrigger></TabsList><div className="flex items-center w-full sm:w-auto justify-end"><p className="text-sm text-muted-foreground mr-2 whitespace-nowrap">Progress:</p><div className="w-full sm:w-48 flex items-center"><Progress value={overallProgress} className="h-2 mr-2 flex-grow [&>div]:bg-gradient-to-r [&>div]:from-terracotta [&>div]:to-sage" /><span className="text-sm font-semibold text-terracotta">{overallProgress}%</span></div></div></div>
 
           {/* Overview Tab */}
            <TabsContent value="overview" className="animate-fade-in">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="shadow-sm"><CardHeader><CardTitle className="flex items-center"><GraduationCap className="h-5 w-5 mr-2 text-empowerPurple" />Focus</CardTitle></CardHeader><CardContent>{currentMilestoneForFocus ? (<div className="space-y-4"><h3 className="font-medium">{currentPhaseForFocus?.title}: {currentMilestoneForFocus.title}</h3><p className="text-muted-foreground">{currentMilestoneForFocus.description || "-"}</p><div className="flex items-center text-sm text-muted-foreground"><Clock className="h-4 w-4 mr-1" />Est: {currentMilestoneForFocus.estimated_time || "N/A"}</div></div>) : roadmap ? (<div className="text-center py-6"><CheckCheck className="h-10 w-10 mx-auto text-green-500 mb-2" /><p className="text-muted-foreground font-medium">Roadmap Complete!</p></div>) : (<div className="text-center py-6"><Info className="h-10 w-10 mx-auto text-muted-foreground mb-2" /><p className="text-muted-foreground">No roadmap available.</p></div>)}</CardContent><CardFooter>{roadmap && (<Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab("roadmap")}><ArrowRight className="ml-2 h-4 w-4" />View Roadmap</Button>)}</CardFooter></Card>
-                    <Card className="shadow-sm"><CardHeader><CardTitle className="flex items-center"><BookOpen className="h-5 w-5 mr-2 text-empowerPurple" />Resources</CardTitle><CardDescription>Current step</CardDescription></CardHeader><CardContent>{currentResourcesForOverview.length > 0 ? (<div className="space-y-2">{currentResourcesForOverview.map((r) => (<a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" className="flex items-center p-2 hover:bg-muted rounded-md group"><div className="w-10 h-10 rounded mr-3 flex-shrink-0 bg-muted flex items-center justify-center">{r.imageUrl ? <img src={r.imageUrl} alt={r.title} className="w-full h-full object-cover" /> : <BookOpen className="w-5 h-5 text-muted-foreground"/>}</div><div className="flex-grow"><h4 className="font-medium text-sm group-hover:text-empowerPurple">{r.title}</h4><p className="text-xs text-muted-foreground">{r.type} • {r.platform}</p></div><ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-empowerPurple ml-2" /></a>))}</div>) : (<p className="text-sm text-muted-foreground text-center py-4">{currentMilestoneForFocus ? "No resources." : "-"}</p>)}</CardContent><CardFooter>{roadmap && (<Button variant="outline" size="sm" className="w-full" onClick={() => setActiveTab("resources")}><ArrowRight className="ml-2 h-4 w-4" />View All</Button>)}</CardFooter></Card>
-                    <Card className="shadow-sm md:col-span-2"><CardHeader><CardTitle className="flex items-center"><Award className="h-5 w-5 mr-2 text-empowerPurple" />Profile</CardTitle></CardHeader><CardContent><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><div className="p-4 bg-muted rounded-lg"><h3 className="font-medium text-sm text-muted-foreground mb-1">Background</h3><p className="font-medium capitalize">{getBackgroundLabel(profile)}</p></div><div className="p-4 bg-muted rounded-lg"><h3 className="font-medium text-sm text-muted-foreground mb-1">Experience</h3><p className="font-medium capitalize">{getExperienceLabel(profile)}</p></div><div className="p-4 bg-muted rounded-lg"><h3 className="font-medium text-sm text-muted-foreground mb-1">Commitment</h3><p className="font-medium">{profile.time_available || "-"}</p></div></div></CardContent></Card>
+                    <Card className="shadow-warm border-terracotta/10 hover:shadow-warm-md transition-shadow"><CardHeader><CardTitle className="flex items-center font-heading"><GraduationCap className="h-5 w-5 mr-2 text-terracotta" />Current Focus</CardTitle></CardHeader><CardContent>{currentMilestoneForFocus ? (<div className="space-y-4"><h3 className="font-medium text-charcoal dark:text-cream">{currentPhaseForFocus?.title}: {currentMilestoneForFocus.title}</h3><p className="text-muted-foreground">{currentMilestoneForFocus.description || "-"}</p><div className="flex items-center text-sm text-muted-foreground"><Clock className="h-4 w-4 mr-1 text-sage" />Est: {currentMilestoneForFocus.estimated_time || "N/A"}</div></div>) : roadmap ? (<div className="text-center py-6"><CheckCheck className="h-10 w-10 mx-auto text-sage mb-2" /><p className="text-muted-foreground font-medium">Roadmap Complete!</p></div>) : (<div className="text-center py-6"><Info className="h-10 w-10 mx-auto text-muted-foreground mb-2" /><p className="text-muted-foreground">No roadmap available.</p></div>)}</CardContent><CardFooter>{roadmap && (<Button variant="outline" size="sm" className="w-full border-terracotta/30 hover:border-terracotta hover:text-terracotta" onClick={() => setActiveTab("roadmap")}><ArrowRight className="ml-2 h-4 w-4" />View Roadmap</Button>)}</CardFooter></Card>
+                    <Card className="shadow-warm border-sage/10 hover:shadow-warm-md transition-shadow"><CardHeader><CardTitle className="flex items-center font-heading"><BookOpen className="h-5 w-5 mr-2 text-sage-dark" />Resources</CardTitle><CardDescription>Current step</CardDescription></CardHeader><CardContent>{currentResourcesForOverview.length > 0 ? (<div className="space-y-2">{currentResourcesForOverview.map((r) => (<a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" className="flex items-center p-2 hover:bg-cream/50 dark:hover:bg-charcoal/50 rounded-md group"><div className="w-10 h-10 rounded mr-3 flex-shrink-0 bg-cream dark:bg-charcoal/50 flex items-center justify-center">{r.imageUrl ? <img src={r.imageUrl} alt={r.title} className="w-full h-full object-cover rounded" /> : <BookOpen className="w-5 h-5 text-sage"/>}</div><div className="flex-grow"><h4 className="font-medium text-sm group-hover:text-terracotta transition-colors">{r.title}</h4><p className="text-xs text-muted-foreground">{r.type} • {r.platform}</p></div><ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-terracotta ml-2 transition-colors" /></a>))}</div>) : (<p className="text-sm text-muted-foreground text-center py-4">{currentMilestoneForFocus ? "No resources." : "-"}</p>)}</CardContent><CardFooter>{roadmap && (<Button variant="outline" size="sm" className="w-full border-sage/30 hover:border-sage hover:text-sage-dark" onClick={() => setActiveTab("resources")}><ArrowRight className="ml-2 h-4 w-4" />View All</Button>)}</CardFooter></Card>
+                    <Card className="shadow-warm md:col-span-2 border-amber-200/30"><CardHeader><CardTitle className="flex items-center font-heading"><Award className="h-5 w-5 mr-2 text-amber-500" />Your Profile</CardTitle></CardHeader><CardContent><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><div className="p-4 bg-gradient-to-br from-terracotta-light/30 to-cream rounded-xl"><h3 className="font-medium text-sm text-muted-foreground mb-1">Background</h3><p className="font-medium capitalize text-charcoal dark:text-cream">{getBackgroundLabel(profile)}</p></div><div className="p-4 bg-gradient-to-br from-sage-light/30 to-cream rounded-xl"><h3 className="font-medium text-sm text-muted-foreground mb-1">Experience</h3><p className="font-medium capitalize text-charcoal dark:text-cream">{getExperienceLabel(profile)}</p></div><div className="p-4 bg-gradient-to-br from-amber-100/50 to-cream rounded-xl"><h3 className="font-medium text-sm text-muted-foreground mb-1">Commitment</h3><p className="font-medium text-charcoal dark:text-cream">{profile.time_available || "-"}</p></div></div></CardContent></Card>
                 </div>
            </TabsContent>
 
