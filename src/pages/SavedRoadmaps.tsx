@@ -127,7 +127,7 @@ const SavedRoadmapsPage = () => {
       >
         <Button
           size="lg"
-          onClick={() => navigate("/Questionnaire")}
+          onClick={() => navigate("/onboarding")}
           className="bg-gradient-to-r from-terracotta to-terracotta-dark text-white shadow-warm hover:shadow-warm-lg text-lg px-8 py-6 h-auto"
         >
           <Mountain className="mr-2 h-5 w-5" />
@@ -273,7 +273,7 @@ const SavedRoadmapsPage = () => {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => navigate("/Questionnaire")}
+                onClick={() => navigate("/onboarding")}
                 className="border-terracotta/30 hover:border-terracotta hover:bg-terracotta/5 hover:text-terracotta"
               >
                 <Sparkles className="mr-2 h-4 w-4" />

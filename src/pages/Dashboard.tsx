@@ -92,8 +92,8 @@ const Dashboard = () => {
   const currentMilestoneForFocus = currentPhaseForFocus?.milestones?.find(m => m.completed !== true);
   const currentResourcesForOverview: ResourceForTimeline[] = currentMilestoneForFocus?.resources?.slice(0, 2).map(r => ({ ...r, imageUrl: r.image_url })) ?? [];
 
-  // Determine the goal to display - use roadmap title if viewing specific roadmap, otherwise profile goal
-  const displayGoal = roadmapId && roadmap?.title 
+  // Determine the goal to display - always use roadmap title if roadmap exists, otherwise profile goal
+  const displayGoal = roadmap?.title 
     ? roadmap.title.replace(/roadmap/i, '').replace(/for \w+/i, '').trim() || roadmap.title
     : getGoal(profile);
 
@@ -125,10 +125,10 @@ const Dashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <CardTitle className="font-heading text-charcoal dark:text-cream">
-                  {roadmapId ? "Current Roadmap" : "Your Goal"}
+                  {roadmap ? "Current Roadmap" : "Your Goal"}
                 </CardTitle>
                 <CardDescription>
-                  {roadmapId ? roadmap?.title : "Your target objective"}
+                  {roadmap?.title || "Your target objective"}
                 </CardDescription>
               </div>
               {roadmap && (
@@ -151,7 +151,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <p className="text-lg font-medium text-charcoal dark:text-cream">{displayGoal}</p>
-            {!roadmapId && profile.challenges && (
+            {!roadmap && profile.challenges && (
               <p className="text-sm text-muted-foreground mt-2">Challenges: {profile.challenges}</p>
             )}
             {roadmap?.description && (
