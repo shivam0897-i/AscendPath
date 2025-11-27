@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import {
@@ -43,13 +43,14 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { roadmapId } = useParams<{ roadmapId?: string }>();
   const { user, isLoading: authIsLoading } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Use React Query hooks for data fetching
   const { data: profile, isLoading: profileLoading, error: profileError } = useProfile();
-  const { data: roadmap, isLoading: roadmapLoading, error: roadmapError } = useRoadmap();
-  const milestoneToggle = useMilestoneToggle();
+  const { data: roadmap, isLoading: roadmapLoading, error: roadmapError } = useRoadmap(roadmapId);
+  const milestoneToggle = useMilestoneToggle(roadmapId);
 
   // Redirect if not authenticated
   useEffect(() => {

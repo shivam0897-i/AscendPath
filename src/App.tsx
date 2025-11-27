@@ -70,6 +70,11 @@ const AnimatedRoutes = () => {
               <Dashboard />
             </ProtectedRoute>
           } />
+          <Route path="/dashboard/:roadmapId" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/dashboard/saved-roadmaps" element={
             <ProtectedRoute>
               <SavedRoadmaps />

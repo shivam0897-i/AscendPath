@@ -86,7 +86,7 @@ const RoadmapCard = ({ roadmap, index = 0 }: RoadmapCardProps) => {
   const StatusIcon = status.icon;
 
   const handleResume = () => {
-    navigate("/dashboard");
+    navigate(`/dashboard/${roadmap.id}`);
   };
 
   const handleDelete = () => {

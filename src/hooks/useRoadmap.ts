@@ -50,15 +50,22 @@ async function fetchProfile(userId: string): Promise<Profile | null> {
   return data;
 }
 
-// Fetch roadmap query
-async function fetchRoadmap(userId: string): Promise<FullRoadmapFromSupabase | null> {
-  const { data, error } = await supabase
+// Fetch roadmap query - either by ID or get the latest one
+async function fetchRoadmap(userId: string, roadmapId?: string): Promise<FullRoadmapFromSupabase | null> {
+  let query = supabase
     .from('roadmaps')
     .select(`*, phases(*, milestones(*, resources(*)))`)
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .eq('user_id', userId);
+
+  if (roadmapId) {
+    // Fetch specific roadmap by ID
+    query = query.eq('id', roadmapId);
+  } else {
+    // Fetch the most recent roadmap
+    query = query.order('created_at', { ascending: false }).limit(1);
+  }
+
+  const { data, error } = await query.maybeSingle();
 
   if (error) throw error;
   return data as FullRoadmapFromSupabase | null;
@@ -78,12 +85,12 @@ export function useProfile() {
 }
 
 // Custom hook for roadmap data
-export function useRoadmap() {
+export function useRoadmap(roadmapId?: string) {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ['roadmap', user?.id],
-    queryFn: () => fetchRoadmap(user!.id),
+    queryKey: ['roadmap', user?.id, roadmapId],
+    queryFn: () => fetchRoadmap(user!.id, roadmapId),
     enabled: !!user?.id,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
@@ -91,7 +98,7 @@ export function useRoadmap() {
 }
 
 // Mutation hook for toggling milestone completion
-export function useMilestoneToggle() {
+export function useMilestoneToggle(roadmapId?: string) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -107,10 +114,10 @@ export function useMilestoneToggle() {
     },
     onMutate: async ({ milestoneId, newStatus }) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['roadmap', user?.id] });
+      await queryClient.cancelQueries({ queryKey: ['roadmap', user?.id, roadmapId] });
 
       // Snapshot the previous value
-      const previousRoadmap = queryClient.getQueryData<FullRoadmapFromSupabase>(['roadmap', user?.id]);
+      const previousRoadmap = queryClient.getQueryData<FullRoadmapFromSupabase>(['roadmap', user?.id, roadmapId]);
 
       // Optimistically update the roadmap
       if (previousRoadmap) {
@@ -141,7 +148,7 @@ export function useMilestoneToggle() {
           })
         };
 
-        queryClient.setQueryData(['roadmap', user?.id], updatedRoadmap);
+        queryClient.setQueryData(['roadmap', user?.id, roadmapId], updatedRoadmap);
       }
 
       return { previousRoadmap };
@@ -152,7 +159,7 @@ export function useMilestoneToggle() {
     onError: (error: Error, _, context) => {
       // Rollback to previous value on error
       if (context?.previousRoadmap) {
-        queryClient.setQueryData(['roadmap', user?.id], context.previousRoadmap);
+        queryClient.setQueryData(['roadmap', user?.id, roadmapId], context.previousRoadmap);
       }
       toast.error(`Update failed: ${error.message}`);
     },
