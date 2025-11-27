@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import {
@@ -24,10 +24,12 @@ import {
   Info,
   ExternalLink,
   Loader2,
+  BookMarked,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import RoadmapTimeline from "@/components/RoadmapTimeline";
 import ResourceCard from "@/components/ResourceCard";
+import SaveRoadmapButton from "@/components/SaveRoadmapButton";
 import { useAuth } from "@/context/AuthContext";
 import {
   useProfile,
@@ -95,9 +97,55 @@ const Dashboard = () => {
       <Navbar />
       <div className="container px-4 py-8 flex-grow">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"><div><h1 className="text-3xl font-heading font-bold text-charcoal dark:text-cream">Welcome, {profile.first_name || 'User'}</h1><p className="text-muted-foreground mt-1">Your learning journey awaits</p></div><div className="mt-4 md:mt-0 flex items-center space-x-4"><Badge className="bg-terracotta text-white capitalize">{getFieldLabel(profile)}</Badge><Badge variant="outline" className="border-sage text-sage-dark capitalize"><Clock className="h-3 w-3 mr-1" />{getTimelineLabel(profile)} plan</Badge></div></div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-heading font-bold text-charcoal dark:text-cream">Welcome, {profile.first_name || 'User'}</h1>
+            <p className="text-muted-foreground mt-1">Your learning journey awaits</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge className="bg-terracotta text-white capitalize">{getFieldLabel(profile)}</Badge>
+            <Badge variant="outline" className="border-sage text-sage-dark capitalize"><Clock className="h-3 w-3 mr-1" />{getTimelineLabel(profile)} plan</Badge>
+            <Link to="/dashboard/saved-roadmaps">
+              <Button variant="outline" size="sm" className="border-terracotta/30 hover:border-terracotta hover:bg-terracotta/5 hover:text-terracotta">
+                <BookMarked className="h-4 w-4 mr-2" />
+                My Roadmaps
+              </Button>
+            </Link>
+          </div>
+        </div>
         {/* Goal Card */}
-        <Card className="mb-8 shadow-warm border-terracotta/20"><CardHeader className="pb-2"><CardTitle className="font-heading text-charcoal dark:text-cream">Your Goal</CardTitle><CardDescription>Your target objective</CardDescription></CardHeader><CardContent><p className="text-lg font-medium text-charcoal dark:text-cream">{getGoal(profile)}</p>{profile.challenges && (<p className="text-sm text-muted-foreground mt-2">Challenges: {profile.challenges}</p>)}</CardContent></Card>
+        <Card className="mb-8 shadow-warm border-terracotta/20">
+          <CardHeader className="pb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <CardTitle className="font-heading text-charcoal dark:text-cream">Your Goal</CardTitle>
+                <CardDescription>Your target objective</CardDescription>
+              </div>
+              {roadmap && (
+                <SaveRoadmapButton 
+                  size="sm"
+                  roadmap={{
+                    id: roadmap.id,
+                    title: roadmap.title,
+                    description: roadmap.description,
+                    goalRole: getGoal(profile),
+                    progress: overallProgress,
+                    milestoneCount: roadmap.phases?.flatMap(p => p.milestones || []).length || 0,
+                    completedMilestones: roadmap.phases?.flatMap(p => p.milestones || []).filter(m => m.completed).length || 0,
+                    phaseCount: roadmap.phases?.length || 0,
+                    status: overallProgress === 100 ? "completed" : overallProgress === 0 ? "draft" : "in-progress",
+                  }}
+                />
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg font-medium text-charcoal dark:text-cream">{getGoal(profile)}</p>
+            {profile.challenges && (
+              <p className="text-sm text-muted-foreground mt-2">Challenges: {profile.challenges}</p>
+            )}
+          </CardContent>
+        </Card>
         {/* Tabs */}
         <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center"><TabsList className="grid grid-cols-3 w-full sm:w-[400px] mb-4 sm:mb-0 bg-cream/50 dark:bg-charcoal/50"><TabsTrigger value="overview" className="data-[state=active]:bg-terracotta data-[state=active]:text-white">Overview</TabsTrigger><TabsTrigger value="roadmap" className="data-[state=active]:bg-terracotta data-[state=active]:text-white">Roadmap</TabsTrigger><TabsTrigger value="resources" className="data-[state=active]:bg-terracotta data-[state=active]:text-white">Resources</TabsTrigger></TabsList><div className="flex items-center w-full sm:w-auto justify-end"><p className="text-sm text-muted-foreground mr-2 whitespace-nowrap">Progress:</p><div className="w-full sm:w-48 flex items-center"><Progress value={overallProgress} className="h-2 mr-2 flex-grow [&>div]:bg-gradient-to-r [&>div]:from-terracotta [&>div]:to-sage" /><span className="text-sm font-semibold text-terracotta">{overallProgress}%</span></div></div></div>

@@ -142,6 +142,7 @@ const NavLinks = ({ mobile = false, currentPath = "" }: { mobile?: boolean; curr
   const links = [
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
+    { href: "/dashboard/saved-roadmaps", label: "My Roadmaps" },
     { href: "/resources", label: "Resources" },
     { href: "/community", label: "Community" },
     { href: "/Questionnaire", label: "Find Career" },

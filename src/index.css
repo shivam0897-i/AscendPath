@@ -526,3 +526,75 @@
   height: 2px;
   background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.3), hsl(var(--accent) / 0.3), transparent);
 }
+
+/* ========================================
+   SAVED ROADMAPS CARD STYLES
+   ======================================== */
+/* Card hover lift effect */
+.roadmap-card {
+  @apply transition-all duration-300 ease-out;
+}
+
+.roadmap-card:hover {
+  @apply -translate-y-1;
+  box-shadow: 
+    0 20px 25px -5px rgb(201 107 75 / 0.08),
+    0 8px 10px -6px rgb(201 107 75 / 0.05);
+}
+
+/* Progress bar animation */
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-progress-fill {
+  animation: progress-fill 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+/* Star burst animation for save button */
+@keyframes star-burst {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.animate-star-burst {
+  animation: star-burst 0.6s ease-out forwards;
+}
+
+/* Upward flowing particles */
+@keyframes flow-up {
+  0% {
+    opacity: 0.6;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.5);
+  }
+}
+
+.animate-flow-up {
+  animation: flow-up 2s ease-out infinite;
+}
+
+/* Glow effect for completed roadmaps */
+.completed-glow {
+  box-shadow: 
+    0 0 20px rgb(107 143 113 / 0.2),
+    0 0 40px rgb(107 143 113 / 0.1);
+}

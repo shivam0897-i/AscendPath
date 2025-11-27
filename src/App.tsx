@@ -15,6 +15,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const SavedRoadmaps = lazy(() => import("./pages/SavedRoadmaps"));
 const Resources = lazy(() => import("./pages/Resources"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -67,6 +68,11 @@ const AnimatedRoutes = () => {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard/saved-roadmaps" element={
+            <ProtectedRoute>
+              <SavedRoadmaps />
             </ProtectedRoute>
           } />
           <Route path="*" element={<NotFound />} />
