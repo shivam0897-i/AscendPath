@@ -26,6 +26,11 @@
 }
 
 @layer base {
+  /* Prevent horizontal scroll from absolute positioned elements */
+  html, body {
+    overflow-x: hidden;
+  }
+  
   :root {
     /* Warm cream background with subtle warmth */
     --background: 40 33% 98%;

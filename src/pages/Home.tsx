@@ -67,7 +67,7 @@ const CareerRoadmapVisual = () => {
   ];
 
   return (
-    <div ref={containerRef} className="relative w-full h-[320px] sm:h-[380px] lg:h-[440px] select-none overflow-visible">
+    <div ref={containerRef} className="relative w-full h-[320px] sm:h-[380px] lg:h-[440px] select-none overflow-hidden">
       {/* SVG Path - Smooth flowing ascent curve */}
       <svg 
         className="absolute inset-0 w-full h-full pointer-events-none" 
@@ -457,7 +457,7 @@ const Home = () => {
               </div>
               
               {/* Right: Career Roadmap Visual */}
-              <div className="lg:col-span-5 order-1 lg:order-2 flex justify-center lg:justify-end -mx-2 sm:mx-0">
+              <div className="lg:col-span-5 order-1 lg:order-2 flex justify-center lg:justify-end">
                 <div className="w-full max-w-[360px] sm:max-w-[400px] lg:max-w-none animate-fade-in animate-stagger-2">
                   <CareerRoadmapVisual />
                 </div>
