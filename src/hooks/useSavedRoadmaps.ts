@@ -186,7 +186,46 @@ export function useDeleteSavedRoadmap() {
         return roadmapId;
       }
 
-      // For authenticated users, delete from Supabase
+      // For authenticated users, delete child records first (cascade manually)
+      // Delete resources for all milestones in all phases of this roadmap
+      const { data: phases } = await supabase
+        .from("phases")
+        .select("id")
+        .eq("roadmap_id", roadmapId);
+
+      if (phases && phases.length > 0) {
+        const phaseIds = phases.map((p) => p.id);
+        
+        // Get all milestones for these phases
+        const { data: milestones } = await supabase
+          .from("milestones")
+          .select("id")
+          .in("phase_id", phaseIds);
+
+        if (milestones && milestones.length > 0) {
+          const milestoneIds = milestones.map((m) => m.id);
+          
+          // Delete all resources for these milestones
+          await supabase
+            .from("resources")
+            .delete()
+            .in("milestone_id", milestoneIds);
+
+          // Delete all milestones for these phases
+          await supabase
+            .from("milestones")
+            .delete()
+            .in("phase_id", phaseIds);
+        }
+
+        // Delete all phases for this roadmap
+        await supabase
+          .from("phases")
+          .delete()
+          .eq("roadmap_id", roadmapId);
+      }
+
+      // Finally delete the roadmap itself
       const { error } = await supabase
         .from("roadmaps")
         .delete()

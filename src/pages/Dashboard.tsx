@@ -92,6 +92,11 @@ const Dashboard = () => {
   const currentMilestoneForFocus = currentPhaseForFocus?.milestones?.find(m => m.completed !== true);
   const currentResourcesForOverview: ResourceForTimeline[] = currentMilestoneForFocus?.resources?.slice(0, 2).map(r => ({ ...r, imageUrl: r.image_url })) ?? [];
 
+  // Determine the goal to display - use roadmap title if viewing specific roadmap, otherwise profile goal
+  const displayGoal = roadmapId && roadmap?.title 
+    ? roadmap.title.replace(/roadmap/i, '').replace(/for \w+/i, '').trim() || roadmap.title
+    : getGoal(profile);
+
   // --- Main Dashboard Content ---
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -119,8 +124,12 @@ const Dashboard = () => {
           <CardHeader className="pb-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <CardTitle className="font-heading text-charcoal dark:text-cream">Your Goal</CardTitle>
-                <CardDescription>Your target objective</CardDescription>
+                <CardTitle className="font-heading text-charcoal dark:text-cream">
+                  {roadmapId ? "Current Roadmap" : "Your Goal"}
+                </CardTitle>
+                <CardDescription>
+                  {roadmapId ? roadmap?.title : "Your target objective"}
+                </CardDescription>
               </div>
               {roadmap && (
                 <SaveRoadmapButton 
@@ -129,7 +138,7 @@ const Dashboard = () => {
                     id: roadmap.id,
                     title: roadmap.title,
                     description: roadmap.description,
-                    goalRole: getGoal(profile),
+                    goalRole: displayGoal,
                     progress: overallProgress,
                     milestoneCount: roadmap.phases?.flatMap(p => p.milestones || []).length || 0,
                     completedMilestones: roadmap.phases?.flatMap(p => p.milestones || []).filter(m => m.completed).length || 0,
@@ -141,9 +150,12 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-lg font-medium text-charcoal dark:text-cream">{getGoal(profile)}</p>
-            {profile.challenges && (
+            <p className="text-lg font-medium text-charcoal dark:text-cream">{displayGoal}</p>
+            {!roadmapId && profile.challenges && (
               <p className="text-sm text-muted-foreground mt-2">Challenges: {profile.challenges}</p>
+            )}
+            {roadmap?.description && (
+              <p className="text-sm text-muted-foreground mt-2">{roadmap.description}</p>
             )}
           </CardContent>
         </Card>
