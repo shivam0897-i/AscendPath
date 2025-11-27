@@ -86,6 +86,46 @@ const Dashboard = () => {
   if (error) return <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4"><Navbar /><div className="text-center"><Info className="h-12 w-12 mx-auto text-destructive mb-4" /><h2 className="text-2xl font-heading font-bold mb-2 text-destructive-foreground">Error</h2><p className="text-muted-foreground mb-4">{error}</p><Button onClick={() => window.location.reload()} className="bg-terracotta hover:bg-terracotta-dark">Try Again</Button></div><Footer /></div>;
   if (!profile) return <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4"><Navbar /><div className="text-center"><Info className="h-12 w-12 mx-auto text-amber-500 dark:text-amber-400 mb-4" /><h2 className="text-2xl font-heading font-bold mb-2 text-amber-700 dark:text-amber-300">Profile Not Found</h2><p className="text-muted-foreground mb-4">Please complete onboarding.</p><Button onClick={() => navigate("/onboarding")} className="bg-terracotta hover:bg-terracotta-dark">Go to Onboarding</Button></div><Footer /></div>;
 
+  // No roadmap state - prompt to create one
+  if (!roadmap && !roadmapLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <div className="container px-4 py-8 flex-grow flex flex-col items-center justify-center">
+          <div className="text-center max-w-md">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-terracotta/20 via-cream to-sage/20 flex items-center justify-center">
+              <GraduationCap className="h-10 w-10 text-terracotta/60" />
+            </div>
+            <h1 className="text-3xl font-heading font-bold text-charcoal dark:text-cream mb-3">
+              Welcome, {profile.first_name || 'User'}!
+            </h1>
+            <p className="text-lg text-muted-foreground mb-2">
+              Ready to start your career journey?
+            </p>
+            <p className="text-muted-foreground mb-8">
+              Generate a personalized learning roadmap tailored to your goals and background.
+            </p>
+            <Button
+              size="lg"
+              onClick={() => navigate("/onboarding")}
+              className="bg-gradient-to-r from-terracotta to-terracotta-dark text-white shadow-warm hover:shadow-warm-lg text-lg px-8 py-6 h-auto"
+            >
+              <ArrowRight className="mr-2 h-5 w-5" />
+              Generate My Roadmap
+            </Button>
+            <p className="text-sm text-muted-foreground mt-6">
+              Have saved roadmaps?{" "}
+              <Link to="/dashboard/saved-roadmaps" className="text-terracotta hover:underline font-medium">
+                View them here
+              </Link>
+            </p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   // --- Prepare data for Components ---
   const phasesForTimeline = transformPhasesForTimeline(roadmap);
   const currentPhaseForFocus = roadmap?.phases?.find(phase => phase.milestones?.some(m => m.completed !== true));
