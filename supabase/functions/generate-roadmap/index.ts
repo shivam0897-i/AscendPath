@@ -94,9 +94,20 @@ If no good alternative exists, respond with: null
 
     const result = await response.json();
     const text = result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    if (!text || text === 'null') return null;
+    if (!text || text === 'null' || text.toLowerCase() === 'null') return null;
 
-    const cleaned = text.replace(/^```json\n?|\n?```$/g, '').trim();
+    // Clean and extract JSON
+    let cleaned = text.replace(/^```json\n?/i, '').replace(/\n?```$/i, '').trim();
+    cleaned = cleaned.replace(/^```\n?/i, '').replace(/\n?```$/i, '').trim();
+    
+    // Try to find JSON object in the response
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.warn('No JSON found in Gemini alternative response:', cleaned.substring(0, 100));
+      return null;
+    }
+    cleaned = jsonMatch[0];
+
     const generated = JSON.parse(cleaned);
     const isValid = await checkIfUrlWorks(generated.url);
     return isValid ? generated : null;
@@ -312,8 +323,28 @@ Root object:
       throw new Error('Could not extract roadmap content from Gemini response.');
     }
 
-    const cleanedText = generatedText.trim().replace(/^```json\n?|\n?```$/g, '').trim();
-    let parsedRoadmap = JSON.parse(cleanedText); 
+    // Clean and extract JSON from response
+    let cleanedText = generatedText.trim();
+    
+    // Remove markdown code blocks if present
+    cleanedText = cleanedText.replace(/^```json\n?/i, '').replace(/\n?```$/i, '').trim();
+    cleanedText = cleanedText.replace(/^```\n?/i, '').replace(/\n?```$/i, '').trim();
+    
+    // Try to find JSON object in the response (starts with { and ends with })
+    const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('No JSON object found in response:', cleanedText.substring(0, 200));
+      throw new Error('Could not find valid JSON in Gemini response.');
+    }
+    cleanedText = jsonMatch[0];
+
+    let parsedRoadmap;
+    try {
+      parsedRoadmap = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('JSON parse error. Raw text:', cleanedText.substring(0, 500));
+      throw new Error(`Failed to parse roadmap JSON: ${parseError.message}`);
+    }
 
     parsedRoadmap = await validateAndReplaceResourceUrls(parsedRoadmap);
     return parsedRoadmap;
