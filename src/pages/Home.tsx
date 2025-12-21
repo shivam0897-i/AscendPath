@@ -69,9 +69,9 @@ const CareerRoadmapVisual = () => {
   return (
     <div ref={containerRef} className="relative w-full h-[320px] sm:h-[380px] lg:h-[440px] select-none overflow-hidden">
       {/* SVG Path - Smooth flowing ascent curve */}
-      <svg 
-        className="absolute inset-0 w-full h-full pointer-events-none" 
-        viewBox="0 0 400 460" 
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        viewBox="0 0 400 460"
         fill="none"
         preserveAspectRatio="xMidYMid meet"
       >
@@ -82,7 +82,7 @@ const CareerRoadmapVisual = () => {
             <stop offset="40%" stopColor="#C96B4B" stopOpacity="0.5" />
             <stop offset="100%" stopColor="#C96B4B" stopOpacity="0.7" />
           </linearGradient>
-          
+
           {/* Animated progress gradient */}
           <linearGradient id="progressGradient" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#6B8F71" />
@@ -99,7 +99,7 @@ const CareerRoadmapVisual = () => {
             </feMerge>
           </filter>
         </defs>
-        
+
         {/* Decorative topographic lines - subtle terrain feel */}
         <g className={`transition-opacity duration-1000 ${animationPhase >= 1 ? 'opacity-100' : 'opacity-0'}`}>
           <path
@@ -138,7 +138,7 @@ const CareerRoadmapVisual = () => {
           fill="none"
           className={`transition-all duration-1000 ease-out ${animationPhase >= 1 ? 'opacity-100' : 'opacity-0'}`}
         />
-        
+
         {/* Animated progress path (smooth flowing line) */}
         <path
           d="M 30 420 
@@ -197,17 +197,16 @@ const CareerRoadmapVisual = () => {
         return (
           <div
             key={index}
-            className={`absolute transition-all duration-700 ease-out ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-            style={{ 
-              left: pos.left, 
+            className={`absolute transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+              }`}
+            style={{
+              left: pos.left,
               bottom: pos.bottom,
               zIndex: 10 + index,
               transitionDelay: isVisible ? `${(milestone.delay - 1) * 180}ms` : '0ms'
             }}
           >
-            <div 
+            <div
               className={`relative group cursor-default ${milestone.isGoal ? 'z-20' : ''}`}
               style={{ transform: `scale(${cardScale})` }}
             >
@@ -215,9 +214,9 @@ const CareerRoadmapVisual = () => {
               {milestone.isGoal && (
                 <div className="absolute -inset-3 bg-terracotta/25 rounded-3xl blur-2xl animate-pulse-soft" />
               )}
-              
+
               {/* Milestone card */}
-              <div 
+              <div
                 className={`
                   relative flex flex-col items-center 
                   p-2 sm:p-2.5 lg:p-3 
@@ -225,8 +224,8 @@ const CareerRoadmapVisual = () => {
                   backdrop-blur-sm
                   group-hover:scale-105 group-hover:-translate-y-1 
                   transition-all duration-300 ease-out
-                  ${milestone.isGoal 
-                    ? 'bg-gradient-to-br from-terracotta to-terracotta-dark text-white shadow-warm-xl ring-2 ring-white/20 p-2.5 sm:p-3 lg:p-4' 
+                  ${milestone.isGoal
+                    ? 'bg-gradient-to-br from-terracotta to-terracotta-dark text-white shadow-warm-xl ring-2 ring-white/20 p-2.5 sm:p-3 lg:p-4'
                     : 'bg-card/95 dark:bg-charcoal-light/90 border border-border/60 dark:border-cream/15 shadow-warm-md hover:shadow-warm-lg'
                   }
                 `}
@@ -237,14 +236,14 @@ const CareerRoadmapVisual = () => {
                   rounded-lg 
                   flex items-center justify-center mb-1 sm:mb-1.5
                   transition-transform duration-300 group-hover:scale-110
-                  ${milestone.isGoal 
-                    ? 'bg-white/20' 
+                  ${milestone.isGoal
+                    ? 'bg-white/20'
                     : milestone.color
                   }
                 `}>
                   <Icon className={`w-4 h-4 sm:w-4.5 sm:h-4.5 lg:w-5 lg:h-5 ${milestone.iconColor}`} />
                 </div>
-                
+
                 {/* Label */}
                 <span className={`
                   text-[9px] sm:text-[10px] lg:text-xs font-semibold text-center whitespace-nowrap leading-tight
@@ -281,7 +280,7 @@ const CareerRoadmapVisual = () => {
 
 const Home = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  
+
   // Animation refs for each section
   const featuresAnimation = useScrollAnimation();
   const howItWorksAnimation = useScrollAnimation();
@@ -345,21 +344,21 @@ const Home = () => {
       <Navbar />
 
       {/* Ensure main content takes remaining space */}
-      <main className="flex-grow"> 
+      <main className="flex-grow">
         {/* Hero Section - "Roadmap to Your Future Career" */}
         <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
           {/* Layered background */}
           <div className="absolute inset-0 bg-hero-light dark:bg-hero-dark" />
-          <div className="absolute inset-0 bg-pattern-topo opacity-30 dark:opacity-15 pointer-events-none" />
-          
+          <div className="absolute inset-0 bg-pattern-grid opacity-35 dark:opacity-15 pointer-events-none" />
+
           {/* Warm ambient glows */}
           <div className="absolute top-[10%] right-[15%] w-[400px] h-[400px] bg-gradient-to-br from-terracotta/20 dark:from-terracotta/10 to-transparent rounded-full blur-[80px] pointer-events-none" />
           <div className="absolute bottom-[20%] left-[5%] w-[300px] h-[300px] bg-gradient-to-tr from-sage/15 dark:from-sage/8 to-transparent rounded-full blur-[60px] pointer-events-none" />
-          
+
           <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12 lg:py-16">
             {/* Grid: 58% text / 42% visual on desktop, stacked on mobile */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-center">
-              
+
               {/* Left: Text Content - Upper-left power zone */}
               <div className="lg:col-span-7 order-2 lg:order-1">
                 <div className="max-w-[540px]">
@@ -370,7 +369,7 @@ const Home = () => {
                       Trusted by 10,000+ students & professionals
                     </span>
                   </div>
-                  
+
                   {/* Headline - Primary focal point */}
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-heading font-bold mb-5 lg:mb-6 leading-[1.15] text-charcoal dark:text-cream animate-fade-in-up animate-stagger-1">
                     Your Career Begins With the{" "}
@@ -381,7 +380,7 @@ const Home = () => {
                       </svg>
                     </span>
                   </h1>
-                  
+
                   {/* Subhead - Supporting narrative */}
                   <p className="text-base lg:text-lg xl:text-xl text-muted-foreground dark:text-cream/70 mb-8 lg:mb-10 leading-relaxed animate-fade-in-up animate-stagger-2">
                     A personalized learning journey designed to help students and professionals reach their dream career with{" "}
@@ -389,7 +388,7 @@ const Home = () => {
                     <span className="text-charcoal dark:text-cream font-medium">confidence</span>, and{" "}
                     <span className="text-charcoal dark:text-cream font-medium">momentum</span>.
                   </p>
-                  
+
                   {/* CTAs - Clear actions */}
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up animate-stagger-3">
                     <Button asChild size="xl" variant="warm" className="group">
@@ -398,10 +397,10 @@ const Home = () => {
                         <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                       </Link>
                     </Button>
-                    <Button 
+                    <Button
                       asChild
-                      variant="outline" 
-                      size="lg" 
+                      variant="outline"
+                      size="lg"
                       className="border-2 border-charcoal/20 dark:border-cream/20 hover:border-sage dark:hover:border-sage hover:text-sage-dark dark:hover:text-sage hover:bg-sage/5 dark:text-cream transition-all h-14 px-8 text-base"
                     >
                       <Link to="/Questionnaire">
@@ -455,26 +454,26 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Right: Career Roadmap Visual */}
               <div className="lg:col-span-5 order-1 lg:order-2 flex justify-center lg:justify-end">
                 <div className="w-full max-w-[360px] sm:max-w-[400px] lg:max-w-none animate-fade-in animate-stagger-2">
                   <CareerRoadmapVisual />
                 </div>
               </div>
-              
+
             </div>
           </div>
         </section>
 
         {/* Feature Section - Cards with personality */}
-        <section 
+        <section
           ref={featuresAnimation.ref}
           className="py-24 bg-section-warm px-4 sm:px-6 lg:px-8 relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-pattern-grid opacity-30 dark:opacity-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-pattern-grid opacity-35 dark:opacity-15 pointer-events-none" />
           <div className="absolute inset-0 bg-noise" />
-          
+
           <div className="max-w-7xl mx-auto relative">
             <div className={`text-center mb-16 transition-all duration-700 ${featuresAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <p className="text-sm font-semibold text-sage-dark dark:text-sage tracking-widest uppercase mb-3">What We Offer</p>
@@ -489,13 +488,12 @@ const Home = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {features.map((feature, index) => (
-                <div 
-                  key={index} 
-                  className={`group bg-card dark:bg-charcoal-light/50 p-8 rounded-2xl shadow-warm hover:shadow-warm-lg transition-all duration-500 border border-border/50 dark:border-cream/10 hover:border-terracotta/30 hover:-translate-y-2 ${
-                    featuresAnimation.isVisible 
-                      ? 'opacity-100 translate-y-0' 
+                <div
+                  key={index}
+                  className={`group bg-card dark:bg-charcoal-light/50 p-8 rounded-2xl shadow-warm hover:shadow-warm-lg transition-all duration-500 border border-border/50 dark:border-cream/10 hover:border-terracotta/30 hover:-translate-y-2 ${featuresAnimation.isVisible
+                      ? 'opacity-100 translate-y-0'
                       : 'opacity-0 translate-y-8'
-                  }`}
+                    }`}
                   style={{ transitionDelay: featuresAnimation.isVisible ? `${index * 100}ms` : '0ms' }}
                 >
                   <div className="h-14 w-14 bg-gradient-to-br from-terracotta-light to-sage-light dark:from-terracotta/30 dark:to-sage/30 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
@@ -509,14 +507,14 @@ const Home = () => {
           </div>
         </section>
 
-        {/* How It Works Section - Journey Steps */}
-        <section 
+        <section
           ref={howItWorksAnimation.ref}
           className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative"
         >
           {/* Dark mode background */}
           <div className="absolute inset-0 dark:bg-charcoal -mx-4 sm:-mx-6 lg:-mx-8" style={{ left: '-100vw', right: '-100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }} />
-          
+          <div className="absolute inset-0 bg-pattern-grid opacity-35 dark:opacity-15 pointer-events-none" style={{ left: '-100vw', right: '-100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }} />
+
           <div className="relative">
             <div className={`text-center mb-16 transition-all duration-700 ${howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <p className="text-sm font-semibold text-terracotta dark:text-terracotta-light tracking-widest uppercase mb-3">Simple Process</p>
@@ -529,54 +527,53 @@ const Home = () => {
               </p>
             </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
-            {/* Connection line - animated gradient */}
-            <div className={`hidden md:block absolute top-[60px] left-[16.67%] right-[16.67%] h-1 bg-gradient-to-r from-terracotta via-amber-500 to-sage rounded-full transition-all duration-1000 ${howItWorksAnimation.isVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`} />
-            
-            {[
-              { num: 1, title: "Share Your Goals", desc: "Tell us about your educational goals, current skills, and available time." },
-              { num: 2, title: "Get Your Roadmap", desc: "Receive a custom learning path with timeline, steps, and resources." },
-              { num: 3, title: "Track Your Progress", desc: "Follow your roadmap, track milestones, and adjust as needed." }
-            ].map((step, index) => (
-              <div 
-                key={index} 
-                className={`text-center relative transition-all duration-700 ${
-                  howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                }`}
-                style={{ transitionDelay: howItWorksAnimation.isVisible ? `${300 + index * 200}ms` : '0ms' }}
-              >
-                <div className="h-[120px] w-[120px] mx-auto mb-6 relative group cursor-default">
-                  <div className="absolute inset-0 bg-gradient-to-br from-terracotta to-terracotta-dark rounded-full opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-terracotta to-sage rounded-full opacity-0 group-hover:opacity-20 blur-xl transition-opacity" />
-                  <div className="absolute inset-2 bg-card dark:bg-charcoal-light rounded-full flex items-center justify-center shadow-warm-md border-2 border-terracotta/20 group-hover:border-terracotta/40 group-hover:scale-105 transition-all">
-                    <span className="text-4xl font-heading font-bold text-terracotta dark:text-terracotta-light">{step.num}</span>
-                  </div>
-                </div>
-                <h3 className="text-xl font-heading font-semibold mb-3 text-charcoal dark:text-cream">{step.title}</h3>
-                <p className="text-muted-foreground dark:text-cream/70 max-w-xs mx-auto leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
+              {/* Connection line - animated gradient */}
+              <div className={`hidden md:block absolute top-[60px] left-[16.67%] right-[16.67%] h-1 bg-gradient-to-r from-terracotta via-amber-500 to-sage rounded-full transition-all duration-1000 ${howItWorksAnimation.isVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`} />
 
-          <div className={`text-center mt-14 transition-all duration-700 delay-700 ${howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <Button asChild size="lg" variant="warm" className="group">
-              <Link to="/onboarding">
-                Create Your Roadmap
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </div>
+              {[
+                { num: 1, title: "Share Your Goals", desc: "Tell us about your educational goals, current skills, and available time." },
+                { num: 2, title: "Get Your Roadmap", desc: "Receive a custom learning path with timeline, steps, and resources." },
+                { num: 3, title: "Track Your Progress", desc: "Follow your roadmap, track milestones, and adjust as needed." }
+              ].map((step, index) => (
+                <div
+                  key={index}
+                  className={`text-center relative transition-all duration-700 ${howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                    }`}
+                  style={{ transitionDelay: howItWorksAnimation.isVisible ? `${300 + index * 200}ms` : '0ms' }}
+                >
+                  <div className="h-[120px] w-[120px] mx-auto mb-6 relative group cursor-default">
+                    <div className="absolute inset-0 bg-gradient-to-br from-terracotta to-terracotta-dark rounded-full opacity-10 dark:opacity-20 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-terracotta to-sage rounded-full opacity-0 group-hover:opacity-20 blur-xl transition-opacity" />
+                    <div className="absolute inset-2 bg-card dark:bg-charcoal-light rounded-full flex items-center justify-center shadow-warm-md border-2 border-terracotta/20 group-hover:border-terracotta/40 group-hover:scale-105 transition-all">
+                      <span className="text-4xl font-heading font-bold text-terracotta dark:text-terracotta-light">{step.num}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-heading font-semibold mb-3 text-charcoal dark:text-cream">{step.title}</h3>
+                  <p className="text-muted-foreground dark:text-cream/70 max-w-xs mx-auto leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className={`text-center mt-14 transition-all duration-700 delay-700 ${howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <Button asChild size="lg" variant="warm" className="group">
+                <Link to="/onboarding">
+                  Create Your Roadmap
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </section>
 
         {/* Testimonials - Social proof with warmth */}
-        <section 
+        <section
           ref={testimonialsAnimation.ref}
           className="py-24 bg-charcoal dark:bg-charcoal-dark px-4 sm:px-6 lg:px-8 relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-pattern-topo opacity-10 pointer-events-none" />
           <div className="absolute inset-0 bg-noise" />
-          
+
           <div className="max-w-7xl mx-auto relative">
             <div className={`text-center mb-16 transition-all duration-700 ${testimonialsAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <p className="text-sm font-semibold text-terracotta tracking-widest uppercase mb-3">Success Stories</p>
@@ -591,11 +588,10 @@ const Home = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
               {testimonials.map((testimonial, index) => (
-                <div 
-                  key={index} 
-                  className={`group bg-charcoal-light/50 backdrop-blur-sm p-8 rounded-2xl border border-cream/10 hover:border-terracotta/40 transition-all duration-500 hover:-translate-y-2 ${
-                    testimonialsAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                  }`}
+                <div
+                  key={index}
+                  className={`group bg-charcoal-light/50 backdrop-blur-sm p-8 rounded-2xl border border-cream/10 hover:border-terracotta/40 transition-all duration-500 hover:-translate-y-2 ${testimonialsAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                    }`}
                   style={{ transitionDelay: testimonialsAnimation.isVisible ? `${index * 150}ms` : '0ms' }}
                 >
                   <div className="mb-5 flex gap-1">
@@ -619,17 +615,17 @@ const Home = () => {
         </section>
 
         {/* CTA Section - Warm invitation */}
-        <section 
+        <section
           ref={ctaAnimation.ref}
           className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-terracotta via-terracotta-dark to-sage-dark text-white relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-pattern-topo opacity-15 pointer-events-none" />
           <div className="absolute inset-0 bg-noise" />
-          
+
           {/* Floating decorative elements */}
           <div className="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-float" />
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl animate-float-subtle" />
-          
+
           <div className={`max-w-4xl mx-auto text-center relative transition-all duration-700 ${ctaAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 text-balance">
               Ready to Begin Your <span className="editorial">Ascent</span>?

@@ -2,6 +2,9 @@ import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { Link } from "react-router-dom";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger({ operation: 'ErrorBoundary' });
 
 interface Props {
   children: ReactNode;
@@ -34,12 +37,12 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
-    
-    // Log error to console in development
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
-    
-    // TODO: Send error to logging service in production
-    // Example: logErrorToService(error, errorInfo);
+
+    // Log error with structured context for debugging and production monitoring
+    log.error('React component threw an error', error, {
+      componentStack: errorInfo.componentStack,
+      errorName: error.name,
+    });
   }
 
   handleReset = (): void => {

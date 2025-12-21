@@ -1,3 +1,4 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 
 const API_KEY = process.env.GEMINI_API_KEY;
@@ -50,9 +51,18 @@ Tone & Behavior Guidelines:
 Your mission is to empower every user to grow confidently on their learning journey.
 `;
 
-export default async function handler(req: any, res: any) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'https://ascendpath.xyz');
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Set CORS headers - use environment variable for flexibility across environments
+  // ALLOWED_ORIGINS can be comma-separated list: "https://ascendpath.xyz,http://localhost:5173"
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://ascendpath.xyz').split(',');
+  const origin = req.headers?.origin || '';
+
+  // Check if request origin is in allowed list
+  const corsOrigin = allowedOrigins.includes(origin)
+    ? origin
+    : allowedOrigins[0]; // Default to first allowed origin
+
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -99,15 +109,16 @@ export default async function handler(req: any, res: any) {
       text: response.text()
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as Error & { message?: string };
     console.error('Gemini API Error:', error);
-    
+
     let errorMessage = 'Failed to get response from AI';
-    if (error.message?.includes('API key not valid')) {
+    if (err.message?.includes('API key not valid')) {
       errorMessage = 'Invalid Gemini API Key';
     }
 
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: errorMessage
     });
   }

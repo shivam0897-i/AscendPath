@@ -40,7 +40,7 @@ function getRelativeTime(dateString: string): string {
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
   if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)}w ago`;
-  
+
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
@@ -125,7 +125,7 @@ export function useSavedRoadmaps() {
 
 export function useIsRoadmapSaved(roadmapId: string | undefined) {
   const { data: savedRoadmaps } = useSavedRoadmaps();
-  
+
   if (!roadmapId || !savedRoadmaps) return false;
   return savedRoadmaps.some((r) => r.id === roadmapId);
 }
@@ -145,11 +145,11 @@ export function useSaveRoadmap() {
           savedAt: now,
           updatedAt: now,
         };
-        
+
         // Avoid duplicates
         const filtered = existing.filter((r) => r.id !== roadmap.id);
         setLocalSavedRoadmaps([newRoadmap, ...filtered]);
-        
+
         return newRoadmap;
       }
 
@@ -179,53 +179,17 @@ export function useDeleteSavedRoadmap() {
   return useMutation({
     mutationFn: async (roadmapId: string) => {
       if (!user?.id) {
-        // Remove from localStorage
+        // Remove from localStorage for unauthenticated users
         const existing = getLocalSavedRoadmaps();
         const filtered = existing.filter((r) => r.id !== roadmapId);
         setLocalSavedRoadmaps(filtered);
         return roadmapId;
       }
 
-      // For authenticated users, delete child records first (cascade manually)
-      // Delete resources for all milestones in all phases of this roadmap
-      const { data: phases } = await supabase
-        .from("phases")
-        .select("id")
-        .eq("roadmap_id", roadmapId);
-
-      if (phases && phases.length > 0) {
-        const phaseIds = phases.map((p) => p.id);
-        
-        // Get all milestones for these phases
-        const { data: milestones } = await supabase
-          .from("milestones")
-          .select("id")
-          .in("phase_id", phaseIds);
-
-        if (milestones && milestones.length > 0) {
-          const milestoneIds = milestones.map((m) => m.id);
-          
-          // Delete all resources for these milestones
-          await supabase
-            .from("resources")
-            .delete()
-            .in("milestone_id", milestoneIds);
-
-          // Delete all milestones for these phases
-          await supabase
-            .from("milestones")
-            .delete()
-            .in("phase_id", phaseIds);
-        }
-
-        // Delete all phases for this roadmap
-        await supabase
-          .from("phases")
-          .delete()
-          .eq("roadmap_id", roadmapId);
-      }
-
-      // Finally delete the roadmap itself
+      // For authenticated users, delete the roadmap
+      // Child records (phases, milestones, resources) are automatically deleted
+      // via ON DELETE CASCADE constraints in the database schema.
+      // See: supabase/migrations/20251221_add_cascade_deletes.sql
       const { error } = await supabase
         .from("roadmaps")
         .delete()

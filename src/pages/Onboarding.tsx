@@ -161,11 +161,18 @@ const Onboarding = () => {
       first_name: data.name.split(' ')[0], // Basic split for first name
       last_name: data.name.split(' ').slice(1).join(' ') || null, // Basic split for last name
       email: data.email,
+      // Legacy columns (kept for backward compatibility)
       goals: [`Learn about ${fieldOfInterest}`, `Achieve goal: ${data.goal} within ${timelineLabel}`],
       skills: [`Field: ${fieldOfInterest}`, `Experience: ${data.experience}`],
       background: data.background,
       time_available: `${data.timeCommitment} hours/week`,
       ...(data.challenges && { challenges: data.challenges }),
+      // New structured columns (preferred for data access)
+      goal_role: data.goal,
+      goal_timeline: timelineLabel,
+      experience_level: data.experience,
+      primary_field: fieldOfInterest,
+      learning_style: null, // Optional: can be added to form later
       updated_at: new Date().toISOString(),
     };
 

@@ -4,12 +4,24 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Bot, User, SendHorizonal, Trash } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface Message {
+  id: string;
   role: 'user' | 'model';
   text: string;
 }
@@ -19,11 +31,21 @@ interface ApiMessage {
   parts: { text: string }[];
 }
 
+// Generate unique message ID
+const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>(() => {
     const storedMessages = sessionStorage.getItem('chatMessages');
-    return storedMessages ? JSON.parse(storedMessages) : [
-      { role: 'model', text: 'Hello! I am the AscendPath AI Helper. How can I assist with your educational journey today?' }
+    if (storedMessages) {
+      try {
+        return JSON.parse(storedMessages);
+      } catch {
+        // Invalid stored data, reset to default
+      }
+    }
+    return [
+      { id: generateId(), role: 'model', text: 'Hello! I am the AscendPath AI Helper. How can I assist with your educational journey today?' }
     ];
   });
   const [input, setInput] = useState('');
@@ -48,8 +70,14 @@ const Chatbot: React.FC = () => {
       return;
     }
 
-    const userMessage: Message = { role: 'user', text: input };
-    const currentInput = input;
+    const userMessage: Message = { id: generateId(), role: 'user', text: input.trim() };
+    const currentInput = input.trim();
+
+    // Input validation
+    if (currentInput.length > 2000) {
+      toast.error('Message too long. Please keep it under 2000 characters.');
+      return;
+    }
 
     // Convert messages to API format (excluding the initial welcome message)
     const historyForAPI: ApiMessage[] = messages
@@ -84,14 +112,15 @@ const Chatbot: React.FC = () => {
       }
 
       if (data.success && data.text) {
-        const modelMessage: Message = { role: 'model', text: data.text };
+        const modelMessage: Message = { id: generateId(), role: 'model', text: data.text };
         setMessages((prev) => [...prev, modelMessage]);
       } else {
         throw new Error('Invalid response format');
       }
 
-    } catch (err: any) {
-      setError('Failed to get response from AI. Please try again.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get response from AI. Please try again.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
       requestAnimationFrame(scrollToBottom);
@@ -99,21 +128,20 @@ const Chatbot: React.FC = () => {
   };
 
   const handleClearChat = () => {
-    if (confirm("Are you sure you want to clear the chat history?")) {
-      sessionStorage.removeItem('chatMessages');
-      setMessages([
-        { role: 'model', text: 'Hello! I am the AscendPath AI Helper. How can I assist with your educational journey today?' }
-      ]);
-      toast.success("Chat history cleared ✅");
-    }
+    sessionStorage.removeItem('chatMessages');
+    setMessages([
+      { id: generateId(), role: 'model', text: 'Hello! I am the AscendPath AI Helper. How can I assist with your educational journey today?' }
+    ]);
+    toast.success("Chat history cleared ✅");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !isLoading && input.trim()) {
+      e.preventDefault();
       handleSend();
     }
   };
@@ -125,22 +153,42 @@ const Chatbot: React.FC = () => {
           <Bot className="h-6 w-6 text-terracotta" />
           <CardTitle className="text-lg font-heading font-semibold text-charcoal">AscendPath Helper</CardTitle>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleClearChat}
-          className="text-charcoal/60 hover:text-terracotta ml-3"
-          aria-label="Clear Chat"
-        >
-          <Trash size={18} />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-charcoal/60 hover:text-terracotta ml-3"
+              aria-label="Clear Chat"
+            >
+              <Trash size={18} />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-white dark:bg-charcoal border-terracotta/20">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-charcoal dark:text-cream">Clear Chat History?</AlertDialogTitle>
+              <AlertDialogDescription className="text-charcoal/70 dark:text-cream/70">
+                This will permanently delete all messages in this conversation. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-charcoal/20 dark:border-cream/20">Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleClearChat}
+                className="bg-terracotta hover:bg-terracotta-dark text-white"
+              >
+                Clear Chat
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardHeader>
       <CardContent className="p-0">
         <ScrollArea className="h-[450px] w-full" ref={scrollAreaRef}>
           <div className="p-4 space-y-4 bg-cream/30" ref={viewportRef} data-radix-scroll-area-viewport>
             {messages.map((msg, index) => (
               <div
-                key={index}
+                key={msg.id}
                 className={cn(
                   "flex items-start gap-3",
                   msg.role === 'user' ? 'justify-end' : 'justify-start'
@@ -220,7 +268,7 @@ const Chatbot: React.FC = () => {
             placeholder="Ask about learning paths..."
             value={input}
             onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             disabled={isLoading}
             className="flex-1 h-10 rounded-lg border-charcoal/20 focus:ring-terracotta focus:border-terracotta"
             aria-label="Chat input"

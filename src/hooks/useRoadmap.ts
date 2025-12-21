@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import type { Database } from "@/integrations/supabase/types";
 import { toast } from "sonner";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger({ operation: 'useRoadmap' });
 
 // --- Types Fetched from Supabase ---
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -40,13 +43,20 @@ export type PhaseForTimeline = Omit<PhaseFromSupabase, 'completion_percentage'> 
 
 // Fetch profile query
 async function fetchProfile(userId: string): Promise<Profile | null> {
+  log.debug('Fetching profile', { userId });
+  
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .single();
 
-  if (error && error.code !== 'PGRST116') throw error;
+  if (error && error.code !== 'PGRST116') {
+    log.error('Failed to fetch profile', error, { userId, errorCode: error.code });
+    throw error;
+  }
+  
+  log.debug('Profile fetched successfully', { userId, hasProfile: !!data });
   return data;
 }
 
@@ -198,29 +208,69 @@ export function transformPhasesForTimeline(roadmap: FullRoadmapFromSupabase | nu
 }
 
 // Profile helper functions
+// DUAL-READ PATTERN: Try new structured columns first, fall back to semantic string parsing
 export const profileHelpers = {
+  /**
+   * Gets the user's target career role.
+   * Priority: goal_role column > "Achieve goal:" prefix > first goal
+   */
   getGoal: (profile: Profile | null): string => {
+    // Try new structured column first
+    if (profile?.goal_role) {
+      return profile.goal_role;
+    }
+    // Fall back to semantic string parsing for backward compatibility
     return profile?.goals?.find(g => g.toLowerCase().startsWith("achieve goal:"))?.split(":").slice(1).join(":").trim()
       || profile?.goals?.[0]
       || "-";
   },
 
+  /**
+   * Gets the user's primary field of interest.
+   * Priority: primary_field column > "Field:" prefix > first skill
+   */
   getFieldLabel: (profile: Profile | null): string => {
+    // Try new structured column first
+    if (profile?.primary_field) {
+      return profile.primary_field;
+    }
+    // Fall back to semantic string parsing
     return profile?.skills?.find(s => s.toLowerCase().startsWith("field:"))?.split(":").slice(1).join(":").trim()
       || profile?.skills?.[0]
       || "-";
   },
 
+  /**
+   * Gets the user's goal timeline.
+   * Priority: goal_timeline column > "within X" pattern
+   */
   getTimelineLabel: (profile: Profile | null): string => {
+    // Try new structured column first
+    if (profile?.goal_timeline) {
+      return profile.goal_timeline;
+    }
+    // Fall back to semantic string parsing
     return profile?.goals?.find(g => g.toLowerCase().includes("within"))?.split("within").pop()?.trim()
       || "-";
   },
 
+  /**
+   * Gets the user's experience level.
+   * Priority: experience_level column > "Experience:" prefix
+   */
   getExperienceLabel: (profile: Profile | null): string => {
+    // Try new structured column first
+    if (profile?.experience_level) {
+      return profile.experience_level;
+    }
+    // Fall back to semantic string parsing
     return profile?.skills?.find(s => s.toLowerCase().startsWith("experience:"))?.split(":").slice(1).join(":").trim()
       || "-";
   },
 
+  /**
+   * Gets the user's educational background.
+   */
   getBackgroundLabel: (profile: Profile | null): string => {
     return profile?.background?.replace(/_/g, ' ').replace(/ \w/g, l => l.toUpperCase())
       || "N/A";

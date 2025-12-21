@@ -11,18 +11,18 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 function checkRateLimit(userId: string): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();
   const userLimit = rateLimitStore.get(userId);
-  
+
   if (!userLimit || now > userLimit.resetTime) {
     // Reset or initialize rate limit
     rateLimitStore.set(userId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
     return { allowed: true };
   }
-  
+
   if (userLimit.count >= MAX_REQUESTS_PER_WINDOW) {
     const retryAfter = Math.ceil((userLimit.resetTime - now) / 1000);
     return { allowed: false, retryAfter };
   }
-  
+
   userLimit.count++;
   return { allowed: true };
 }
@@ -37,6 +37,168 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
+// Extract YouTube video ID from various URL formats
+function extractYouTubeVideoId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/playlist\?list=([a-zA-Z0-9_-]+)/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+// Validate YouTube video/playlist and get real details
+async function validateYouTubeResource(url: string, YOUTUBE_API_KEY: string): Promise<{
+  valid: boolean;
+  title?: string;
+  thumbnail?: string;
+  channelTitle?: string;
+}> {
+  const videoId = extractYouTubeVideoId(url);
+  if (!videoId) return { valid: false };
+
+  try {
+    // Check if it's a playlist
+    const isPlaylist = url.includes('playlist?list=');
+
+    if (isPlaylist) {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=${videoId}&key=${YOUTUBE_API_KEY}`
+      );
+      const data = await response.json();
+
+      if (data.items && data.items.length > 0) {
+        const playlist = data.items[0].snippet;
+        return {
+          valid: true,
+          title: playlist.title,
+          thumbnail: playlist.thumbnails?.medium?.url || playlist.thumbnails?.default?.url,
+          channelTitle: playlist.channelTitle
+        };
+      }
+    } else {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YOUTUBE_API_KEY}`
+      );
+      const data = await response.json();
+
+      if (data.items && data.items.length > 0) {
+        const video = data.items[0].snippet;
+        return {
+          valid: true,
+          title: video.title,
+          thumbnail: video.thumbnails?.medium?.url || video.thumbnails?.default?.url,
+          channelTitle: video.channelTitle
+        };
+      }
+    }
+
+    return { valid: false };
+  } catch (error) {
+    console.error('YouTube API error:', error);
+    return { valid: false };
+  }
+}
+
+// Search YouTube for a topic and return real video
+async function searchYouTubeVideo(query: string, YOUTUBE_API_KEY: string): Promise<{
+  url: string;
+  title: string;
+  thumbnail: string;
+  channelTitle: string;
+} | null> {
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`
+    );
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      const video = data.items[0];
+      return {
+        url: `https://www.youtube.com/watch?v=${video.id.videoId}`,
+        title: video.snippet.title,
+        thumbnail: video.snippet.thumbnails?.medium?.url || video.snippet.thumbnails?.default?.url,
+        channelTitle: video.snippet.channelTitle
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('YouTube search error:', error);
+    return null;
+  }
+}
+
+// Validate and fix YouTube resources in the roadmap
+async function validateYouTubeResources(roadmap: any): Promise<any> {
+  // YouTube Data API can use the same Google Cloud project API key as Gemini
+  // This is intentional - both services share the same project quotas
+  const youtubeKey = Deno.env.get('YOUTUBE_API_KEY');
+  const geminiKey = Deno.env.get('GEMINI_API_KEY');
+  const YOUTUBE_API_KEY = youtubeKey || geminiKey;
+
+  if (!youtubeKey && geminiKey) {
+    console.info('Using GEMINI_API_KEY for YouTube API (same Google Cloud project)');
+  }
+
+  if (!YOUTUBE_API_KEY) {
+    console.warn('No API key available for YouTube validation, skipping');
+    return roadmap;
+  }
+
+  for (const phase of roadmap.phases) {
+    for (const milestone of phase.milestones) {
+      const validatedResources = await Promise.all(
+        milestone.resources.map(async (resource: any) => {
+          // Check if it's a YouTube resource
+          const isYouTube = resource.url?.includes('youtube.com') || resource.url?.includes('youtu.be');
+
+          if (!isYouTube) return resource;
+
+          // Validate the YouTube URL
+          const validation = await validateYouTubeResource(resource.url, YOUTUBE_API_KEY);
+
+          if (validation.valid) {
+            // Update with real YouTube data
+            return {
+              ...resource,
+              title: validation.title || resource.title,
+              image_url: validation.thumbnail || resource.image_url,
+              platform: validation.channelTitle || resource.platform
+            };
+          }
+
+          // If invalid, search for a replacement
+          console.warn(`Invalid YouTube URL: ${resource.url}, searching for replacement...`);
+          const searchQuery = `${resource.title} ${milestone.title} tutorial`;
+          const replacement = await searchYouTubeVideo(searchQuery, YOUTUBE_API_KEY);
+
+          if (replacement) {
+            console.log(`Found replacement: ${replacement.url}`);
+            return {
+              ...resource,
+              url: replacement.url,
+              title: replacement.title,
+              image_url: replacement.thumbnail,
+              platform: replacement.channelTitle
+            };
+          }
+
+          // Return original if no replacement found
+          return resource;
+        })
+      );
+      milestone.resources = validatedResources;
+    }
+  }
+
+  return roadmap;
+}
+
 async function checkIfUrlWorks(url: string): Promise<boolean> {
   try {
     const response = await axios.head(url, { timeout: 5000 });
@@ -49,7 +211,7 @@ async function checkIfUrlWorks(url: string): Promise<boolean> {
 async function askGeminiForAlternative(resource, GEMINI_API_KEY) {
   const model = "gemini-3-pro-preview";
   const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
-  
+
   const prompt = `
 A learning resource was found to be broken.
 Use Google Search to find a real, currently working alternative.
@@ -99,7 +261,7 @@ If no good alternative exists, respond with: null
     // Clean and extract JSON
     let cleaned = text.replace(/^```json\n?/i, '').replace(/\n?```$/i, '').trim();
     cleaned = cleaned.replace(/^```\n?/i, '').replace(/\n?```$/i, '').trim();
-    
+
     // Try to find JSON object in the response
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -325,11 +487,11 @@ Root object:
 
     // Clean and extract JSON from response
     let cleanedText = generatedText.trim();
-    
+
     // Remove markdown code blocks if present
     cleanedText = cleanedText.replace(/^```json\n?/i, '').replace(/\n?```$/i, '').trim();
     cleanedText = cleanedText.replace(/^```\n?/i, '').replace(/\n?```$/i, '').trim();
-    
+
     // Try to find JSON object in the response (starts with { and ends with })
     const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -346,7 +508,9 @@ Root object:
       throw new Error(`Failed to parse roadmap JSON: ${parseError.message}`);
     }
 
-    parsedRoadmap = await validateAndReplaceResourceUrls(parsedRoadmap);
+    // Validate and fix YouTube resources (fast, uses YouTube API)
+    parsedRoadmap = await validateYouTubeResources(parsedRoadmap);
+
     return parsedRoadmap;
   } catch (error) {
     console.error("Error during Gemini API call or processing:", error);
@@ -357,7 +521,7 @@ Root object:
 serve(async (req) => {
   const origin = req.headers.get('origin');
   const headers = getCorsHeaders(origin);
-  
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers });
   }
