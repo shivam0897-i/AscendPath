@@ -24,6 +24,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: linear-gradient(135deg, #FAF7F2 0%, #fff 100%);">
           <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://ascendpath.xyz/logo.png" alt="AscendPath" style="width: 60px; height: 60px; margin-bottom: 10px;" />
             <h1 style="color: #C16E4B; margin: 0; font-size: 32px;">AscendPath</h1>
             <p style="color: #7C9082; margin: 5px 0;">Your Career Learning Journey</p>
           </div>
