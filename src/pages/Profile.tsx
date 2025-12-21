@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProfileHeader from '@/components/ProfileHeader';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeProvider';
 import { useProfile } from '@/hooks/useRoadmap';
 import { useProfileStats } from '@/hooks/useProfileStats';
 import { supabase } from '@/integrations/supabase/client';
@@ -59,6 +60,7 @@ export default function Profile() {
     const { user, signOut } = useAuth();
     const { data: profile, isLoading: profileLoading, refetch } = useProfile();
     const { data: stats, isLoading: statsLoading } = useProfileStats();
+    const { theme, setTheme } = useTheme();
 
     const [activeTab, setActiveTab] = useState('journey');
     const [isEditing, setIsEditing] = useState(false);
@@ -75,7 +77,6 @@ export default function Profile() {
 
     // Settings state
     const [emailNotifications, setEmailNotifications] = useState(true);
-    const [themePreference, setThemePreference] = useState('system');
 
     // Initialize edit form when profile loads
     const startEditing = () => {
@@ -473,7 +474,7 @@ export default function Profile() {
                                     <Separator />
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            {themePreference === 'dark' ? (
+                                            {theme === 'dark' ? (
                                                 <Moon className="h-5 w-5 text-muted-foreground" />
                                             ) : (
                                                 <Sun className="h-5 w-5 text-muted-foreground" />
@@ -484,15 +485,15 @@ export default function Profile() {
                                             </div>
                                         </div>
                                         <div className="flex gap-1">
-                                            {['light', 'dark', 'system'].map((theme) => (
+                                            {(['light', 'dark', 'system'] as const).map((themeOption) => (
                                                 <Button
-                                                    key={theme}
-                                                    variant={themePreference === theme ? 'default' : 'outline'}
+                                                    key={themeOption}
+                                                    variant={theme === themeOption ? 'default' : 'outline'}
                                                     size="sm"
-                                                    onClick={() => setThemePreference(theme)}
-                                                    className={themePreference === theme ? 'bg-terracotta hover:bg-terracotta-dark' : ''}
+                                                    onClick={() => setTheme(themeOption)}
+                                                    className={theme === themeOption ? 'bg-terracotta hover:bg-terracotta-dark' : ''}
                                                 >
-                                                    {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                                                    {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
                                                 </Button>
                                             ))}
                                         </div>
