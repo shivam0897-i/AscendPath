@@ -22,6 +22,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const Community = lazy(() => import("./pages/Community"));
 const CareerQuestionnairePage = lazy(() => import("./pages/CareerQuestionnairePage").then(module => ({ default: module.CareerQuestionnaire })));
+const Profile = lazy(() => import("./pages/Profile"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -78,6 +79,11 @@ const AnimatedRoutes = () => {
           <Route path="/dashboard/saved-roadmaps" element={
             <ProtectedRoute>
               <SavedRoadmaps />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } />
           <Route path="*" element={<NotFound />} />
