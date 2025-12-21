@@ -76,16 +76,8 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             description: error.message || "Please check your credentials and try again",
             variant: "destructive",
           });
-        } else {
-          toast({
-            title: "Welcome back!",
-            description: "You have successfully logged in.",
-            duration: 1000,
-          });
-          if (onSuccess) {
-            onSuccess();
-          }
         }
+        // Redirect is handled by useEffect in Auth.tsx when user state updates
       } else {
         // It's signup
         const signupValues = values as SignupFormValues;
@@ -101,12 +93,8 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             description: error.message || "There was an error creating your account",
             variant: "destructive",
           });
-        } else {
-          // Toast for signup is handled in AuthContext
-          if (onSuccess) {
-            onSuccess();
-          }
         }
+        // Redirect is handled by useEffect in Auth.tsx when user state updates
       }
 
     } catch (error) {
@@ -121,14 +109,14 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
   };
 
   const handleGoogleSignIn = async () => {
-      setIsSubmitting(true); 
-      try {
-          await signInWithGoogle();
-      } catch {
-           // Errors are handled within signInWithGoogle using toast
-      } finally {
-           setIsSubmitting(false);
-      }
+    setIsSubmitting(true);
+    try {
+      await signInWithGoogle();
+    } catch {
+      // Errors are handled within signInWithGoogle using toast
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -144,7 +132,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="you@example.com" {...field} disabled={isLoading || isSubmitting}/>
+                    <Input placeholder="you@example.com" {...field} disabled={isLoading || isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -159,7 +147,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting}/>
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,7 +173,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
 
             {/* Google Sign In Button */}
             <Button variant="outline" type="button" className="w-full border-charcoal/20 hover:border-terracotta hover:text-terracotta" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
-                {isLoading ? 'Processing...' : <><GoogleIcon/> Google</>}
+              {isLoading ? 'Processing...' : <><GoogleIcon /> Google</>}
             </Button>
 
           </form>
@@ -194,7 +182,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
         <Form {...signupForm}>
           <form onSubmit={signupForm.handleSubmit(onSubmit)} className="space-y-6">
             {/* First Name and Last Name Fields */}
-             <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={signupForm.control}
                 name="firstName"
@@ -246,7 +234,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting}/>
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -261,7 +249,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting}/>
+                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -287,7 +275,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
 
             {/* Google Sign In Button */}
             <Button variant="outline" type="button" className="w-full border-charcoal/20 hover:border-terracotta hover:text-terracotta" onClick={handleGoogleSignIn} disabled={isLoading || isSubmitting}>
-               {isLoading ? 'Processing...' : <><GoogleIcon /> Google</>}
+              {isLoading ? 'Processing...' : <><GoogleIcon /> Google</>}
             </Button>
           </form>
         </Form>
