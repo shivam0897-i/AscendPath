@@ -63,7 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://ascendpath.xyz/Questionnaire" 
+              <a href="https://ascendpath.xyz" 
                  style="display: inline-block; background: linear-gradient(135deg, #C16E4B 0%, #a85a3a 100%); color: white; padding: 16px 36px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
                 Start Your Journey →
               </a>
