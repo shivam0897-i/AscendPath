@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -77,6 +77,33 @@ export default function Profile() {
 
     // Settings state
     const [emailNotifications, setEmailNotifications] = useState(true);
+
+    // Load notification preference from profile
+    useEffect(() => {
+        if (profile) {
+            const p = profile as Record<string, unknown>;
+            if (typeof p.email_notifications === 'boolean') {
+                setEmailNotifications(p.email_notifications);
+            }
+        }
+    }, [profile]);
+
+    // Handler to save notification preference
+    const handleNotificationToggle = async (enabled: boolean) => {
+        setEmailNotifications(enabled);
+        if (user?.id) {
+            try {
+                await supabase
+                    .from('profiles')
+                    .update({ email_notifications: enabled })
+                    .eq('id', user.id);
+                toast.success(enabled ? 'Notifications enabled' : 'Notifications disabled');
+            } catch (error) {
+                console.error('Failed to update notification preference:', error);
+                toast.error('Failed to save preference');
+            }
+        }
+    };
 
     // Initialize edit form when profile loads
     const startEditing = () => {
@@ -468,7 +495,7 @@ export default function Profile() {
                                         </div>
                                         <Switch
                                             checked={emailNotifications}
-                                            onCheckedChange={setEmailNotifications}
+                                            onCheckedChange={handleNotificationToggle}
                                         />
                                     </div>
                                     <Separator />
