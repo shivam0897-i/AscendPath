@@ -9,7 +9,7 @@ type AuthContextType = {
   isLoading: boolean;
   signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signInWithGoogle: () => Promise<void>; 
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -72,13 +72,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         title: "Account Created",
         description: "Please check your email to verify your account.",
       });
-       // Optionally handle profile creation here or via a trigger
-       if (firstName || lastName) {
-          await supabase
-            .from('profiles') // Adjust table name if different
-            .update({ first_name: firstName, last_name: lastName })
-            .eq('id', data.user.id);
-       }
+      // Optionally handle profile creation here or via a trigger
+      if (firstName || lastName) {
+        await supabase
+          .from('profiles') // Adjust table name if different
+          .update({ first_name: firstName, last_name: lastName })
+          .eq('id', data.user.id);
+      }
+      // Send welcome email
+      try {
+        await fetch('/api/send-welcome', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, firstName }),
+        });
+      } catch (e) {
+        console.error('Failed to send welcome email:', e);
+      }
     }
     setIsLoading(false);
     return { error };
@@ -110,23 +120,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Add the Google sign-in function
   const signInWithGoogle = async () => {
-      setIsLoading(true);
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin // Redirect back to your app after Google auth
-        }
-      });
-      if (error) {
-        toast({
-          title: "Google Sign In Error",
-          description: error.message,
-          variant: "destructive",
-        });
-        setIsLoading(false); // Stop loading on error
+    setIsLoading(true);
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin // Redirect back to your app after Google auth
       }
-     
-    };
+    });
+    if (error) {
+      toast({
+        title: "Google Sign In Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false); // Stop loading on error
+    }
+
+  };
 
 
   const signOut = async () => {
@@ -155,7 +165,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading,
     signUp,
     signIn,
-    signInWithGoogle, 
+    signInWithGoogle,
     signOut,
   };
 
