@@ -124,11 +124,10 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
       setIsSubmitting(true); 
       try {
           await signInWithGoogle();
-          
-      } catch (error) {
+      } catch {
            // Errors are handled within signInWithGoogle using toast
       } finally {
-           
+           setIsSubmitting(false);
       }
   };
 
@@ -136,7 +135,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
     <div className="w-full max-w-md mx-auto">
       {mode === "login" ? (
         <Form {...loginForm}>
-          <form onSubmit={loginForm.handleSubmit(onSubmit as any)} className="space-y-6">
+          <form onSubmit={loginForm.handleSubmit(onSubmit)} className="space-y-6">
             {/* Email Field */}
             <FormField
               control={loginForm.control}
@@ -193,7 +192,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
         </Form>
       ) : (
         <Form {...signupForm}>
-          <form onSubmit={signupForm.handleSubmit(onSubmit as any)} className="space-y-6">
+          <form onSubmit={signupForm.handleSubmit(onSubmit)} className="space-y-6">
             {/* First Name and Last Name Fields */}
              <div className="grid grid-cols-2 gap-4">
               <FormField

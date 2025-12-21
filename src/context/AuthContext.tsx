@@ -1,14 +1,14 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Session } from "@supabase/supabase-js";
+import { User, Session, AuthError } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<void>; 
   signOut: () => Promise<void>;
 };

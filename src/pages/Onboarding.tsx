@@ -207,7 +207,7 @@ const Onboarding = () => {
       }, 2000); // simulate loading
 
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Catch errors from profile saving or re-thrown function errors
       if (!profileSaved) {
         toast.error("Failed to save profile. Please try again.");
