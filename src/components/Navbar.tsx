@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sun, Moon, Mountain } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { useTheme } from "@/context/ThemeProvider";
@@ -22,7 +22,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
   const { user } = useAuth();
   const { signOut } = useAuth();
   const location = useLocation();
-  
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -34,7 +34,7 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2.5 group">
               <div className="relative">
-                <Mountain className="h-7 w-7 text-terracotta group-hover:scale-110 transition-all duration-300" />
+                <img src="/logo.png" alt="AscendPath" className="h-8 w-8 group-hover:scale-110 transition-all duration-300" />
                 <div className="absolute inset-0 bg-terracotta/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="font-heading font-bold text-2xl gradient-text">AscendPath</span>
@@ -55,10 +55,10 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
               {/* Mobile menu button */}
               <div className="md:hidden flex items-center space-x-2">
                 <ThemeToggle />
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={toggleMenu} 
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleMenu}
                   className="p-2 hover:bg-terracotta/10 hover:text-terracotta transition-colors"
                 >
                   {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -113,9 +113,9 @@ const ThemeToggle = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="icon" 
+        <Button
+          variant="outline"
+          size="icon"
           className="border-border/50 hover:border-terracotta/50 hover:bg-terracotta/5 hover:text-terracotta transition-all duration-300"
         >
           <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0" />
@@ -147,20 +147,19 @@ const NavLinks = ({ mobile = false, currentPath = "" }: { mobile?: boolean; curr
     { href: "/community", label: "Community" },
     { href: "/Questionnaire", label: "Find Career" },
   ];
-  
+
   return (
     <>
       {mobile ? (
         <>
           {links.map((link) => (
-            <Link 
+            <Link
               key={link.href}
-              to={link.href} 
-              className={`block py-3 px-4 rounded-lg transition-all duration-200 ${
-                currentPath === link.href 
-                  ? "bg-terracotta/10 text-terracotta font-medium" 
+              to={link.href}
+              className={`block py-3 px-4 rounded-lg transition-all duration-200 ${currentPath === link.href
+                  ? "bg-terracotta/10 text-terracotta font-medium"
                   : "hover:bg-terracotta/5 hover:text-terracotta"
-              }`}
+                }`}
             >
               {link.label}
             </Link>
@@ -169,14 +168,13 @@ const NavLinks = ({ mobile = false, currentPath = "" }: { mobile?: boolean; curr
       ) : (
         <>
           {links.map((link) => (
-            <Link 
+            <Link
               key={link.href}
-              to={link.href} 
-              className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                currentPath === link.href 
-                  ? "text-terracotta" 
+              to={link.href}
+              className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 ${currentPath === link.href
+                  ? "text-terracotta"
                   : "text-foreground/80 hover:text-terracotta hover:bg-terracotta/5"
-              }`}
+                }`}
             >
               {link.label}
               {currentPath === link.href && (
