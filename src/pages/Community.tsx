@@ -1,12 +1,12 @@
 import React from "react"
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MessageSquare, Users, BookOpen, Award, ArrowRight, ArrowLeft } from "lucide-react"
-import Navbar from "@/components/Navbar"; 
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 
@@ -87,13 +87,13 @@ export default function CommunityPage() {
         {/* KEEP EXISTING CONTENT */}
         <div className="flex flex-col items-center text-center mb-12">
           {/* Updated heading styles to match Privacy Policy (removed lg:text-6xl) */}
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
             <span className="gradient-text">Join Our</span>{" "}
             <span className="text-charcoal dark:text-cream">
               Learning Community
             </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mb-4">
+          <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-3xl mb-4">
             Connect with fellow students, share your journey, and collaborate on educational roadmaps. Our community is
             built to support and empower each other through every step of the learning process.
           </p>
@@ -253,7 +253,7 @@ export default function CommunityPage() {
         {/* Back to Home Link (Optional within main or moved to footer) */}
         <div className="mt-16 flex justify-center">
           <Link
-            to="/" 
+            to="/"
             className="inline-flex items-center justify-center rounded-full bg-terracotta px-6 py-3 text-sm font-medium text-white hover:bg-terracotta-dark transition-colors shadow-warm"
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
@@ -262,7 +262,7 @@ export default function CommunityPage() {
       </main>
 
       {/* Use the reusable Footer component */}
-      <Footer /> 
+      <Footer />
     </PageTransition>
   )
 }

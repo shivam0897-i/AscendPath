@@ -178,7 +178,7 @@ export default function ProfileHeader({ profile, stats, userId, onAvatarUpdate }
                             accept="image/*"
                             className="hidden"
                         />
-                        <div 
+                        <div
                             onClick={userId ? handleAvatarClick : undefined}
                             className={userId ? 'cursor-pointer' : ''}
                         >
@@ -189,13 +189,24 @@ export default function ProfileHeader({ profile, stats, userId, onAvatarUpdate }
                                 </AvatarFallback>
                             </Avatar>
                             {userId && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {isUploading ? (
-                                        <Loader2 className="h-6 w-6 text-white animate-spin" />
-                                    ) : (
-                                        <Camera className="h-6 w-6 text-white" />
-                                    )}
-                                </div>
+                                <>
+                                    {/* Full overlay on hover (desktop) */}
+                                    <div className="absolute inset-0 hidden sm:flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {isUploading ? (
+                                            <Loader2 className="h-6 w-6 text-white animate-spin" />
+                                        ) : (
+                                            <Camera className="h-6 w-6 text-white" />
+                                        )}
+                                    </div>
+                                    {/* Small camera badge on mobile (always visible) */}
+                                    <div className="absolute bottom-0 right-0 sm:hidden flex items-center justify-center w-8 h-8 bg-terracotta rounded-full border-2 border-white dark:border-charcoal shadow-md">
+                                        {isUploading ? (
+                                            <Loader2 className="h-4 w-4 text-white animate-spin" />
+                                        ) : (
+                                            <Camera className="h-4 w-4 text-white" />
+                                        )}
+                                    </div>
+                                </>
                             )}
                         </div>
                         {stats.currentStreak >= 7 && (
