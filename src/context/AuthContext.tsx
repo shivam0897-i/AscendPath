@@ -24,11 +24,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
-        // Note: Avoid logging session data in production for security
+        
+        // Send welcome email for new OAuth signups
+        if (event === 'SIGNED_IN' && session?.user) {
+          const user = session.user;
+          // Check if user was just created (within last 30 seconds)
+          const createdAt = new Date(user.created_at);
+          const now = new Date();
+          const isNewUser = (now.getTime() - createdAt.getTime()) < 30000;
+          
+          if (isNewUser && user.app_metadata?.provider === 'google') {
+            try {
+              await fetch('/api/send-welcome', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                  email: user.email, 
+                  firstName: user.user_metadata?.full_name?.split(' ')[0] || user.user_metadata?.name?.split(' ')[0]
+                }),
+              });
+            } catch (e) {
+              console.error('Failed to send welcome email:', e);
+            }
+          }
+        }
       }
     );
 
