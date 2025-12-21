@@ -1,254 +1,211 @@
 # 🚀 AscendPath
 
----
+**AI-Powered Career Guidance & Personalized Learning Roadmaps**
 
-## 🏆 Team Details & Overview
-
-- **Team Name:** HackHawks
-- **Problem Statement Name:** AI-Driven Career Counseling System for Students
-- **Project Title:** AscendPath
-- **Brief Project Description:**  
-  AscendPath is a modern web application that generates personalized learning roadmaps for students and working professionals. Leveraging Supabase, Gemini API, and IBM Watson AI, AscendPath delivers tailored educational paths and interactive guidance via Edura, an AI-powered chatbot. The platform aims to make learning accessible, effective, and engaging for everyone.
+[![CI](https://github.com/shivam0897-i/AscendPath/actions/workflows/ci.yml/badge.svg)](https://github.com/shivam0897-i/AscendPath/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://ascendpath.xyz)
 
 ---
 
-## 📋 Table of Contents
-1. [Why AscendPath?](#-why-ascendpath)
-2. [Key Features](#-key-features)
-3. [Meet Edura: Your Educational Chatbot](#-meet-edura-your-educational-chatbot)
-4. [Live Demo & Video](#-live-demo--video)
-5. [Quick Start](#️-quick-start)
-6. [Tech Stack](#-tech-stack)
-7. [Authentication](#-authentication)
-8. [Supabase Integration](#-supabase-integration)
-9. [How to Contribute](#️-how-to-contribute)
-10. [Deployment](#-deployment)
-11. [FAQs](#-faqs)
-12. [Final Thoughts](#-final-thoughts)
+## 🎯 What is AscendPath?
+
+AscendPath is a modern web application that helps students and professionals discover their ideal career paths through AI-powered guidance. The platform generates personalized learning roadmaps, provides career suggestions based on interests and skills, and offers an intelligent chatbot for educational assistance.
+
+**🌐 Live Demo:** [ascendpath.xyz](https://ascendpath.xyz)
 
 ---
 
-## 🌟 Why AscendPath?
+## ✨ Features
 
-- **Personalized Learning Roadmaps:** Tailored educational paths based on user input.
-- **Empowering Working professionals & Students:** Focused on making learning accessible and effective.
-- **Modern Tech Stack:** Built with Supabase, React, Tailwind CSS, Gemini API, and IBM Watson AI.
-- **Scalable & Modular:** Designed for flexibility and future innovation.
+### 🗺️ AI-Generated Learning Roadmaps
+- Complete learning paths with phases, milestones, and resources
+- YouTube video recommendations for each topic
+- Progress tracking and milestone completion
+- Save and manage multiple roadmaps
 
----
+### 📋 Career Questionnaire
+- Multi-step questionnaire to assess interests, skills, and preferences
+- **AI-powered career suggestions** using Gemini
+- Personalized match scores for each career path
+- Downloadable results
 
-## ✨ Key Features
+### 🤖 Edura - AI Educational Chatbot
+- Intelligent assistant powered by Gemini AI
+- Helps navigate the platform and answers educational queries
+- Context-aware responses for learning guidance
 
-- **AI-Powered Recommendations:** Uses Gemini API and IBM Watson AI to generate customized learning paths.
-- **Secure Authentication:** Token-based authentication with support for OAuth2 providers (Google, GitHub).
-- **Real-Time Database:** Powered by Supabase for seamless data handling.
-- **Responsive UI:** Optimized for all devices with Tailwind CSS.
-- **Collaborative Ready:** Easy to extend and integrate new features.
-- **Educational Chatbot:** Edura, an AI-powered assistant (powered by Gemini API & Watson AI) for guiding users and answering educational queries.
-
----
-
-## 🤖 Meet Edura: Your Educational Chatbot
-
-AscendPath features **Edura**, an AI-powered chatbot designed to assist users in navigating the website and answering educational queries.
-
-### Key Abilities
-- **Personalized Assistance:** Guides users through the platform and helps them make the most of its features.
-- **Educational Queries:** Provides quick answers to common questions about learning resources and roadmaps using Gemini API and Watson AI.
-- **User-Friendly Interface:** Seamless interaction with a responsive and intuitive design.
-
-### How It Works
-- Edura leverages advanced AI techniques (Gemini API and Watson AI) to understand user queries and offer relevant responses.
-- Integrated with the platform to provide contextual help and recommendations.
-
-### Example Use Cases
-- Ask Edura: "What is the best roadmap to learn Python?"
-- Navigate the platform: "How do I access my saved roadmaps?"
-- Get educational tips: "What resources are available for web development?"
-
-Feel free to explore and interact with Edura to make your learning journey smoother and more engaging!
+### 🔐 Secure Authentication
+- Email/password authentication
+- Google OAuth integration
+- Protected routes and session management
+- Row Level Security (RLS) on all data
 
 ---
 
-## 🚀 Live Demo & Video
+## 🛠️ Tech Stack
 
-- **Live Demo:** [AscendPath](https://ascendpath.xyz)
-- **Demo Video (max 2 minutes):** [Watch here](https://drive.google.com/file/d/1MhQSESOujMkOKxJyuS2bTrX_ps579xtf/view?usp=sharing) <!-- Replace # with your demo video link -->
-
----
-
-## 🛠️ Quick Start
-
-Follow these steps to set up the project locally in under 5 minutes:
-
-### Prerequisites
-1. **Node.js** and **npm**: Download [here](https://nodejs.org/).
-2. **Supabase Account**: Sign up [here](https://supabase.com/).
-3. **IBM Watson Account**: Sign up [here](https://www.ibm.com/cloud/watson-assistant).
-4. **Gemini API Access**: Learn more [here](https://ai.google.dev/gemini-api/docs/).
-
-### Steps
-1. Clone the repository and navigate into the project:
-   ```sh
-   git clone https://github.com/shivam0897-i/ascendpath.git
-   cd ascendpath
-   ```
-
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
-
-3. Configure environment variables:
-   - Create a `.env` file in the root directory.
-   - Add your Supabase, Gemini API, and Watson AI credentials:
-     ```env
-     SUPABASE_URL=<your-supabase-url>
-     SUPABASE_ANON_KEY=<your-anon-key>
-     GEMINI_API_KEY=<your-gemini-api-key>
-     WATSON_API_KEY=<your-watson-api-key>
-     WATSON_ASSISTANT_ID=<your-watson-assistant-id>
-     WATSON_URL=<your-watson-url>
-     ```
-
-4. Start the development server:
-   ```sh
-   npm run dev
-   ```
-
-5. Open your browser at `http://localhost:5173`.
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React 18, TypeScript, Tailwind CSS, Shadcn UI |
+| **Backend** | Supabase Edge Functions, Vercel Serverless |
+| **Database** | Supabase PostgreSQL with RLS |
+| **AI** | Google Gemini API |
+| **Auth** | Supabase Auth (Email + OAuth) |
+| **Deployment** | Vercel |
+| **Testing** | Vitest, React Testing Library |
+| **CI/CD** | GitHub Actions |
 
 ---
 
-## 🧰 Tech Stack
+## 📁 Project Structure
 
-**Frontend**
-- **React:** Dynamic user interfaces.
-- **TypeScript:** Type-safe and scalable code.
-- **Tailwind CSS:** Sleek and responsive styling.
-- **shadcn-ui:** Modern UI components.
-
-**Backend / AI**
-- **Supabase:** Real-time database and authentication.
-- **Gemini API:** AI-powered roadmap generation.
-- **IBM Watson AI:** Conversational AI and natural language understanding.
-
-**DevOps**
-- **Vite:** Fast build tool and development server.
-- **Vercel:** Effortless deployment and hosting.
-
----
-
-## 🔒 Authentication
-
-### Overview
-The project includes secure token-based authentication, with role-based access control (RBAC) for managing permissions.
-
-### Setup
-1. Add Supabase credentials to the `.env` file:
-   ```env
-   SUPABASE_URL=<your-supabase-url>
-   SUPABASE_ANON_KEY=<your-anon-key>
-   ```
-
-2. Configure third-party login (e.g., Google, GitHub) in the Supabase dashboard.
-
-3. Use the pre-configured authentication APIs to manage user sessions.
-
----
-
-## 🌐 Supabase Integration
-
-AscendPath uses Supabase for:
-1. **Database Management:** Real-time data storage and queries.
-2. **Authentication:** Secure user login and role management.
-
-### Example: Supabase Client Setup
-```typescript
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+```
+├── api/                    # Vercel serverless functions
+│   ├── gemini.ts          # Chatbot API endpoint
+│   └── career-suggestions.ts  # AI career matching
+├── src/
+│   ├── components/        # React components
+│   │   ├── questionnaire/ # Career questionnaire forms
+│   │   ├── ui/           # Shadcn UI components
+│   │   └── Chatbot.tsx   # Edura chatbot
+│   ├── context/          # React context providers
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utilities (logger, retry, sanitize)
+│   ├── pages/            # Page components
+│   └── integrations/     # Supabase client and types
+├── supabase/
+│   ├── functions/        # Edge functions
+│   │   └── generate-roadmap/  # AI roadmap generation
+│   └── migrations/       # Database migrations
+└── .github/workflows/    # CI pipeline
 ```
 
-For more details, check the [Supabase Documentation](https://supabase.com/docs).
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Supabase account
+- Google AI (Gemini) API key
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/shivam0897-i/AscendPath.git
+cd AscendPath
+
+# Install dependencies
+npm install
+
+# Copy environment template
+cp .env.example .env
+
+# Add your credentials to .env
+# VITE_SUPABASE_URL=your-supabase-url
+# VITE_SUPABASE_ANON_KEY=your-anon-key
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:8080](http://localhost:8080)
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL | ✅ |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
+| `GEMINI_API_KEY` | Google Gemini API key (server-side) | ✅ |
+| `YOUTUBE_API_KEY` | YouTube Data API key (optional) | ❌ |
 
 ---
 
-## 🏗️ How to Contribute
+## 🧪 Testing
 
-We ❤️ contributions! Here's how you can get involved:
+```bash
+# Run all tests
+npm test
 
-1. **Fork the Repository:**
-   Click the "Fork" button at the top-right corner of this page.
+# Run tests with coverage
+npm run test:ci
 
-2. **Clone Your Fork:**
-   ```sh
-   git clone https://github.com/<your-username>/ascendpath.git
-   cd ascendpath
-   ```
+# Run linting
+npm run lint
+```
 
-3. **Create a New Branch:**
-   ```sh
-   git checkout -b feature/your-feature-name
-   ```
-
-4. **Make Your Changes:**
-   Add your feature or fix bugs.
-
-5. **Commit Your Changes:**
-   ```sh
-   git commit -m "Add your message"
-   ```
-
-6. **Push Your Branch:**
-   ```sh
-   git push origin feature/your-feature-name
-   ```
-
-7. **Open a Pull Request:**
-   Go to the original repository and click "New Pull Request".
+**Current Coverage:** 77 tests passing
 
 ---
 
-## 🏁 Deployment
+## 📦 Deployment
 
-Deploy your project effortlessly using **Vercel**:
+The application is deployed on **Vercel** with automatic deployments from the `main` branch.
 
-1. Build the project for production:
-   ```sh
-   npm run build
-   ```
+### Deploy Your Own
 
-2. Push your changes to GitHub.
+1. Fork this repository
+2. Import to [Vercel](https://vercel.com/new)
+3. Add environment variables in Vercel dashboard
+4. Deploy!
 
-3. Link your repository to [Vercel](https://vercel.com/).
+### Supabase Setup
 
-4. Configure environment variables in the Vercel dashboard.
-
-5. Deploy with one click and share your app with the world!
-
----
-
-## ❓ FAQs
-
-### Q: What is Edura, and how does it assist users?
-A: Edura is an AI-powered chatbot that helps users navigate the platform and provides educational guidance.
-
-### Q: Can I use AscendPath without a Supabase account?
-A: No, a Supabase account is required to manage authentication and database features.
-
-### Q: How do I report a bug or suggest a feature?
-A: Please create an issue [here](https://github.com/shivam0897-i/AscendPath/issues).
+1. Create a new Supabase project
+2. Run migrations: `supabase db push`
+3. Deploy edge functions: `supabase functions deploy`
+4. Configure authentication providers
 
 ---
 
-## 🎉 Final Thoughts
+## 🔒 Security
 
-AscendPath is more than just a tool—it's a step toward accessible and personalized education for everyone. Whether you're exploring innovative solutions or collaborating on impactful ideas, AscendPath is designed to support your learning journey.
+- ✅ All API keys are server-side only (never exposed to browser)
+- ✅ Row Level Security (RLS) on all database tables
+- ✅ Input sanitization for AI prompts
+- ✅ Rate limiting on AI endpoints
+- ✅ CORS configured for production domain
 
-Feel free to explore, contribute, and make this project even better. Together, we can create something truly transformative.
+---
 
-✨ **Let’s ascend together!** 🚀
+## 📈 Roadmap
+
+- [x] AI-powered roadmap generation
+- [x] Career questionnaire with AI suggestions
+- [x] Edura chatbot integration
+- [x] User authentication & saved roadmaps
+- [x] CI/CD pipeline with testing
+- [ ] Mobile app (React Native)
+- [ ] Community features
+- [ ] Mentor matching
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 👥 Team
+
+**HackHawks** - Built with ❤️ for accessible education
+
+---
+
+**✨ Let's ascend together! 🚀**
