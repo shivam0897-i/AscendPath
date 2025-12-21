@@ -85,16 +85,32 @@ const Navbar = ({ minimal = false }: NavbarProps) => {
               <NavLinks mobile currentPath={location.pathname} />
               <div className="pt-4 mt-4 flex flex-col space-y-2 border-t border-border/50">
                 {user ? (
-                  <Button
-                    onClick={() => {
-                      signOut();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full justify-center"
-                    variant="outline"
-                  >
-                    Log out
-                  </Button>
+                  <>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full py-2 px-4 text-center rounded-md hover:bg-terracotta/10 hover:text-terracotta transition-colors"
+                    >
+                      My Roadmaps
+                    </Link>
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full py-2 px-4 text-center rounded-md hover:bg-terracotta/10 hover:text-terracotta transition-colors"
+                    >
+                      Profile
+                    </Link>
+                    <Button
+                      onClick={() => {
+                        signOut();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-center"
+                      variant="outline"
+                    >
+                      Log out
+                    </Button>
+                  </>
                 ) : (
                   <AuthButtons mobile />
                 )}
@@ -157,8 +173,8 @@ const NavLinks = ({ mobile = false, currentPath = "" }: { mobile?: boolean; curr
               key={link.href}
               to={link.href}
               className={`block py-3 px-4 rounded-lg transition-all duration-200 ${currentPath === link.href
-                  ? "bg-terracotta/10 text-terracotta font-medium"
-                  : "hover:bg-terracotta/5 hover:text-terracotta"
+                ? "bg-terracotta/10 text-terracotta font-medium"
+                : "hover:bg-terracotta/5 hover:text-terracotta"
                 }`}
             >
               {link.label}
@@ -172,8 +188,8 @@ const NavLinks = ({ mobile = false, currentPath = "" }: { mobile?: boolean; curr
               key={link.href}
               to={link.href}
               className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-200 ${currentPath === link.href
-                  ? "text-terracotta"
-                  : "text-foreground/80 hover:text-terracotta hover:bg-terracotta/5"
+                ? "text-terracotta"
+                : "text-foreground/80 hover:text-terracotta hover:bg-terracotta/5"
                 }`}
             >
               {link.label}
