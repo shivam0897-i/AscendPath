@@ -24,7 +24,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       : 'Complete your first milestone today!';
 
     const { data, error } = await resend.emails.send({
-      from: 'AscendPath <onboarding@resend.dev>',
+      from: 'AscendPath <noreply@ascendpath.xyz>',
       to: email,
       subject: '🚀 Your Daily Learning Reminder from AscendPath',
       html: `
