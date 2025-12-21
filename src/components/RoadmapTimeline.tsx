@@ -149,22 +149,43 @@ const RoadmapTimeline = ({ phases, onMilestoneToggle }: RoadmapTimelineProps) =>
                                   className="flex items-center p-1.5 pr-2 hover:bg-cream/50 dark:hover:bg-charcoal/30 rounded-md text-sm group"
                                 >
                                   <div className="w-8 h-8 rounded overflow-hidden mr-2 flex-shrink-0 bg-gradient-to-br from-cream to-terracotta-light/30 dark:from-charcoal/50 dark:to-sage/20 flex items-center justify-center">
-                                    {resource.imageUrl ? (
-                                      <img 
-                                        src={resource.imageUrl} 
-                                        alt="" 
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                          (e.target as HTMLImageElement).style.display = 'none';
-                                          const parent = (e.target as HTMLImageElement).parentElement;
-                                          if (parent && !parent.querySelector('svg')) {
-                                            const fallback = document.createElement('div');
-                                            fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-terracotta/60"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
-                                            parent.appendChild(fallback.firstChild!);
-                                          }
-                                        }}
-                                      />
-                                    ) : (
+                                    {resource.imageUrl ? (() => {
+                                      // Upgrade YouTube thumbnails to higher quality
+                                      let imgUrl = resource.imageUrl;
+                                      if (imgUrl.includes('i.ytimg.com') || imgUrl.includes('img.youtube.com')) {
+                                        imgUrl = imgUrl.replace('/default.jpg', '/hqdefault.jpg')
+                                                       .replace('/mqdefault.jpg', '/hqdefault.jpg');
+                                      }
+                                      return (
+                                        <img 
+                                          src={imgUrl} 
+                                          alt="" 
+                                          className="w-full h-full object-cover"
+                                          onLoad={(e) => {
+                                            const img = e.target as HTMLImageElement;
+                                            // YouTube default placeholder is typically 120x90
+                                            if (img.naturalWidth <= 120 && img.naturalHeight <= 90) {
+                                              img.style.display = 'none';
+                                              const parent = img.parentElement;
+                                              if (parent && !parent.querySelector('svg')) {
+                                                const fallback = document.createElement('div');
+                                                fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-terracotta/60"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>';
+                                                parent.appendChild(fallback.firstChild!);
+                                              }
+                                            }
+                                          }}
+                                          onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = 'none';
+                                            const parent = (e.target as HTMLImageElement).parentElement;
+                                            if (parent && !parent.querySelector('svg')) {
+                                              const fallback = document.createElement('div');
+                                              fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-terracotta/60"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+                                              parent.appendChild(fallback.firstChild!);
+                                            }
+                                          }}
+                                        />
+                                      );
+                                    })() : (
                                        <BookOpen className="w-5 h-5 text-terracotta/60"/>
                                     )}
                                   </div>

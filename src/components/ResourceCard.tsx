@@ -42,35 +42,62 @@ const getFallbackLabel = (type: string) => {
 };
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
-  const hasImage = resource.imageUrl && resource.imageUrl.trim() !== '';
+  // Check if URL is a YouTube thumbnail and upgrade to higher quality
+  const getImageUrl = (url: string | null): string | null => {
+    if (!url || url.trim() === '') return null;
+
+    // If it's a YouTube default thumbnail, try to get hqdefault instead
+    // default.jpg is often the gray placeholder, hqdefault is better quality
+    if (url.includes('i.ytimg.com') || url.includes('img.youtube.com')) {
+      // Try to use hqdefault or sddefault for better quality
+      return url.replace('/default.jpg', '/hqdefault.jpg')
+        .replace('/mqdefault.jpg', '/hqdefault.jpg');
+    }
+    return url;
+  };
+
+  const imageUrl = getImageUrl(resource.imageUrl);
+  const hasImage = !!imageUrl;
   const FallbackIcon = () => getResourceIcon(resource.type);
   const fallbackLabel = getFallbackLabel(resource.type);
+  const isVideo = resource.type.toLowerCase().includes('video');
+
+  // Function to replace image with fallback
+  const showFallback = (parent: HTMLElement) => {
+    const icon = isVideo
+      ? '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>'
+      : '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+    const label = isVideo ? 'Video Resource' : 'Learning Resource';
+    parent.innerHTML = `
+      <div class="flex flex-col items-center justify-center gap-2 text-terracotta/60">
+        ${icon}
+        <span class="text-xs font-medium">${label}</span>
+      </div>
+    `;
+  };
 
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-warm-md transition-all border-terracotta/10 hover:border-terracotta/30">
       <div className="h-36 overflow-hidden bg-gradient-to-br from-cream via-terracotta-light/30 to-sage/20 flex items-center justify-center relative">
         {hasImage ? (
           <img
-            src={resource.imageUrl!}
+            src={imageUrl}
             alt={resource.title}
             className="w-full h-full object-cover transition-transform hover:scale-105"
+            onLoad={(e) => {
+              const img = e.target as HTMLImageElement;
+              // YouTube default placeholder is typically 120x90 or very small
+              // Also check for suspiciously small images that are likely placeholders
+              if (img.naturalWidth <= 120 && img.naturalHeight <= 90) {
+                img.style.display = 'none';
+                const parent = img.parentElement;
+                if (parent) showFallback(parent);
+              }
+            }}
             onError={(e) => {
-              // Hide broken image and show fallback
               (e.target as HTMLImageElement).style.display = 'none';
               const parent = (e.target as HTMLImageElement).parentElement;
-              if (parent) {
-                const isVideo = resource.type.toLowerCase().includes('video');
-                const icon = isVideo 
-                  ? '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>'
-                  : '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
-                const label = isVideo ? 'Video Resource' : 'Learning Resource';
-                parent.innerHTML = `
-                  <div class="flex flex-col items-center justify-center gap-2 text-terracotta/60">
-                    ${icon}
-                    <span class="text-xs font-medium">${label}</span>
-                  </div>
-                `;
-              }
+              if (parent) showFallback(parent);
             }}
           />
         ) : (
