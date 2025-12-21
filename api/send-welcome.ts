@@ -4,24 +4,24 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { email, firstName } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
     }
 
-    try {
-        const { email, firstName } = req.body;
+    const greeting = firstName ? `Hi ${firstName}` : 'Welcome';
 
-        if (!email) {
-            return res.status(400).json({ error: 'Email is required' });
-        }
-
-        const greeting = firstName ? `Hi ${firstName}` : 'Welcome';
-
-        const { data, error } = await resend.emails.send({
-            from: 'AscendPath <noreply@ascendpath.xyz>',
-            to: email,
-            subject: '🎉 Welcome to AscendPath - Your Career Journey Starts Here!',
-            html: `
+    const { data, error } = await resend.emails.send({
+      from: 'AscendPath <noreply@ascendpath.xyz>',
+      to: email,
+      subject: '🎉 Welcome to AscendPath - Your Career Journey Starts Here!',
+      html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: linear-gradient(135deg, #FAF7F2 0%, #fff 100%);">
           <div style="text-align: center; margin-bottom: 30px;">
             <h1 style="color: #C16E4B; margin: 0; font-size: 32px;">AscendPath</h1>
@@ -40,18 +40,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             </p>
             
             <div style="margin: 25px 0; padding: 20px; background: linear-gradient(135deg, rgba(193, 110, 75, 0.08) 0%, rgba(124, 144, 130, 0.08) 100%); border-radius: 12px;">
-              <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                <span style="background: #C16E4B; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;">1</span>
-                <span style="color: #2D2D2D; font-weight: 500;">Take the Career Questionnaire</span>
-              </div>
-              <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                <span style="background: #C16E4B; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;">2</span>
-                <span style="color: #2D2D2D; font-weight: 500;">Get Your AI-Powered Roadmap</span>
-              </div>
-              <div style="display: flex; align-items: center;">
-                <span style="background: #C16E4B; color: white; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;">3</span>
-                <span style="color: #2D2D2D; font-weight: 500;">Start Learning & Track Progress</span>
-              </div>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: middle; width: 40px;">
+                    <div style="background: #C16E4B; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold;">1</div>
+                  </td>
+                  <td style="padding: 10px 0; color: #2D2D2D; font-weight: 500;">Take the Career Questionnaire</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: middle; width: 40px;">
+                    <div style="background: #C16E4B; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold;">2</div>
+                  </td>
+                  <td style="padding: 10px 0; color: #2D2D2D; font-weight: 500;">Get Your AI-Powered Roadmap</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; vertical-align: middle; width: 40px;">
+                    <div style="background: #C16E4B; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold;">3</div>
+                  </td>
+                  <td style="padding: 10px 0; color: #2D2D2D; font-weight: 500;">Start Learning & Track Progress</td>
+                </tr>
+              </table>
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
@@ -74,16 +82,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           </div>
         </div>
       `,
-        });
+    });
 
-        if (error) {
-            console.error('Resend error:', error);
-            return res.status(500).json({ error: error.message });
-        }
-
-        return res.status(200).json({ success: true, messageId: data?.id });
-    } catch (error) {
-        console.error('Welcome email error:', error);
-        return res.status(500).json({ error: 'Failed to send email' });
+    if (error) {
+      console.error('Resend error:', error);
+      return res.status(500).json({ error: error.message });
     }
+
+    return res.status(200).json({ success: true, messageId: data?.id });
+  } catch (error) {
+    console.error('Welcome email error:', error);
+    return res.status(500).json({ error: 'Failed to send email' });
+  }
 }
