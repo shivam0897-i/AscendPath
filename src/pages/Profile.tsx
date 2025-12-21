@@ -160,8 +160,26 @@ export default function Profile() {
     };
 
     const handleDeleteAccount = async () => {
-        // This would require a Supabase Edge Function to properly delete the user
-        toast.error('Account deletion requires contacting support');
+        if (!user?.id) return;
+
+        try {
+            const response = await fetch('/api/delete-account', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete account');
+            }
+
+            toast.success('Account deleted successfully');
+            await signOut();
+            navigate('/');
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            toast.error('Failed to delete account. Please try again.');
+        }
     };
 
     if (profileLoading || statsLoading) {
