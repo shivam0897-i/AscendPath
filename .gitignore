@@ -21,10 +21,16 @@ coverage/
 # IDE and editor files
 .vscode/
 .idea/
+.idx/
 *.sublime-*
 *.swp
 *.swo
 *~
+
+# Nix/Flake (environment specific)
+flake.nix
+flake.lock
+*.nix
 
 # OS generated files
 .DS_Store
