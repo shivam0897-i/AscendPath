@@ -214,7 +214,7 @@ export default function Profile() {
 
             <main className="container mx-auto px-4 py-8 md:py-12">
                 {/* Profile Header */}
-                <ProfileHeader profile={profile} stats={stats} />
+                <ProfileHeader profile={profile} stats={stats} userId={user?.id} onAvatarUpdate={refetch} />
 
                 {/* Tabs */}
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">

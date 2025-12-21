@@ -1,9 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Mail, Target, Flame, CheckCircle2, BookMarked } from 'lucide-react';
+import { Calendar, Mail, Target, Flame, CheckCircle2, BookMarked, Camera, Loader2 } from 'lucide-react';
 import { ProfileStats } from '@/hooks/useProfileStats';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface ProfileHeaderProps {
     profile: {
@@ -17,6 +19,8 @@ interface ProfileHeaderProps {
         created_at: string;
     };
     stats: ProfileStats;
+    userId?: string;
+    onAvatarUpdate?: () => void;
 }
 
 // Animated counter component
@@ -50,7 +54,63 @@ function AnimatedCounter({ value, duration = 1000 }: { value: number; duration?:
     return <span>{count}</span>;
 }
 
-export default function ProfileHeader({ profile, stats }: ProfileHeaderProps) {
+export default function ProfileHeader({ profile, stats, userId, onAvatarUpdate }: ProfileHeaderProps) {
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !userId) return;
+
+        // Validate file
+        if (!file.type.startsWith('image/')) {
+            toast.error('Please select an image file');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image must be less than 5MB');
+            return;
+        }
+
+        setIsUploading(true);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${userId}/avatar.${fileExt}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(fileName, file, { upsert: true });
+
+            if (uploadError) throw uploadError;
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(fileName);
+
+            // Update profile with new avatar URL
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ avatar_url: publicUrl })
+                .eq('id', userId);
+
+            if (updateError) throw updateError;
+
+            toast.success('Avatar updated!');
+            onAvatarUpdate?.();
+        } catch (error) {
+            console.error('Avatar upload error:', error);
+            toast.error('Failed to upload avatar');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     const displayName = profile.display_name ||
         `${profile.first_name || ''} ${profile.last_name || ''}`.trim() ||
         'User';
@@ -110,13 +170,34 @@ export default function ProfileHeader({ profile, stats }: ProfileHeaderProps) {
                 {/* Profile info row */}
                 <div className="flex flex-col md:flex-row md:items-center gap-6 mb-8">
                     {/* Avatar */}
-                    <div className="relative">
-                        <Avatar className="h-24 w-24 md:h-28 md:w-28 border-4 border-white dark:border-charcoal shadow-warm-md ring-2 ring-terracotta/20">
-                            <AvatarImage src={profile.avatar_url || undefined} alt={displayName} />
-                            <AvatarFallback className="bg-gradient-to-br from-terracotta to-terracotta-dark text-white text-2xl font-heading">
-                                {initials}
-                            </AvatarFallback>
-                        </Avatar>
+                    <div className="relative group">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            accept="image/*"
+                            className="hidden"
+                        />
+                        <div 
+                            onClick={userId ? handleAvatarClick : undefined}
+                            className={userId ? 'cursor-pointer' : ''}
+                        >
+                            <Avatar className="h-24 w-24 md:h-28 md:w-28 border-4 border-white dark:border-charcoal shadow-warm-md ring-2 ring-terracotta/20">
+                                <AvatarImage src={profile.avatar_url || undefined} alt={displayName} />
+                                <AvatarFallback className="bg-gradient-to-br from-terracotta to-terracotta-dark text-white text-2xl font-heading">
+                                    {initials}
+                                </AvatarFallback>
+                            </Avatar>
+                            {userId && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {isUploading ? (
+                                        <Loader2 className="h-6 w-6 text-white animate-spin" />
+                                    ) : (
+                                        <Camera className="h-6 w-6 text-white" />
+                                    )}
+                                </div>
+                            )}
+                        </div>
                         {stats.currentStreak >= 7 && (
                             <Badge className="absolute -bottom-1 -right-1 bg-amber-500 text-white border-2 border-white dark:border-charcoal">
                                 <Flame className="h-3 w-3 mr-0.5" />
