@@ -363,7 +363,7 @@ const Home = () => {
               <div className="lg:col-span-7 order-2 lg:order-1">
                 <div className="max-w-[540px]">
                   {/* Trust badge */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-sage/10 dark:bg-sage/20 rounded-full mb-8 lg:mb-10 animate-fade-in-up">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-sage/10 dark:bg-sage/20 rounded-full mb-4 sm:mb-6 lg:mb-10 animate-fade-in-up">
                     <Target className="w-4 h-4 text-sage-dark dark:text-sage" />
                     <span className="text-sm font-medium text-sage-dark dark:text-sage">
                       Trusted by 10,000+ students & professionals
@@ -371,7 +371,7 @@ const Home = () => {
                   </div>
 
                   {/* Headline - Primary focal point */}
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-heading font-bold mb-5 lg:mb-6 leading-[1.15] text-charcoal dark:text-cream animate-fade-in-up animate-stagger-1">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] font-heading font-bold mb-4 lg:mb-6 leading-[1.15] text-charcoal dark:text-cream animate-fade-in-up animate-stagger-1">
                     Your Career Begins With the{" "}
                     <span className="relative">
                       <span className="gradient-text">Right Roadmap</span>
@@ -382,7 +382,7 @@ const Home = () => {
                   </h1>
 
                   {/* Subhead - Supporting narrative */}
-                  <p className="text-base lg:text-lg xl:text-xl text-muted-foreground dark:text-cream/70 mb-8 lg:mb-10 leading-relaxed animate-fade-in-up animate-stagger-2">
+                  <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-muted-foreground dark:text-cream/70 mb-6 lg:mb-10 leading-relaxed animate-fade-in-up animate-stagger-2">
                     A personalized learning journey designed to help students and professionals reach their dream career with{" "}
                     <span className="text-charcoal dark:text-cream font-medium">clarity</span>,{" "}
                     <span className="text-charcoal dark:text-cream font-medium">confidence</span>, and{" "}
@@ -469,19 +469,19 @@ const Home = () => {
         {/* Feature Section - Cards with personality */}
         <section
           ref={featuresAnimation.ref}
-          className="py-24 bg-section-warm px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+          className="py-12 sm:py-16 lg:py-24 bg-section-warm px-4 sm:px-6 lg:px-8 relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-pattern-grid opacity-35 dark:opacity-15 pointer-events-none" />
           <div className="absolute inset-0 bg-noise" />
 
           <div className="max-w-7xl mx-auto relative">
-            <div className={`text-center mb-16 transition-all duration-700 ${featuresAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <p className="text-sm font-semibold text-sage-dark dark:text-sage tracking-widest uppercase mb-3">What We Offer</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-5 text-charcoal dark:text-cream text-balance">
+            <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transition-all duration-700 ${featuresAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <p className="text-xs sm:text-sm font-semibold text-sage-dark dark:text-sage tracking-widest uppercase mb-2 sm:mb-3">What We Offer</p>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heading font-bold mb-3 sm:mb-5 text-charcoal dark:text-cream text-balance">
                 How We <span className="editorial text-terracotta">Empower</span> Your Education
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-terracotta to-sage mx-auto mb-6 rounded-full" />
-              <p className="text-lg text-muted-foreground dark:text-cream/70 max-w-2xl mx-auto">
+              <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-terracotta to-sage mx-auto mb-4 sm:mb-6 rounded-full" />
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground dark:text-cream/70 max-w-2xl mx-auto">
                 Our platform offers a comprehensive set of tools to help you navigate your educational journey with confidence.
               </p>
             </div>
@@ -509,16 +509,16 @@ const Home = () => {
 
         <section
           ref={howItWorksAnimation.ref}
-          className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative"
+          className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative"
         >
           {/* Dark mode background */}
           <div className="absolute inset-0 dark:bg-charcoal -mx-4 sm:-mx-6 lg:-mx-8" style={{ left: '-100vw', right: '-100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }} />
           <div className="absolute inset-0 bg-pattern-grid opacity-35 dark:opacity-15 pointer-events-none" style={{ left: '-100vw', right: '-100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }} />
 
           <div className="relative">
-            <div className={`text-center mb-16 transition-all duration-700 ${howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <p className="text-sm font-semibold text-terracotta dark:text-terracotta-light tracking-widest uppercase mb-3">Simple Process</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-5 text-charcoal dark:text-cream text-balance">
+            <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transition-all duration-700 ${howItWorksAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <p className="text-xs sm:text-sm font-semibold text-terracotta dark:text-terracotta-light tracking-widest uppercase mb-2 sm:mb-3">Simple Process</p>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heading font-bold mb-3 sm:mb-5 text-charcoal dark:text-cream text-balance">
                 How It <span className="editorial text-sage-dark dark:text-sage">Works</span>
               </h2>
               <div className="w-24 h-1 bg-gradient-to-r from-sage to-terracotta mx-auto mb-6 rounded-full" />
@@ -569,19 +569,19 @@ const Home = () => {
         {/* Testimonials - Social proof with warmth */}
         <section
           ref={testimonialsAnimation.ref}
-          className="py-24 bg-charcoal dark:bg-charcoal-dark px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+          className="py-12 sm:py-16 lg:py-24 bg-charcoal dark:bg-charcoal-dark px-4 sm:px-6 lg:px-8 relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-pattern-topo opacity-10 pointer-events-none" />
           <div className="absolute inset-0 bg-noise" />
 
           <div className="max-w-7xl mx-auto relative">
-            <div className={`text-center mb-16 transition-all duration-700 ${testimonialsAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <p className="text-sm font-semibold text-terracotta tracking-widest uppercase mb-3">Success Stories</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-5 text-cream text-balance">
+            <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transition-all duration-700 ${testimonialsAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <p className="text-xs sm:text-sm font-semibold text-terracotta tracking-widest uppercase mb-2 sm:mb-3">Success Stories</p>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heading font-bold mb-3 sm:mb-5 text-cream text-balance">
                 Voices from the <span className="editorial text-amber-300">Summit</span>
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-terracotta mx-auto mb-6 rounded-full" />
-              <p className="text-lg text-cream/70 max-w-2xl mx-auto">
+              <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-amber-400 to-terracotta mx-auto mb-4 sm:mb-6 rounded-full" />
+              <p className="text-sm sm:text-base lg:text-lg text-cream/70 max-w-2xl mx-auto">
                 Hear from working professionals and students who have transformed their educational journey
               </p>
             </div>
@@ -617,7 +617,7 @@ const Home = () => {
         {/* CTA Section - Warm invitation */}
         <section
           ref={ctaAnimation.ref}
-          className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-terracotta via-terracotta-dark to-sage-dark text-white relative overflow-hidden"
+          className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-terracotta via-terracotta-dark to-sage-dark text-white relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-pattern-topo opacity-15 pointer-events-none" />
           <div className="absolute inset-0 bg-noise" />
@@ -627,10 +627,10 @@ const Home = () => {
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl animate-float-subtle" />
 
           <div className={`max-w-4xl mx-auto text-center relative transition-all duration-700 ${ctaAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 text-balance">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold mb-4 sm:mb-6 text-balance">
               Ready to Begin Your <span className="editorial">Ascent</span>?
             </h2>
-            <p className="text-xl md:text-2xl mb-12 text-white/85 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-12 text-white/85 max-w-2xl mx-auto leading-relaxed">
               Take the first step toward your educational and career goals today. Your personalized roadmap awaits.
             </p>
             <Button asChild size="xl" className="bg-white text-terracotta hover:bg-cream hover:text-terracotta-dark shadow-warm-xl hover:shadow-2xl transition-all group">
@@ -649,12 +649,12 @@ const Home = () => {
       {!isChatOpen && (
         <Button
           onClick={toggleChat}
-          className="fixed bottom-6 right-6 z-50 rounded-full p-6 shadow-lg bg-empowerPurple hover:bg-empowerPurple-dark"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 rounded-full p-3 sm:p-4 shadow-lg bg-empowerPurple hover:bg-empowerPurple-dark"
           aria-label="Open Chat"
         >
           <div className="flex items-center">
-            <MessageSquare className="h-6 w-6 text-primary-foreground" />
-            <span className="text-primary-foreground ml-2">Edura</span>
+            <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
+            <span className="text-primary-foreground ml-2 hidden sm:inline">Edura</span>
           </div>
         </Button>
       )}
